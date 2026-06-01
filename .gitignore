@@ -1,0 +1,8 @@
+.env
+client_secrets.json
+.youtube_token.json
+__pycache__/
+*.py[cod]
+outputs/
+AGENTS.md
+ost.mp3
