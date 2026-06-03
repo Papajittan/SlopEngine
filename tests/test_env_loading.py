@@ -108,6 +108,7 @@ class EnvLoadingTests(unittest.TestCase):
                         "EDGE_TTS_PITCH=-3Hz",
                         "EDGE_TTS_VOLUME=+0%",
                         "WHISPER_MODEL=tiny",
+                        "WHISPER_DEVICE=cpu",
                         "CAPTION_FONT_SIZE=220",
                         "BACKGROUND_MUSIC_PATH=/tmp/music.mp3",
                         "BACKGROUND_MUSIC_VOLUME=0.18",
@@ -288,6 +289,72 @@ class EnvLoadingTests(unittest.TestCase):
 
         self.assertEqual(shorts_core._fake_whisper.load_model_calls[-1]["args"], ("tiny",))
         self.assertEqual(shorts_core._fake_whisper.load_model_calls[-1]["kwargs"], {"device": "cpu"})
+
+    def test_whisper_tracker_retries_cuda_timestamp_error_on_cpu(self):
+        shorts_core = import_shorts_core_with_fakes()
+        calls = []
+
+        class FakeCudaModel:
+            def transcribe(self, *args, **kwargs):
+                raise RuntimeError(
+                    "triton.compiler.errors.CompilationError: "
+                    "AttributeError(\"module 'ast' has no attribute 'Num'\")"
+                )
+
+        class FakeCpuModel:
+            def transcribe(self, *args, **kwargs):
+                return {
+                    "segments": [
+                        {
+                            "words": [
+                                {"word": " retry ", "start": 0.1, "end": 0.35},
+                                {"word": " worked ", "start": 0.36, "end": 0.6},
+                            ]
+                        }
+                    ]
+                }
+
+        def fake_load_model(model, *, device):
+            calls.append((model, device))
+            return FakeCudaModel() if device == "cuda" else FakeCpuModel()
+
+        shorts_core.whisper.load_model = fake_load_model
+        config = shorts_core.PipelineConfig(
+            gemini_api_key="gemini-key",
+            pexels_api_key="pexels-key",
+            whisper_model="tiny",
+            whisper_device="cuda",
+        )
+
+        events = shorts_core.WhisperWordTracker(config).transcribe_words(Path("voice.mp3"), "retry worked")
+
+        self.assertEqual(calls, [("tiny", "cuda"), ("tiny", "cpu")])
+        self.assertEqual([event.text for event in events], ["retry", "worked"])
+
+    def test_whisper_tracker_does_not_retry_unrelated_cuda_errors(self):
+        shorts_core = import_shorts_core_with_fakes()
+        calls = []
+
+        class FakeCudaModel:
+            def transcribe(self, *args, **kwargs):
+                raise RuntimeError("unexpected decoder failure")
+
+        def fake_load_model(model, *, device):
+            calls.append((model, device))
+            return FakeCudaModel()
+
+        shorts_core.whisper.load_model = fake_load_model
+        config = shorts_core.PipelineConfig(
+            gemini_api_key="gemini-key",
+            pexels_api_key="pexels-key",
+            whisper_model="tiny",
+            whisper_device="cuda",
+        )
+
+        with self.assertRaisesRegex(RuntimeError, "unexpected decoder failure"):
+            shorts_core.WhisperWordTracker(config).transcribe_words(Path("voice.mp3"), "retry worked")
+
+        self.assertEqual(calls, [("tiny", "cuda")])
 
     def test_default_caption_size_is_large_for_vertical_shorts(self):
         shorts_core = import_shorts_core_with_fakes()

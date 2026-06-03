@@ -769,6 +769,7 @@ class WhisperWordTracker:
     def __init__(self, config: PipelineConfig) -> None:
         self.config = config
         self._model: Any | None = None
+        self._cpu_fallback_model: Any | None = None
 
     @property
     def model(self) -> Any:
@@ -777,7 +778,24 @@ class WhisperWordTracker:
         return self._model
 
     def transcribe_words(self, audio_path: Path, script_text: str) -> list[WordEvent]:
-        result = self.model.transcribe(
+        try:
+            result = self._transcribe_with_word_timestamps(self.model, audio_path)
+        except Exception as exc:
+            if not self._is_cuda_word_timestamp_error(exc):
+                raise
+            print("[warn] Whisper CUDA word timestamps failed; retrying on CPU.")
+            result = self._transcribe_with_word_timestamps(self._cpu_fallback(), audio_path)
+
+        events = self._word_events_from_transcript(result)
+
+        if events:
+            return events
+
+        duration = get_audio_duration(audio_path)
+        return self._estimate_word_events(script_text, duration)
+
+    def _transcribe_with_word_timestamps(self, model: Any, audio_path: Path) -> dict[str, Any]:
+        return model.transcribe(
             str(audio_path),
             word_timestamps=True,
             fp16=False,
@@ -785,6 +803,32 @@ class WhisperWordTracker:
             verbose=False,
         )
 
+    def _cpu_fallback(self) -> Any:
+        if self._cpu_fallback_model is None:
+            self._cpu_fallback_model = whisper.load_model(self.config.whisper_model, device="cpu")
+        return self._cpu_fallback_model
+
+    def _is_cuda_word_timestamp_error(self, exc: Exception) -> bool:
+        device = self.config.whisper_device.strip().lower()
+        if device != "cuda" and not device.startswith("cuda:"):
+            return False
+
+        current: BaseException | None = exc
+        seen: set[int] = set()
+        while current is not None and id(current) not in seen:
+            seen.add(id(current))
+            module = type(current).__module__.lower()
+            name = type(current).__name__.lower()
+            message = str(current).lower()
+            if "triton" in module or "triton" in name or "dtw_cuda" in message:
+                return True
+            if "ast" in message and "has no attribute 'num'" in message:
+                return True
+            current = current.__cause__ or current.__context__
+
+        return False
+
+    def _word_events_from_transcript(self, result: dict[str, Any]) -> list[WordEvent]:
         events: list[WordEvent] = []
         for segment in result.get("segments", []):
             for word in segment.get("words", []) or []:
@@ -800,12 +844,7 @@ class WhisperWordTracker:
                         end_ms=int(round(end * 1000)),
                     )
                 )
-
-        if events:
-            return events
-
-        duration = get_audio_duration(audio_path)
-        return self._estimate_word_events(script_text, duration)
+        return events
 
     def _estimate_word_events(self, script_text: str, duration: float) -> list[WordEvent]:
         words = [word for word in normalize_spaces(script_text).split() if word]
