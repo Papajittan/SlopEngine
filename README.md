@@ -27,6 +27,20 @@ Install Python packages:
 python3 -m pip install -r requirements.txt
 ```
 
+For Whisper CUDA, avoid Python 3.14. Use a Python 3.12 environment and keep
+`WHISPER_DEVICE=cuda` in `.env`:
+
+```bash
+python3.12 -m venv .venv312
+.venv312/bin/python -m pip install --upgrade pip
+.venv312/bin/python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
+.venv312/bin/python -m pip install -r requirements.txt
+.venv312/bin/python shorts_core.py --upload
+```
+
+If your GPU driver needs a different CUDA wheel, choose the matching pip command
+from the PyTorch install selector.
+
 If Whisper or MoviePy cannot read media, check FFmpeg first:
 
 ```bash
@@ -168,5 +182,5 @@ For caption or visual changes, render a short sample and inspect at least one fr
 - `GEMINI_API_KEY is required` or `PEXELS_API_KEY is required`: set the missing key in `.env`.
 - Gemini high-demand warning: the script retries with another available generateContent model when possible.
 - YouTube dependency error: install the packages in `requirements.txt`; upload needs `google-api-python-client`, `google-auth-oauthlib`, and `google-auth-httplib2`.
-- Whisper CUDA or Triton timestamp errors: set `WHISPER_DEVICE=cpu`.
+- Whisper CUDA or Triton timestamp errors on Python 3.14: use the Python 3.12 CUDA setup above, or set `WHISPER_DEVICE=cpu`.
 - Captions render with the wrong font: set `CAPTION_FONT_PATH` to a real scalable font file.

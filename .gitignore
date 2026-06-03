@@ -3,6 +3,7 @@ client_secrets.json
 .youtube_token.json
 __pycache__/
 *.py[cod]
+.venv312/
 outputs/
 AGENTS.md
 ost.mp3
