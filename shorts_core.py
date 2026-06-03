@@ -25,7 +25,7 @@ import subprocess
 import tempfile
 import time
 from collections import Counter
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -87,6 +87,254 @@ DEFAULT_CONFIG = {
     "width": 1080,
     "height": 1920,
     "fps": 30,
+}
+
+
+EDGE_TTS_DEFAULT_VOICES_BY_LOCALE = {
+    "af-za": "af-ZA-AdriNeural",
+    "am-et": "am-ET-MekdesNeural",
+    "ar-ae": "ar-AE-FatimaNeural",
+    "ar-bh": "ar-BH-LailaNeural",
+    "ar-dz": "ar-DZ-AminaNeural",
+    "ar-eg": "ar-EG-SalmaNeural",
+    "ar-iq": "ar-IQ-RanaNeural",
+    "ar-jo": "ar-JO-SanaNeural",
+    "ar-kw": "ar-KW-NouraNeural",
+    "ar-lb": "ar-LB-LaylaNeural",
+    "ar-ly": "ar-LY-ImanNeural",
+    "ar-ma": "ar-MA-MounaNeural",
+    "ar-om": "ar-OM-AyshaNeural",
+    "ar-qa": "ar-QA-AmalNeural",
+    "ar-sa": "ar-SA-ZariyahNeural",
+    "ar-sy": "ar-SY-AmanyNeural",
+    "ar-tn": "ar-TN-ReemNeural",
+    "ar-ye": "ar-YE-MaryamNeural",
+    "as-in": "as-IN-YashicaNeural",
+    "az-az": "az-AZ-BanuNeural",
+    "bg-bg": "bg-BG-KalinaNeural",
+    "bn-bd": "bn-BD-NabanitaNeural",
+    "bn-in": "bn-IN-TanishaaNeural",
+    "bs-ba": "bs-BA-VesnaNeural",
+    "ca-es": "ca-ES-JoanaNeural",
+    "cs-cz": "cs-CZ-VlastaNeural",
+    "cy-gb": "cy-GB-NiaNeural",
+    "da-dk": "da-DK-ChristelNeural",
+    "de-at": "de-AT-IngridNeural",
+    "de-ch": "de-CH-LeniNeural",
+    "de-de": "de-DE-KatjaNeural",
+    "el-gr": "el-GR-AthinaNeural",
+    "en-au": "en-AU-NatashaNeural",
+    "en-ca": "en-CA-ClaraNeural",
+    "en-gb": "en-GB-SoniaNeural",
+    "en-hk": "en-HK-YanNeural",
+    "en-ie": "en-IE-EmilyNeural",
+    "en-in": "en-IN-NeerjaNeural",
+    "en-ke": "en-KE-AsiliaNeural",
+    "en-ng": "en-NG-EzinneNeural",
+    "en-nz": "en-NZ-MollyNeural",
+    "en-ph": "en-PH-RosaNeural",
+    "en-sg": "en-SG-LunaNeural",
+    "en-tz": "en-TZ-ImaniNeural",
+    "en-us": "en-US-AriaNeural",
+    "en-za": "en-ZA-LeahNeural",
+    "es-ar": "es-AR-ElenaNeural",
+    "es-bo": "es-BO-SofiaNeural",
+    "es-cl": "es-CL-CatalinaNeural",
+    "es-co": "es-CO-SalomeNeural",
+    "es-cr": "es-CR-MariaNeural",
+    "es-cu": "es-CU-BelkysNeural",
+    "es-do": "es-DO-RamonaNeural",
+    "es-ec": "es-EC-AndreaNeural",
+    "es-es": "es-ES-ElviraNeural",
+    "es-gq": "es-GQ-TeresaNeural",
+    "es-gt": "es-GT-MartaNeural",
+    "es-hn": "es-HN-KarlaNeural",
+    "es-mx": "es-MX-DaliaNeural",
+    "es-ni": "es-NI-YolandaNeural",
+    "es-pa": "es-PA-MargaritaNeural",
+    "es-pe": "es-PE-CamilaNeural",
+    "es-pr": "es-PR-KarinaNeural",
+    "es-py": "es-PY-TaniaNeural",
+    "es-sv": "es-SV-LorenaNeural",
+    "es-us": "es-US-PalomaNeural",
+    "es-uy": "es-UY-ValentinaNeural",
+    "es-ve": "es-VE-PaolaNeural",
+    "et-ee": "et-EE-AnuNeural",
+    "eu-es": "eu-ES-AinhoaNeural",
+    "fa-ir": "fa-IR-DilaraNeural",
+    "fi-fi": "fi-FI-SelmaNeural",
+    "fil-ph": "fil-PH-BlessicaNeural",
+    "fr-be": "fr-BE-CharlineNeural",
+    "fr-ca": "fr-CA-SylvieNeural",
+    "fr-ch": "fr-CH-ArianeNeural",
+    "fr-fr": "fr-FR-DeniseNeural",
+    "ga-ie": "ga-IE-OrlaNeural",
+    "gl-es": "gl-ES-SabelaNeural",
+    "gu-in": "gu-IN-DhwaniNeural",
+    "he-il": "he-IL-HilaNeural",
+    "hi-in": "hi-IN-SwaraNeural",
+    "hr-hr": "hr-HR-GabrijelaNeural",
+    "hu-hu": "hu-HU-NoemiNeural",
+    "hy-am": "hy-AM-AnahitNeural",
+    "id-id": "id-ID-GadisNeural",
+    "is-is": "is-IS-GudrunNeural",
+    "it-it": "it-IT-IsabellaNeural",
+    "iu-cans-ca": "iu-Cans-CA-SiqiniqNeural",
+    "iu-latn-ca": "iu-Latn-CA-SiqiniqNeural",
+    "ja-jp": "ja-JP-NanamiNeural",
+    "jv-id": "jv-ID-SitiNeural",
+    "ka-ge": "ka-GE-EkaNeural",
+    "kk-kz": "kk-KZ-AigulNeural",
+    "km-kh": "km-KH-SreymomNeural",
+    "kn-in": "kn-IN-SapnaNeural",
+    "ko-kr": "ko-KR-SunHiNeural",
+    "lo-la": "lo-LA-KeomanyNeural",
+    "lt-lt": "lt-LT-OnaNeural",
+    "lv-lv": "lv-LV-EveritaNeural",
+    "mk-mk": "mk-MK-MarijaNeural",
+    "ml-in": "ml-IN-SobhanaNeural",
+    "mn-mn": "mn-MN-YesuiNeural",
+    "mr-in": "mr-IN-AarohiNeural",
+    "ms-my": "ms-MY-YasminNeural",
+    "mt-mt": "mt-MT-GraceNeural",
+    "my-mm": "my-MM-NilarNeural",
+    "nb-no": "nb-NO-PernilleNeural",
+    "ne-np": "ne-NP-HemkalaNeural",
+    "nl-be": "nl-BE-DenaNeural",
+    "nl-nl": "nl-NL-FennaNeural",
+    "or-in": "or-IN-SubhasiniNeural",
+    "pa-in": "pa-IN-VaaniNeural",
+    "pl-pl": "pl-PL-ZofiaNeural",
+    "ps-af": "ps-AF-LatifaNeural",
+    "pt-br": "pt-BR-FranciscaNeural",
+    "pt-pt": "pt-PT-RaquelNeural",
+    "ro-ro": "ro-RO-AlinaNeural",
+    "ru-ru": "ru-RU-SvetlanaNeural",
+    "si-lk": "si-LK-ThiliniNeural",
+    "sk-sk": "sk-SK-ViktoriaNeural",
+    "sl-si": "sl-SI-PetraNeural",
+    "so-so": "so-SO-UbaxNeural",
+    "sq-al": "sq-AL-AnilaNeural",
+    "sr-latn-rs": "sr-Latn-RS-SophieNeural",
+    "sr-rs": "sr-RS-SophieNeural",
+    "su-id": "su-ID-TutiNeural",
+    "sv-se": "sv-SE-SofieNeural",
+    "sw-ke": "sw-KE-ZuriNeural",
+    "sw-tz": "sw-TZ-RehemaNeural",
+    "ta-in": "ta-IN-PallaviNeural",
+    "ta-lk": "ta-LK-SaranyaNeural",
+    "ta-my": "ta-MY-KaniNeural",
+    "ta-sg": "ta-SG-VenbaNeural",
+    "te-in": "te-IN-ShrutiNeural",
+    "th-th": "th-TH-PremwadeeNeural",
+    "tr-tr": "tr-TR-EmelNeural",
+    "uk-ua": "uk-UA-PolinaNeural",
+    "ur-in": "ur-IN-GulNeural",
+    "ur-pk": "ur-PK-UzmaNeural",
+    "uz-uz": "uz-UZ-MadinaNeural",
+    "vi-vn": "vi-VN-HoaiMyNeural",
+    "wuu-cn": "wuu-CN-XiaotongNeural",
+    "yue-cn": "yue-CN-XiaoMinNeural",
+    "zh-cn": "zh-CN-XiaoxiaoNeural",
+    "zh-cn-guangxi": "zh-CN-guangxi-YunqiNeural",
+    "zh-cn-henan": "zh-CN-henan-YundengNeural",
+    "zh-cn-liaoning": "zh-CN-liaoning-XiaobeiNeural",
+    "zh-cn-shaanxi": "zh-CN-shaanxi-XiaoniNeural",
+    "zh-cn-shandong": "zh-CN-shandong-YunxiangNeural",
+    "zh-cn-sichuan": "zh-CN-sichuan-YunxiNeural",
+    "zh-hk": "zh-HK-HiuMaanNeural",
+    "zh-tw": "zh-TW-HsiaoChenNeural",
+    "zu-za": "zu-ZA-ThandoNeural",
+}
+
+EDGE_TTS_DEFAULT_LOCALE_BY_LANGUAGE = {
+    "af": "af-za",
+    "am": "am-et",
+    "ar": "ar-sa",
+    "as": "as-in",
+    "az": "az-az",
+    "bg": "bg-bg",
+    "bn": "bn-in",
+    "bs": "bs-ba",
+    "ca": "ca-es",
+    "cs": "cs-cz",
+    "cy": "cy-gb",
+    "da": "da-dk",
+    "de": "de-de",
+    "el": "el-gr",
+    "en": "en-us",
+    "es": "es-es",
+    "et": "et-ee",
+    "eu": "eu-es",
+    "fa": "fa-ir",
+    "fi": "fi-fi",
+    "fil": "fil-ph",
+    "fr": "fr-fr",
+    "ga": "ga-ie",
+    "gl": "gl-es",
+    "gu": "gu-in",
+    "he": "he-il",
+    "hi": "hi-in",
+    "hr": "hr-hr",
+    "hu": "hu-hu",
+    "hy": "hy-am",
+    "id": "id-id",
+    "is": "is-is",
+    "it": "it-it",
+    "iu": "iu-cans-ca",
+    "iu-cans": "iu-cans-ca",
+    "iu-latn": "iu-latn-ca",
+    "ja": "ja-jp",
+    "jv": "jv-id",
+    "ka": "ka-ge",
+    "kk": "kk-kz",
+    "km": "km-kh",
+    "kn": "kn-in",
+    "ko": "ko-kr",
+    "lo": "lo-la",
+    "lt": "lt-lt",
+    "lv": "lv-lv",
+    "mk": "mk-mk",
+    "ml": "ml-in",
+    "mn": "mn-mn",
+    "mr": "mr-in",
+    "ms": "ms-my",
+    "mt": "mt-mt",
+    "my": "my-mm",
+    "nb": "nb-no",
+    "ne": "ne-np",
+    "nl": "nl-nl",
+    "or": "or-in",
+    "pa": "pa-in",
+    "pl": "pl-pl",
+    "ps": "ps-af",
+    "pt": "pt-br",
+    "ro": "ro-ro",
+    "ru": "ru-ru",
+    "si": "si-lk",
+    "sk": "sk-sk",
+    "sl": "sl-si",
+    "so": "so-so",
+    "sq": "sq-al",
+    "sr": "sr-rs",
+    "sr-latn": "sr-latn-rs",
+    "su": "su-id",
+    "sv": "sv-se",
+    "sw": "sw-ke",
+    "ta": "ta-in",
+    "te": "te-in",
+    "th": "th-th",
+    "tr": "tr-tr",
+    "uk": "uk-ua",
+    "ur": "ur-pk",
+    "uz": "uz-uz",
+    "vi": "vi-vn",
+    "wuu": "wuu-cn",
+    "yue": "yue-cn",
+    "zh": "zh-cn",
+    "zh-hans": "zh-cn",
+    "zh-hant": "zh-tw",
+    "zu": "zu-za",
 }
 
 
@@ -165,6 +413,7 @@ class PipelineConfig:
     pexels_api_key: str
     gemini_model: str = DEFAULT_CONFIG["gemini_model"]
     edge_voice: str = DEFAULT_CONFIG["edge_voice"]
+    tts_voice_overridden: bool = False
     edge_rate: str = "+7%"
     edge_volume: str = "+0%"
     edge_pitch: str = "-3Hz"
@@ -203,6 +452,7 @@ class ScriptPayload:
     script: str
     keywords: list[str]
     pexels_query: str
+    language: str = ""
 
 
 @dataclass(frozen=True)
@@ -341,6 +591,47 @@ def slugify(value: str, max_len: int = 72) -> str:
 
 def normalize_spaces(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
+
+
+def normalize_language_tag(value: str) -> str:
+    raw = normalize_spaces(str(value or "")).replace("_", "-").strip(" .")
+    if not raw or not re.fullmatch(r"[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,3}", raw):
+        return ""
+
+    parts = raw.split("-")
+    normalized = [parts[0].lower()]
+    for part in parts[1:]:
+        if len(part) == 2 and part.isalpha():
+            normalized.append(part.upper())
+        elif len(part) == 4 and part.isalpha():
+            normalized.append(part.title())
+        else:
+            normalized.append(part.lower())
+    return "-".join(normalized)
+
+
+def edge_tts_voice_for_language(language: str, fallback_voice: str) -> str:
+    tag = normalize_language_tag(language)
+    if not tag:
+        return fallback_voice
+
+    key = tag.lower()
+    voice = EDGE_TTS_DEFAULT_VOICES_BY_LOCALE.get(key)
+    if voice:
+        return voice
+
+    parts = key.split("-")
+    language_keys = [key]
+    if len(parts) >= 2:
+        language_keys.append("-".join(parts[:2]))
+    language_keys.append(parts[0])
+
+    for language_key in language_keys:
+        default_locale = EDGE_TTS_DEFAULT_LOCALE_BY_LANGUAGE.get(language_key)
+        if default_locale:
+            return EDGE_TTS_DEFAULT_VOICES_BY_LOCALE[default_locale]
+
+    return fallback_voice
 
 
 def extract_keywords(text: str, limit: int = 6) -> list[str]:
@@ -564,13 +855,16 @@ Rules:
 - Include one relevant emoji at the end when it naturally fits the topic.
 - Keep the title factual; do not add claims beyond the topic.
 - Do not use hashtags, markdown, or trailing punctuation in the title.
+- Keep the title and spoken narration in the same language as the topic unless the topic explicitly asks for another output language.
 - Write punchy spoken narration that takes about 60 to 180 seconds to read aloud.
 - Use plain narration only; no markdown, title, scene labels, hashtags, or stage directions.
 - Make the first sentence high-retention but factual.
-- Include 4 to 7 visual keywords for Pexels video search.
-- Include one concise Pexels search query, 2 to 5 words, concrete and visual.
+- Include 4 to 7 English visual keywords for Pexels video search.
+- Include one concise English Pexels search query, 2 to 5 words, concrete and visual.
+- Set language to the BCP-47 language or locale code for the title and script, for example en, es, es-MX, fr-FR.
 JSON schema:
 {{
+  "language": "BCP-47 language or locale code",
   "title": "engaging rewritten YouTube title",
   "script": "spoken narration",
   "keywords": ["keyword one", "keyword two"],
@@ -590,6 +884,8 @@ JSON schema:
             data = self._fallback_payload(topic, "")
             script = data["script"]
 
+        language = normalize_language_tag(str(data.get("language", "")))
+
         title = normalize_spaces(str(data.get("title", "")).strip())
         if not title:
             title = normalize_spaces(topic)
@@ -603,7 +899,7 @@ JSON schema:
         if not pexels_query:
             pexels_query = " ".join(keywords[:4]) or normalize_spaces(topic)
 
-        return ScriptPayload(title=title, script=script, keywords=keywords[:7], pexels_query=pexels_query)
+        return ScriptPayload(title=title, script=script, keywords=keywords[:7], pexels_query=pexels_query, language=language)
 
     def _generate_text(self, prompt: str) -> str:
         try:
@@ -735,6 +1031,7 @@ JSON schema:
         return {
             "title": youtube_title(topic),
             "script": script,
+            "language": "",
             "keywords": keywords,
             "pexels_query": " ".join(keywords[:4]) or "cinematic motion",
         }
@@ -1218,6 +1515,20 @@ class ShortsPipeline:
         self.visual_client = PexelsVisualClient(config)
         self.compiler = MoviePyShortCompiler(config)
 
+    def _tts_engine_for_payload(self, payload: ScriptPayload) -> EdgeTTSEngine:
+        if self.config.tts_voice_overridden:
+            if hasattr(self, "tts_engine"):
+                return self.tts_engine
+            return EdgeTTSEngine(self.config)
+
+        selected_voice = edge_tts_voice_for_language(payload.language, self.config.edge_voice)
+        if selected_voice == self.config.edge_voice:
+            if hasattr(self, "tts_engine"):
+                return self.tts_engine
+            return EdgeTTSEngine(self.config)
+
+        return EdgeTTSEngine(replace(self.config, edge_voice=selected_voice))
+
     def run(self, topic: str, output_path: Path | None = None) -> Path:
         purge_old_temp_runs(self.config.temp_root, self.config.cleanup_max_age_hours)
         self.config.output_dir.mkdir(parents=True, exist_ok=True)
@@ -1231,7 +1542,7 @@ class ShortsPipeline:
             payload = self.script_engine.synthesize(topic)
             save_json(run_dir / "script_payload.json", asdict(payload))
 
-            audio_path = self.tts_engine.synthesize(payload.script, run_dir)
+            audio_path = self._tts_engine_for_payload(payload).synthesize(payload.script, run_dir)
             word_events = self.word_tracker.transcribe_words(audio_path, payload.script)
             save_json(run_dir / "whisper_word_events.json", [asdict(event) for event in word_events])
             self.word_tracker.release()
@@ -1471,6 +1782,7 @@ def main() -> None:
                 **asdict(config),
                 "keep_temp": bool(args.keep_temp),
                 "edge_voice": args.voice or config.edge_voice,
+                "tts_voice_overridden": bool(args.voice),
                 "edge_rate": args.tts_rate or config.edge_rate,
                 "edge_pitch": args.tts_pitch or config.edge_pitch,
                 "edge_volume": args.tts_volume or config.edge_volume,

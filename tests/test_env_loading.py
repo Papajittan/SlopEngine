@@ -185,6 +185,45 @@ class EnvLoadingTests(unittest.TestCase):
         self.assertIn("60 to 180 seconds", client.models.calls[-1]["contents"])
         self.assertEqual(payload.script, long_script)
 
+    def test_gemini_engine_preserves_topic_language_for_narration(self):
+        shorts_core = import_shorts_core_with_fakes()
+        config = shorts_core.PipelineConfig(
+            gemini_api_key="gemini-key",
+            pexels_api_key="pexels-key",
+        )
+
+        shorts_core.GeminiScriptEngine(config).synthesize(
+            "En 1930, un pueblo entero desaparecio de la noche a la manana."
+        )
+
+        prompt = shorts_core._fake_genai_client.instances[-1].models.calls[-1]["contents"]
+        self.assertIn("same language as the topic", prompt)
+        self.assertIn('"language"', prompt)
+        self.assertIn("BCP-47", prompt)
+        self.assertIn("Pexels", prompt)
+        self.assertIn("English", prompt)
+
+    def test_gemini_engine_returns_normalized_language_code(self):
+        shorts_core = import_shorts_core_with_fakes(
+            json.dumps(
+                {
+                    "language": "es_mx",
+                    "title": "Titulo",
+                    "script": "Narracion en espanol.",
+                    "keywords": ["test"],
+                    "pexels_query": "test video",
+                }
+            )
+        )
+        config = shorts_core.PipelineConfig(
+            gemini_api_key="gemini-key",
+            pexels_api_key="pexels-key",
+        )
+
+        payload = shorts_core.GeminiScriptEngine(config).synthesize("tema")
+
+        self.assertEqual(payload.language, "es-MX")
+
     def test_gemini_engine_retries_high_demand_errors_with_alternate_model(self):
         shorts_core = import_shorts_core_with_fakes()
 
@@ -366,6 +405,7 @@ class EnvLoadingTests(unittest.TestCase):
                 return shorts_core.ScriptPayload(
                     title="Test title",
                     script="test narration",
+                    language="en",
                     keywords=["test"],
                     pexels_query="test video",
                 )
@@ -416,6 +456,128 @@ class EnvLoadingTests(unittest.TestCase):
                 pipeline.run("memory test")
 
         self.assertEqual(events, ["script", "tts", "transcribe", "release", "backgrounds", "compile"])
+
+    def test_pipeline_auto_selects_tts_voice_from_generated_language(self):
+        shorts_core = import_shorts_core_with_fakes()
+        voices = []
+
+        class FakeScriptEngine:
+            def synthesize(self, topic):
+                return shorts_core.ScriptPayload(
+                    title="Titulo",
+                    script="Narracion en espanol.",
+                    language="es",
+                    keywords=["test"],
+                    pexels_query="test video",
+                )
+
+        class FakeTTSEngine:
+            def __init__(self, config):
+                voices.append(config.edge_voice)
+
+            def synthesize(self, text, work_dir):
+                audio_path = work_dir / "voice.mp3"
+                audio_path.write_bytes(b"fake audio")
+                return audio_path
+
+        class FakeWordTracker:
+            def transcribe_words(self, audio_path, script_text):
+                return [shorts_core.WordEvent(text="test", start_ms=0, end_ms=500)]
+
+            def release(self):
+                pass
+
+        class FakeVisualClient:
+            def fetch_backgrounds(self, query, duration, work_dir):
+                return []
+
+        class FakeCompiler:
+            def compile(self, audio_path, word_events, backgrounds, output_path):
+                output_path.write_bytes(b"fake mp4")
+                return output_path
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            config = shorts_core.PipelineConfig(
+                gemini_api_key="gemini-key",
+                pexels_api_key="pexels-key",
+                output_dir=tmp_path / "outputs",
+                temp_root=tmp_path / "temp",
+            )
+            pipeline = shorts_core.ShortsPipeline.__new__(shorts_core.ShortsPipeline)
+            pipeline.config = config
+            pipeline.script_engine = FakeScriptEngine()
+            pipeline.word_tracker = FakeWordTracker()
+            pipeline.visual_client = FakeVisualClient()
+            pipeline.compiler = FakeCompiler()
+
+            with patch.object(shorts_core, "EdgeTTSEngine", FakeTTSEngine):
+                with patch.object(shorts_core, "get_audio_duration", return_value=1.0):
+                    pipeline.run("tema")
+
+        self.assertEqual(voices, ["es-ES-ElviraNeural"])
+
+    def test_pipeline_keeps_explicit_tts_voice_override(self):
+        shorts_core = import_shorts_core_with_fakes()
+        voices = []
+
+        class FakeScriptEngine:
+            def synthesize(self, topic):
+                return shorts_core.ScriptPayload(
+                    title="Titulo",
+                    script="Narracion en espanol.",
+                    language="es",
+                    keywords=["test"],
+                    pexels_query="test video",
+                )
+
+        class FakeTTSEngine:
+            def __init__(self, config):
+                voices.append(config.edge_voice)
+
+            def synthesize(self, text, work_dir):
+                audio_path = work_dir / "voice.mp3"
+                audio_path.write_bytes(b"fake audio")
+                return audio_path
+
+        class FakeWordTracker:
+            def transcribe_words(self, audio_path, script_text):
+                return [shorts_core.WordEvent(text="test", start_ms=0, end_ms=500)]
+
+            def release(self):
+                pass
+
+        class FakeVisualClient:
+            def fetch_backgrounds(self, query, duration, work_dir):
+                return []
+
+        class FakeCompiler:
+            def compile(self, audio_path, word_events, backgrounds, output_path):
+                output_path.write_bytes(b"fake mp4")
+                return output_path
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            config = shorts_core.PipelineConfig(
+                gemini_api_key="gemini-key",
+                pexels_api_key="pexels-key",
+                edge_voice="es-MX-DaliaNeural",
+                output_dir=tmp_path / "outputs",
+                temp_root=tmp_path / "temp",
+                tts_voice_overridden=True,
+            )
+            pipeline = shorts_core.ShortsPipeline.__new__(shorts_core.ShortsPipeline)
+            pipeline.config = config
+            pipeline.script_engine = FakeScriptEngine()
+            pipeline.word_tracker = FakeWordTracker()
+            pipeline.visual_client = FakeVisualClient()
+            pipeline.compiler = FakeCompiler()
+
+            with patch.object(shorts_core, "EdgeTTSEngine", FakeTTSEngine):
+                with patch.object(shorts_core, "get_audio_duration", return_value=1.0):
+                    pipeline.run("tema")
+
+        self.assertEqual(voices, ["es-MX-DaliaNeural"])
 
     def test_default_caption_size_is_large_for_vertical_shorts(self):
         shorts_core = import_shorts_core_with_fakes()
