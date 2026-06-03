@@ -558,7 +558,9 @@ class GeminiScriptEngine:
 Return only valid JSON for a vertical short-form video narration.
 Topic: {topic}
 Rules:
-- Rewrite the topic into an engaging YouTube title, 35 to 60 characters.
+- Rewrite the topic into a curiosity-driven, high-click YouTube title, 35 to 60 characters.
+- Prefer concrete stakes, mystery, value, or surprise over summary-style wording.
+- Include one relevant emoji at the end when it naturally fits the topic.
 - Keep the title factual; do not add claims beyond the topic.
 - Do not use hashtags, markdown, or trailing punctuation in the title.
 - Write punchy spoken narration that takes about 60 to 180 seconds to read aloud.

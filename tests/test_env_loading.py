@@ -260,7 +260,10 @@ class EnvLoadingTests(unittest.TestCase):
         )
 
         client = shorts_core._fake_genai_client.instances[-1]
-        self.assertIn('"title"', client.models.calls[-1]["contents"])
+        prompt = client.models.calls[-1]["contents"]
+        self.assertIn('"title"', prompt)
+        self.assertIn("curiosity-driven", prompt)
+        self.assertIn("one relevant emoji", prompt)
         self.assertEqual(payload.title, title)
 
     def test_youtube_title_hard_caps_without_ellipsis(self):
