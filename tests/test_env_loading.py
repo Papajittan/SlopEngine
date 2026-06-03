@@ -356,6 +356,67 @@ class EnvLoadingTests(unittest.TestCase):
 
         self.assertEqual(calls, [("tiny", "cuda")])
 
+    def test_pipeline_releases_word_tracker_before_rendering(self):
+        shorts_core = import_shorts_core_with_fakes()
+        events = []
+
+        class FakeScriptEngine:
+            def synthesize(self, topic):
+                events.append("script")
+                return shorts_core.ScriptPayload(
+                    title="Test title",
+                    script="test narration",
+                    keywords=["test"],
+                    pexels_query="test video",
+                )
+
+        class FakeTTSEngine:
+            def synthesize(self, text, work_dir):
+                events.append("tts")
+                audio_path = work_dir / "voice.mp3"
+                audio_path.write_bytes(b"fake audio")
+                return audio_path
+
+        class FakeWordTracker:
+            def transcribe_words(self, audio_path, script_text):
+                events.append("transcribe")
+                return [shorts_core.WordEvent(text="test", start_ms=0, end_ms=500)]
+
+            def release(self):
+                events.append("release")
+
+        class FakeVisualClient:
+            def fetch_backgrounds(self, query, duration, work_dir):
+                events.append("backgrounds")
+                return []
+
+        class FakeCompiler:
+            def compile(self, audio_path, word_events, backgrounds, output_path):
+                events.append("compile")
+                output_path.write_bytes(b"fake mp4")
+                return output_path
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            config = shorts_core.PipelineConfig(
+                gemini_api_key="gemini-key",
+                pexels_api_key="pexels-key",
+                output_dir=tmp_path / "outputs",
+                temp_root=tmp_path / "temp",
+            )
+            pipeline = shorts_core.ShortsPipeline.__new__(shorts_core.ShortsPipeline)
+            pipeline.config = config
+            pipeline.script_engine = FakeScriptEngine()
+            pipeline.tts_engine = FakeTTSEngine()
+            pipeline.word_tracker = FakeWordTracker()
+            pipeline.visual_client = FakeVisualClient()
+            pipeline.compiler = FakeCompiler()
+
+            with patch.object(shorts_core, "get_audio_duration", return_value=1.0):
+                pipeline.run("memory test")
+
+        self.assertEqual(events, ["script", "tts", "transcribe", "release", "backgrounds", "compile"])
+
     def test_default_caption_size_is_large_for_vertical_shorts(self):
         shorts_core = import_shorts_core_with_fakes()
         config = shorts_core.PipelineConfig(

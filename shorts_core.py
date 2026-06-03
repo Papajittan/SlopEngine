@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import gc
 import json
 import math
 import os
@@ -808,6 +809,25 @@ class WhisperWordTracker:
             self._cpu_fallback_model = whisper.load_model(self.config.whisper_model, device="cpu")
         return self._cpu_fallback_model
 
+    def release(self) -> None:
+        self._model = None
+        self._cpu_fallback_model = None
+        gc.collect()
+
+        try:
+            import torch
+        except Exception:
+            return
+
+        cuda = getattr(torch, "cuda", None)
+        is_available = getattr(cuda, "is_available", None)
+        if cuda is None or not callable(is_available) or not is_available():
+            return
+
+        empty_cache = getattr(cuda, "empty_cache", None)
+        if callable(empty_cache):
+            empty_cache()
+
     def _is_cuda_word_timestamp_error(self, exc: Exception) -> bool:
         device = self.config.whisper_device.strip().lower()
         if device != "cuda" and not device.startswith("cuda:"):
@@ -1214,6 +1234,7 @@ class ShortsPipeline:
             audio_path = self.tts_engine.synthesize(payload.script, run_dir)
             word_events = self.word_tracker.transcribe_words(audio_path, payload.script)
             save_json(run_dir / "whisper_word_events.json", [asdict(event) for event in word_events])
+            self.word_tracker.release()
 
             duration = max(get_audio_duration(audio_path), max((event.end_ms for event in word_events), default=0) / 1000.0)
             backgrounds = self.visual_client.fetch_backgrounds(payload.pexels_query, duration, run_dir)
