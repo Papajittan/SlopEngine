@@ -69,6 +69,7 @@ Common optional keys:
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `GEMINI_MODEL` | `gemini-2.5-flash` | Gemini model for content generation |
+| `GEMINI_TIMEOUT_SECONDS` | `60` | Gemini content generation timeout |
 | `EDGE_TTS_VOICE` | `en-US-AriaNeural` | Edge TTS voice |
 | `EDGE_TTS_RATE` | `+7%` | Speech rate |
 | `EDGE_TTS_PITCH` | `-3Hz` | Speech pitch |
@@ -180,6 +181,7 @@ For caption or visual changes, render a short sample and inspect at least one fr
 ## Troubleshooting
 
 - `GEMINI_API_KEY is required` or `PEXELS_API_KEY is required`: set the missing key in `.env`.
+- `Gemini generate_content exceeded ... seconds`: increase `GEMINI_TIMEOUT_SECONDS` in `.env` or retry later if Gemini is slow.
 - Gemini high-demand warning: the script retries with another available generateContent model when possible.
 - YouTube dependency error: install the packages in `requirements.txt`; upload needs `google-api-python-client`, `google-auth-oauthlib`, and `google-auth-httplib2`.
 - Whisper CUDA or Triton timestamp errors on Python 3.14: use the Python 3.12 CUDA setup above, or set `WHISPER_DEVICE=cpu`.

@@ -82,6 +82,7 @@ ENV_CONFIG = {
 
 DEFAULT_CONFIG = {
     "gemini_model": "gemini-2.5-flash",
+    "gemini_timeout_seconds": 60,
     "edge_voice": "en-US-AriaNeural",
     "whisper_model": "base",
     "width": 1080,
@@ -412,6 +413,7 @@ class PipelineConfig:
     gemini_api_key: str
     pexels_api_key: str
     gemini_model: str = DEFAULT_CONFIG["gemini_model"]
+    gemini_timeout_seconds: int = DEFAULT_CONFIG["gemini_timeout_seconds"]
     edge_voice: str = DEFAULT_CONFIG["edge_voice"]
     tts_voice_overridden: bool = False
     edge_rate: str = "+7%"
@@ -564,6 +566,9 @@ def config_from_env() -> PipelineConfig:
         gemini_api_key=gemini_key,
         pexels_api_key=pexels_key,
         gemini_model=os.environ.get("GEMINI_MODEL", DEFAULT_CONFIG["gemini_model"]),
+        gemini_timeout_seconds=int(
+            os.environ.get("GEMINI_TIMEOUT_SECONDS", str(DEFAULT_CONFIG["gemini_timeout_seconds"]))
+        ),
         edge_voice=os.environ.get("EDGE_TTS_VOICE", DEFAULT_CONFIG["edge_voice"]),
         edge_rate=os.environ.get("EDGE_TTS_RATE", "+7%"),
         edge_volume=os.environ.get("EDGE_TTS_VOLUME", "+0%"),
@@ -961,13 +966,13 @@ JSON schema:
             raise
 
     def _generate_text_once(self, prompt: str) -> Any:
-        with AlarmTimeout(self.config.request_timeout_seconds, "Gemini generate_content"):
+        with AlarmTimeout(self.config.gemini_timeout_seconds, "Gemini generate_content"):
             if self.client is not None:
                 return self.client.models.generate_content(model=self.model_name, contents=prompt)
             if self.legacy_model is not None:
                 return self.legacy_model.generate_content(
                     prompt,
-                    request_options={"timeout": self.config.request_timeout_seconds},
+                    request_options={"timeout": self.config.gemini_timeout_seconds},
                 )
         raise PipelineError("Install google-genai or google-generativeai to use Gemini script generation.")
 

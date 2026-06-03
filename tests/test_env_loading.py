@@ -107,6 +107,7 @@ class EnvLoadingTests(unittest.TestCase):
                         "EDGE_TTS_RATE=+7%",
                         "EDGE_TTS_PITCH=-3Hz",
                         "EDGE_TTS_VOLUME=+0%",
+                        "GEMINI_TIMEOUT_SECONDS=75",
                         "WHISPER_MODEL=tiny",
                         "WHISPER_DEVICE=cpu",
                         "CAPTION_FONT_SIZE=220",
@@ -137,6 +138,7 @@ class EnvLoadingTests(unittest.TestCase):
             self.assertEqual(config.edge_rate, "+7%")
             self.assertEqual(config.edge_pitch, "-3Hz")
             self.assertEqual(config.edge_volume, "+0%")
+            self.assertEqual(config.gemini_timeout_seconds, 75)
             self.assertEqual(config.whisper_model, "tiny")
             self.assertEqual(config.whisper_device, "cpu")
             self.assertEqual(config.caption_font_size, 220)
@@ -223,6 +225,31 @@ class EnvLoadingTests(unittest.TestCase):
         payload = shorts_core.GeminiScriptEngine(config).synthesize("tema")
 
         self.assertEqual(payload.language, "es-MX")
+
+    def test_gemini_engine_uses_longer_generation_timeout_by_default(self):
+        shorts_core = import_shorts_core_with_fakes()
+
+        class FakeAlarmTimeout:
+            calls = []
+
+            def __init__(self, seconds, label):
+                self.__class__.calls.append({"seconds": seconds, "label": label})
+
+            def __enter__(self):
+                return None
+
+            def __exit__(self, exc_type, exc, traceback):
+                return None
+
+        config = shorts_core.PipelineConfig(
+            gemini_api_key="gemini-key",
+            pexels_api_key="pexels-key",
+        )
+
+        with patch.object(shorts_core, "AlarmTimeout", FakeAlarmTimeout):
+            shorts_core.GeminiScriptEngine(config).synthesize("test topic")
+
+        self.assertEqual(FakeAlarmTimeout.calls[-1], {"seconds": 60, "label": "Gemini generate_content"})
 
     def test_gemini_engine_retries_high_demand_errors_with_alternate_model(self):
         shorts_core = import_shorts_core_with_fakes()
