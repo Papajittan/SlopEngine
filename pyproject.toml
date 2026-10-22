@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "slopengine"
+version = "0.1.0"
+description = "Interactive terminal application for generating vertical videos"
+requires-python = ">=3.11"
+dynamic = ["dependencies"]
+
+[project.scripts]
+slopengine = "slopengine.app:main"
+
+[tool.setuptools]
+packages = ["slopengine"]
+py-modules = ["shorts_core"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.package-data]
+slopengine = ["*.tcss"]

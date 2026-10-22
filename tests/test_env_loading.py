@@ -710,10 +710,12 @@ class EnvLoadingTests(unittest.TestCase):
         class FakeCompositeVideoClip(FakeVideoClip):
             instances = []
 
-            def __init__(self, layers, size):
+            def __init__(self, layers, size, use_bgclip=False, bg_color=None):
                 super().__init__()
                 self.layers = layers
                 self.size = size
+                self.use_bgclip = use_bgclip
+                self.bg_color = bg_color
                 self.audio = None
                 self.__class__.instances.append(self)
 
@@ -753,6 +755,8 @@ class EnvLoadingTests(unittest.TestCase):
         self.assertEqual(mixed_audio.clips[1].volume, 0.18)
         self.assertEqual(mixed_audio.duration, 3.0)
         self.assertIs(FakeCompositeVideoClip.instances[-1].audio, mixed_audio)
+        self.assertFalse(FakeCompositeVideoClip.instances[-1].use_bgclip)
+        self.assertEqual(FakeCompositeVideoClip.instances[-1].bg_color, (0, 0, 0))
 
     def test_cli_help_allows_tts_percent_examples(self):
         shorts_core = import_shorts_core_with_fakes()

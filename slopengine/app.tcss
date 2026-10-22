@@ -1,0 +1,29 @@
+Screen { background: #0B1120; color: #E2E8F0; }
+Header { background: #17243B; color: #60A5FA; }
+Footer { background: #17243B; }
+TabbedContent { height: 1fr; }
+TabPane { padding: 0 1; }
+VerticalScroll { height: 1fr; padding: 1; }
+Label { margin-top: 1; color: #94A3B8; }
+Input, TextArea, Select { margin-bottom: 1; }
+Input:focus, TextArea:focus { border: tall #60A5FA; }
+Button { margin: 1 1 1 0; min-width: 12; }
+Button:focus { text-style: bold; border: tall #60A5FA; }
+.actions { height: auto; layout: horizontal; }
+.heading { color: #60A5FA; text-style: bold; margin-bottom: 1; }
+.panel { padding: 1 2; background: #17243B; border: round #31435E; height: auto; margin-bottom: 1; }
+.message { color: #FBBF24; height: auto; margin-bottom: 1; }
+Collapsible { background: #17243B; padding: 0 1; }
+Collapsible Contents { padding: 0 1; }
+#topic { height: 6; }
+#bulk-topics { height: 6; }
+#queue-table { height: 10; min-height: 5; }
+#queue-log { height: 12; min-height: 5; border: round #31435E; }
+#queue-detail { height: auto; }
+#monitor-log, #log-view { min-height: 8; height: 1fr; border: round #31435E; }
+#stage-list { height: auto; }
+#library-table { height: 10; min-height: 5; }
+#metadata { height: 1fr; min-height: 5; border: round #31435E; }
+#library-path { height: auto; }
+ConfirmExit { align: center middle; background: #0B1120 80%; }
+#confirm-dialog { width: 54; height: auto; padding: 2; background: #17243B; border: round #60A5FA; }

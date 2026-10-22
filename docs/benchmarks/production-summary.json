@@ -1,0 +1,36 @@
+{
+  "baseline": {
+    "mean_compile_seconds": 76.45611829599966,
+    "compile_range_seconds": [
+      76.00045401099942,
+      76.9117825809999
+    ],
+    "mean_write_videofile_seconds": 38.980601035,
+    "write_range_seconds": [
+      38.570564407,
+      39.390637663
+    ],
+    "write_effective_fps": 4.617681493376184
+  },
+  "optimized": {
+    "mean_compile_seconds": 17.801574270999936,
+    "compile_range_seconds": [
+      17.33889556200029,
+      18.264252979999583
+    ],
+    "mean_write_videofile_seconds": 13.783048084,
+    "write_range_seconds": [
+      13.348037508,
+      14.21805866
+    ],
+    "write_effective_fps": 13.059520572155032
+  },
+  "compile_speedup": 4.294907693672478,
+  "write_speedup": 2.828155339619723,
+  "relative_to_screenshot": 6.307483501763902,
+  "transcript": {
+    "script_words": 336,
+    "caption_words": 337,
+    "sequence_similarity": 0.9806835066864784
+  }
+}

@@ -3,6 +3,10 @@ client_secrets.json
 .youtube_token.json
 __pycache__/
 *.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
 .venv312/
 outputs/
 AGENTS.md

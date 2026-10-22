@@ -1,0 +1,2259 @@
+{
+  "label": "optimized",
+  "parameters": {
+    "label": "optimized",
+    "result": "docs/benchmarks/optimized.json",
+    "duration": 4,
+    "trials": 3,
+    "jobs": 1,
+    "threads": 11,
+    "preset": "medium",
+    "codec": "libx264",
+    "profile": true,
+    "compiler_source": null,
+    "keep_media": "/tmp/slopengine-after"
+  },
+  "hardware": {
+    "python": "3.12.15 (main, Oct 12 2026, 18:04:32) [GCC 16.2.1 20260810]",
+    "moviepy": "2.1.2",
+    "cpu_count": 12,
+    "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  12\nOn-line CPU(s) list:                     0-11\nVendor ID:                               AuthenticAMD\nModel name:                              AMD Ryzen 5 5600H with Radeon Graphics\nCPU family:                              25\nModel:                                   80\nThread(s) per core:                      2\nCore(s) per socket:                      6\nSocket(s):                               1\nStepping:                                0\nMicrocode version:                       0xa500012\nFrequency boost:                         enabled\nCPU(s) scaling MHz:                      75%\nCPU max MHz:                             4280.9849\nCPU min MHz:                             412.6250\nBogoMIPS:                                6588.05\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif v_spec_ctrl umip pku ospke vaes vpclmulqdq rdpid overflow_recov succor smca fsrm debug_swap\nVirtualization:                          AMD-V\nL1d cache:                               192 KiB (6 instances)\nL1i cache:                               192 KiB (6 instances)\nL2 cache:                                3 MiB (6 instances)\nL3 cache:                                16 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-11\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; Safe RET\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP always-on; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Mitigation; Clear CPU buffers\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Mitigation; IBPB before exit to userspace\n",
+    "meminfo": "MemTotal:       28575508 kB\nMemFree:         8368728 kB\nMemAvailable:   19133496 kB\nBuffers:          631904 kB\nCached:          9474516 kB\nSwapCached:            0 kB\nActive:          7123072 kB\nInactive:       10672544 kB\nActive(anon):    7123072 kB\nInactive(anon):        0 kB\nActive(file):          0 kB\nInactive(file): 10672544 kB\nUnevictable:      350108 kB\nMlocked:             372 kB\nSwapTotal:       9227464 kB\nSwapFree:        9227464 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:             10168 kB\nWriteback:             0 kB\nAnonPages:       7790508 kB\nMapped:          2110992 kB\nShmem:            138612 kB\nKReclaimable:     522752 kB\nSlab:             734392 kB\nSReclaimable:     522752 kB\nSUnreclaim:       211640 kB\nKernelStack:       30008 kB\nPageTables:        86248 kB\nSecPageTables:      4132 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    23515216 kB\nCommitted_AS:   26689768 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      142464 kB\nVmallocChunk:          0 kB\nPercpu:            16640 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   1153024 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:   1798144 kB\nFilePmdMapped:    456704 kB\nCmaTotal:              0 kB\nCmaFree:               0 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nGPUActive:        188884 kB\nGPUReclaim:        61248 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1499588 kB\nDirectMap2M:    23515136 kB\nDirectMap1G:     4194304 kB\n",
+    "ffmpeg": "ffmpeg version 7.0.2-static https://johnvansickle.com/ffmpeg/  Copyright (c) 2000-2024 the FFmpeg developers\nbuilt with gcc 8 (Debian 8.3.0-6)\nconfiguration: --enable-gpl --enable-version3 --enable-static --disable-debug --disable-ffplay --disable-indev=sndio --disable-outdev=sndio --cc=gcc --enable-fontconfig --enable-frei0r --enable-gnutls --enable-gmp --enable-libgme --enable-gray --enable-libaom --enable-libfribidi --enable-libass --enable-libvmaf --enable-libfreetype --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-librubberband --enable-libsoxr --enable-libspeex --enable-libsrt --enable-libvorbis --enable-libopus --enable-libtheora --enable-libvidstab --enable-libvo-amrwbenc --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libdav1d --enable-libxvid --enable-libzvbi --enable-libzimg\nlibavutil      59.  8.100 / 59.  8.100\nlibavcodec     61.  3.100 / 61.  3.100\nlibavformat    61.  1.100 / 61.  1.100\nlibavdevice    61.  1.100 / 61.  1.100\nlibavfilter    10.  1.100 / 10.  1.100\nlibswscale      8.  1.100 /  8.  1.100\nlibswresample   5.  1.100 /  5.  1.100\nlibpostproc    58.  1.100 / 58.  1.100\n",
+    "ffmpeg_binary": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2",
+    "encoders": "Encoders:\n V..... = Video\n A..... = Audio\n S..... = Subtitle\n .F.... = Frame-level multithreading\n ..S... = Slice-level multithreading\n ...X.. = Codec is experimental\n ....B. = Supports draw_horiz_band\n .....D = Supports direct rendering method 1\n ------\n V....D a64multi             Multicolor charset for Commodore 64 (codec a64_multi)\n V....D a64multi5            Multicolor charset for Commodore 64, extended with 5th color (colram) (codec a64_multi5)\n V....D alias_pix            Alias/Wavefront PIX image\n V..... amv                  AMV Video\n V....D apng                 APNG (Animated Portable Network Graphics) image\n V....D asv1                 ASUS V1\n V....D asv2                 ASUS V2\n V....D libaom-av1           libaom AV1 (codec av1)\n V....D avrp                 Avid 1:1 10-bit RGB Packer\n V..X.D avui                 Avid Meridien Uncompressed\n VF...D bitpacked            Bitpacked\n V....D bmp                  BMP (Windows and OS/2 bitmap)\n VF...D cfhd                 GoPro CineForm HD\n V....D cinepak              Cinepak\n V....D cljr                 Cirrus Logic AccuPak\n V.S..D vc2                  SMPTE VC-2 (codec dirac)\n VFS..D dnxhd                VC3/DNxHD\n V....D dpx                  DPX (Digital Picture Exchange) image\n VFS..D dvvideo              DV (Digital Video)\n VFS..D dxv                  Resolume DXV\n VF...D exr                  OpenEXR image\n V.S..D ffv1                 FFmpeg video codec #1\n VF...D ffvhuff              Huffyuv FFmpeg variant\n V....D fits                 Flexible Image Transport System\n V....D flashsv              Flash Screen Video\n V....D flashsv2             Flash Screen Video Version 2\n V..... flv                  FLV / Sorenson Spark / Sorenson H.263 (Flash Video) (codec flv1)\n V....D gif                  GIF (Graphics Interchange Format)\n V..... h261                 H.261\n V..... h263                 H.263 / H.263-1996\n V..... h263_v4l2m2m         V4L2 mem2mem H.263 encoder wrapper (codec h263)\n V.S... h263p                H.263+ / H.263-1998 / H.263 version 2\n V....D libx264              libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (codec h264)\n V....D libx264rgb           libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 RGB (codec h264)\n V..... h264_v4l2m2m         V4L2 mem2mem H.264 encoder wrapper (codec h264)\n VF...D hdr                  HDR (Radiance RGBE format) image\n V....D libx265              libx265 H.265 / HEVC (codec hevc)\n V..... hevc_v4l2m2m         V4L2 mem2mem HEVC encoder wrapper (codec hevc)\n VF...D huffyuv              Huffyuv / HuffYUV\n VF...D jpeg2000             JPEG 2000\n VF.... libopenjpeg          OpenJPEG JPEG 2000 (codec jpeg2000)\n VF...D jpegls               JPEG-LS\n VF...D ljpeg                Lossless JPEG\n VFS..D magicyuv             MagicYUV video\n VFS... mjpeg                MJPEG (Motion JPEG)\n V.S... mpeg1video           MPEG-1 video\n V.S... mpeg2video           MPEG-2 video\n V.S... mpeg4                MPEG-4 part 2\n V....D libxvid              libxvidcore MPEG-4 part 2 (codec mpeg4)\n V..... mpeg4_v4l2m2m        V4L2 mem2mem MPEG4 encoder wrapper (codec mpeg4)\n V..... msmpeg4v2            MPEG-4 part 2 Microsoft variant version 2\n V..... msmpeg4              MPEG-4 part 2 Microsoft variant version 3 (codec msmpeg4v3)\n V....D msrle                Microsoft RLE\n V..... msvideo1             Microsoft Video-1\n V....D pam                  PAM (Portable AnyMap) image\n V....D pbm                  PBM (Portable BitMap) image\n V....D pcx                  PC Paintbrush PCX image\n V....D pfm                  PFM (Portable FloatMap) image\n V....D pgm                  PGM (Portable GrayMap) image\n V....D pgmyuv               PGMYUV (Portable GrayMap YUV) image\n V....D phm                  PHM (Portable HalfFloatMap) image\n VF...D png                  PNG (Portable Network Graphics) image\n V....D ppm                  PPM (Portable PixelMap) image\n VF...D prores               Apple ProRes\n VF...D prores_aw            Apple ProRes (codec prores)\n VFS... prores_ks            Apple ProRes (iCodec Pro) (codec prores)\n VF...D qoi                  QOI (Quite OK Image format) image\n V....D qtrle                QuickTime Animation (RLE) video\n V....D r10k                 AJA Kona 10-bit RGB Codec\n V....D r210                 Uncompressed RGB 10-bit\n VF...D rawvideo             raw video\n V....D roqvideo             id RoQ video (codec roq)\n V....D rpza                 QuickTime video (RPZA)\n V..... rv10                 RealVideo 1.0\n V..... rv20                 RealVideo 2.0\n V....D sgi                  SGI image\n V....D smc                  QuickTime Graphics (SMC)\n V....D snow                 Snow\n V..... speedhq              NewTek SpeedHQ\n V....D sunrast              Sun Rasterfile image\n V....D svq1                 Sorenson Vector Quantizer 1 / Sorenson Video 1 / SVQ1\n V....D targa                Truevision Targa image\n V....D libtheora            libtheora Theora (codec theora)\n VF...D tiff                 TIFF image\n VF...D utvideo              Ut Video\n VF...D v210                 Uncompressed 4:2:2 10-bit\n V....D v308                 Uncompressed packed 4:4:4\n V....D v408                 Uncompressed packed QT 4:4:4:4\n V....D v410                 Uncompressed 4:4:4 10-bit\n V.S..D vbn                  Vizrt Binary Image\n V..... vnull                null video\n V....D libvpx               libvpx VP8 (codec vp8)\n V..... vp8_v4l2m2m          V4L2 mem2mem VP8 encoder wrapper (codec vp8)\n V....D libvpx-vp9           libvpx VP9 (codec vp9)\n VF...D wbmp                 WBMP (Wireless Application Protocol Bitmap) image\n V....D libwebp_anim         libwebp WebP image (codec webp)\n V....D libwebp              libwebp WebP image (codec webp)\n V..... wmv1                 Windows Media Video 7\n V..... wmv2                 Windows Media Video 8\n V..... wrapped_avframe      AVFrame to AVPacket passthrough\n V....D xbm                  XBM (X BitMap) image\n V....D xface                X-face image\n V....D xwd                  XWD (X Window Dump) image\n V....D y41p                 Uncompressed YUV 4:1:1 12-bit\n V....D yuv4                 Uncompressed packed 4:2:0\n VF...D zlib                 LCL (LossLess Codec Library) ZLIB\n V....D zmbv                 Zip Motion Blocks Video\n A....D aac                  AAC (Advanced Audio Coding)\n A....D ac3                  ATSC A/52A (AC-3)\n A....D ac3_fixed            ATSC A/52A (AC-3) (codec ac3)\n A....D adpcm_adx            SEGA CRI ADX ADPCM\n A....D adpcm_argo           ADPCM Argonaut Games\n A....D g722                 G.722 ADPCM (codec adpcm_g722)\n A....D g726                 G.726 ADPCM (codec adpcm_g726)\n A....D g726le               G.726 little endian ADPCM (\"right-justified\") (codec adpcm_g726le)\n A....D adpcm_ima_alp        ADPCM IMA High Voltage Software ALP\n A....D adpcm_ima_amv        ADPCM IMA AMV\n A....D adpcm_ima_apm        ADPCM IMA Ubisoft APM\n A....D adpcm_ima_qt         ADPCM IMA QuickTime\n A....D adpcm_ima_ssi        ADPCM IMA Simon & Schuster Interactive\n A....D adpcm_ima_wav        ADPCM IMA WAV\n A....D adpcm_ima_ws         ADPCM IMA Westwood\n A....D adpcm_ms             ADPCM Microsoft\n A....D adpcm_swf            ADPCM Shockwave Flash\n A....D adpcm_yamaha         ADPCM Yamaha\n A....D alac                 ALAC (Apple Lossless Audio Codec)\n A....D libopencore_amrnb    OpenCORE AMR-NB (Adaptive Multi-Rate Narrow-Band) (codec amr_nb)\n A....D libvo_amrwbenc       Android VisualOn AMR-WB (Adaptive Multi-Rate Wide-Band) (codec amr_wb)\n A..... anull                null audio\n A....D aptx                 aptX (Audio Processing Technology for Bluetooth)\n A....D aptx_hd              aptX HD (Audio Processing Technology for Bluetooth)\n A....D comfortnoise         RFC 3389 comfort noise generator\n A....D dfpwm                DFPWM1a audio\n A..X.D dca                  DCA (DTS Coherent Acoustics) (codec dts)\n A....D eac3                 ATSC A/52 E-AC-3\n A....D flac                 FLAC (Free Lossless Audio Codec)\n A....D g723_1               G.723.1\n A..X.D mlp                  MLP (Meridian Lossless Packing)\n A....D mp2                  MP2 (MPEG audio layer 2)\n A....D mp2fixed             MP2 fixed point (MPEG audio layer 2) (codec mp2)\n A....D libmp3lame           libmp3lame MP3 (MPEG audio layer 3) (codec mp3)\n A....D nellymoser           Nellymoser Asao\n A..X.D opus                 Opus\n A....D libopus              libopus Opus (codec opus)\n A....D pcm_alaw             PCM A-law / G.711 A-law\n A....D pcm_bluray           PCM signed 16|20|24-bit big-endian for Blu-ray media\n A....D pcm_dvd              PCM signed 16|20|24-bit big-endian for DVD media\n A....D pcm_f32be            PCM 32-bit floating point big-endian\n A....D pcm_f32le            PCM 32-bit floating point little-endian\n A....D pcm_f64be            PCM 64-bit floating point big-endian\n A....D pcm_f64le            PCM 64-bit floating point little-endian\n A....D pcm_mulaw            PCM mu-law / G.711 mu-law\n A....D pcm_s16be            PCM signed 16-bit big-endian\n A....D pcm_s16be_planar     PCM signed 16-bit big-endian planar\n A....D pcm_s16le            PCM signed 16-bit little-endian\n A....D pcm_s16le_planar     PCM signed 16-bit little-endian planar\n A....D pcm_s24be            PCM signed 24-bit big-endian\n A....D pcm_s24daud          PCM D-Cinema audio signed 24-bit\n A....D pcm_s24le            PCM signed 24-bit little-endian\n A....D pcm_s24le_planar     PCM signed 24-bit little-endian planar\n A....D pcm_s32be            PCM signed 32-bit big-endian\n A....D pcm_s32le            PCM signed 32-bit little-endian\n A....D pcm_s32le_planar     PCM signed 32-bit little-endian planar\n A....D pcm_s64be            PCM signed 64-bit big-endian\n A....D pcm_s64le            PCM signed 64-bit little-endian\n A....D pcm_s8               PCM signed 8-bit\n A....D pcm_s8_planar        PCM signed 8-bit planar\n A....D pcm_u16be            PCM unsigned 16-bit big-endian\n A....D pcm_u16le            PCM unsigned 16-bit little-endian\n A....D pcm_u24be            PCM unsigned 24-bit big-endian\n A....D pcm_u24le            PCM unsigned 24-bit little-endian\n A....D pcm_u32be            PCM unsigned 32-bit big-endian\n A....D pcm_u32le            PCM unsigned 32-bit little-endian\n A....D pcm_u8               PCM unsigned 8-bit\n A....D pcm_vidc             PCM Archimedes VIDC\n A....D real_144             RealAudio 1.0 (14.4K) (codec ra_144)\n A....D roq_dpcm             id RoQ DPCM\n A..X.D s302m                SMPTE 302M\n A....D sbc                  SBC (low-complexity subband codec)\n A..X.D sonic                Sonic\n A..X.D sonicls              Sonic lossless\n A....D libspeex             libspeex Speex (codec speex)\n A..X.D truehd               TrueHD\n A....D tta                  TTA (True Audio)\n A..X.D vorbis               Vorbis\n A....D libvorbis            libvorbis (codec vorbis)\n A....D wavpack              WavPack\n A....D wmav1                Windows Media Audio 1\n A....D wmav2                Windows Media Audio 2\n S..... ssa                  ASS (Advanced SubStation Alpha) subtitle (codec ass)\n S..... ass                  ASS (Advanced SubStation Alpha) subtitle\n S..... dvbsub               DVB subtitles (codec dvb_subtitle)\n S..... dvdsub               DVD subtitles (codec dvd_subtitle)\n S..... mov_text             3GPP Timed Text subtitle\n S..... srt                  SubRip subtitle (codec subrip)\n S..... subrip               SubRip subtitle\n S..... text                 Raw text subtitle\n S..... ttml                 TTML subtitle\n S..... webvtt               WebVTT subtitle\n S..... xsub                 DivX subtitles (XSUB)\n",
+    "compiler_sha256": "f9165309ba2709439078f86e2e08ea49232a61ab97db4444223b418f9ac1c720",
+    "gpu": "name, driver_version, memory.total [MiB]\nNVIDIA GeForce RTX 3050 Laptop GPU, 615.78.08, 4096 MiB\n"
+  },
+  "trials": [
+    {
+      "trial": 0,
+      "batch_wall_seconds": 16.060506751000503,
+      "peak": {
+        "cpu_percent": 514.4218586785314,
+        "rss_bytes": 1986064384,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "logical_read_bytes": 1552907457,
+        "logical_write_bytes": 1500729767
+      },
+      "gpu_samples": [
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51"
+      ],
+      "mean_cpu_percent": 149.46001358831668,
+      "failures": [],
+      "videos_per_hour": 224.1523294260771,
+      "renders": [
+        {
+          "wall_seconds": 12.216648364999855,
+          "effective_fps": 9.822661372802918,
+          "stages_seconds": {
+            "_build_background": 0.683822622999287,
+            "_word_layer": 0.1598640960000921,
+            "_build_audio": 0.05796052900041104,
+            "write_videofile_including_audio": 11.278659695999522
+          },
+          "output_bytes": 3806649,
+          "probe": {
+            "streams": [
+              {
+                "index": 0,
+                "codec_name": "h264",
+                "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+                "profile": "High",
+                "codec_type": "video",
+                "codec_tag_string": "avc1",
+                "codec_tag": "0x31637661",
+                "mime_codec_string": "avc1.640028",
+                "width": 1080,
+                "height": 1920,
+                "coded_width": 1088,
+                "coded_height": 1920,
+                "has_b_frames": 2,
+                "pix_fmt": "yuv420p",
+                "level": 40,
+                "chroma_location": "left",
+                "field_order": "progressive",
+                "refs": 4,
+                "is_avc": "true",
+                "nal_length_size": "4",
+                "id": "0x1",
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1",
+                "time_base": "1/15360",
+                "start_pts": 0,
+                "start_time": "0.000000",
+                "duration_ts": 61440,
+                "duration": "4.000000",
+                "bit_rate": "7473398",
+                "bits_per_raw_sample": "8",
+                "nb_frames": "120",
+                "nb_read_frames": "120",
+                "extradata_size": 46,
+                "disposition": {
+                  "default": 1,
+                  "dub": 0,
+                  "original": 0,
+                  "comment": 0,
+                  "lyrics": 0,
+                  "karaoke": 0,
+                  "forced": 0,
+                  "hearing_impaired": 0,
+                  "visual_impaired": 0,
+                  "clean_effects": 0,
+                  "attached_pic": 0,
+                  "timed_thumbnails": 0,
+                  "non_diegetic": 0,
+                  "captions": 0,
+                  "descriptions": 0,
+                  "metadata": 0,
+                  "dependent": 0,
+                  "still_image": 0,
+                  "multilayer": 0
+                },
+                "tags": {
+                  "language": "und",
+                  "handler_name": "VideoHandler",
+                  "encoder": "Lavc61.3.100 libx264"
+                }
+              },
+              {
+                "index": 1,
+                "codec_name": "aac",
+                "codec_long_name": "AAC (Advanced Audio Coding)",
+                "profile": "LC",
+                "codec_type": "audio",
+                "codec_tag_string": "mp4a",
+                "codec_tag": "0x6134706d",
+                "mime_codec_string": "mp4a.40.2",
+                "sample_fmt": "fltp",
+                "sample_rate": "44100",
+                "channels": 2,
+                "channel_layout": "stereo",
+                "bits_per_sample": 0,
+                "initial_padding": 1024,
+                "id": "0x2",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0",
+                "time_base": "1/44100",
+                "start_pts": 0,
+                "start_time": "0.000000",
+                "duration_ts": 176400,
+                "duration": "4.000000",
+                "bit_rate": "127863",
+                "nb_frames": "174",
+                "nb_read_frames": "173",
+                "extradata_size": 5,
+                "disposition": {
+                  "default": 1,
+                  "dub": 0,
+                  "original": 0,
+                  "comment": 0,
+                  "lyrics": 0,
+                  "karaoke": 0,
+                  "forced": 0,
+                  "hearing_impaired": 0,
+                  "visual_impaired": 0,
+                  "clean_effects": 0,
+                  "attached_pic": 0,
+                  "timed_thumbnails": 0,
+                  "non_diegetic": 0,
+                  "captions": 0,
+                  "descriptions": 0,
+                  "metadata": 0,
+                  "dependent": 0,
+                  "still_image": 0,
+                  "multilayer": 0
+                },
+                "tags": {
+                  "language": "und",
+                  "handler_name": "SoundHandler"
+                }
+              }
+            ],
+            "format": {
+              "filename": "/tmp/slopengine-bench-uplevanx/0.mp4",
+              "nb_streams": 2,
+              "nb_programs": 0,
+              "nb_stream_groups": 0,
+              "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+              "format_long_name": "QuickTime / MOV",
+              "start_time": "0.000000",
+              "duration": "4.000000",
+              "size": "3806649",
+              "bit_rate": "7613298",
+              "probe_score": 100,
+              "tags": {
+                "major_brand": "isom",
+                "minor_version": "512",
+                "compatible_brands": "isomiso2avc1mp41",
+                "encoder": "Lavf61.1.100"
+              }
+            }
+          },
+          "profile": [
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1187,
+              "function": "compile",
+              "calls": 1,
+              "self_seconds": 0.00012065900000000001,
+              "cumulative_seconds": 12.211568283
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/decorator/__init__.py",
+              "line": 244,
+              "function": "fun",
+              "calls": 3797,
+              "self_seconds": 0.0074304340000000005,
+              "cumulative_seconds": 12.056309716000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 89,
+              "function": "wrapper",
+              "calls": 3472,
+              "self_seconds": 0.009890667,
+              "cumulative_seconds": 12.044476704000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/scripts/benchmark_render.py",
+              "line": 90,
+              "function": "write",
+              "calls": 1,
+              "self_seconds": 1.092e-05,
+              "cumulative_seconds": 11.278665186000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 47,
+              "function": "requires_duration",
+              "calls": 94,
+              "self_seconds": 0.00010042,
+              "cumulative_seconds": 11.278514964000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 143,
+              "function": "wrapper",
+              "calls": 2,
+              "self_seconds": 1.6162000000000002e-05,
+              "cumulative_seconds": 11.278394778000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 19,
+              "function": "convert_masks_to_RGB",
+              "calls": 1,
+              "self_seconds": 2.865e-06,
+              "cumulative_seconds": 11.278303195000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 204,
+              "function": "write_videofile",
+              "calls": 1,
+              "self_seconds": 0.00104554,
+              "cumulative_seconds": 11.278165666000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 242,
+              "function": "ffmpeg_write_video",
+              "calls": 1,
+              "self_seconds": 0.003977871,
+              "cumulative_seconds": 11.126091431
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 66,
+              "function": "get_frame",
+              "calls": 1299,
+              "self_seconds": 0.004027887,
+              "cumulative_seconds": 9.647577539
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 510,
+              "function": "iter_frames",
+              "calls": 121,
+              "self_seconds": 0.002434461,
+              "cumulative_seconds": 9.144208046000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/compositing/CompositeVideoClip.py",
+              "line": 130,
+              "function": "frame_function",
+              "calls": 120,
+              "self_seconds": 0.058368482000000006,
+              "cumulative_seconds": 9.128603392
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 130,
+              "function": "<lambda>",
+              "calls": 426,
+              "self_seconds": 0.0009671050000000001,
+              "cumulative_seconds": 7.5447435380000005
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/compositing/CompositeVideoClip.py",
+              "line": 334,
+              "function": "frame_function",
+              "calls": 122,
+              "self_seconds": 0.0040568800000000006,
+              "cumulative_seconds": 7.285654712
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 680,
+              "function": "<lambda>",
+              "calls": 127,
+              "self_seconds": 0.000927218,
+              "cumulative_seconds": 7.260818267
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 186,
+              "function": "<lambda>",
+              "calls": 210,
+              "self_seconds": 0.000598853,
+              "cumulative_seconds": 7.171206627
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/fx/Resize.py",
+              "line": 148,
+              "function": "image_filter",
+              "calls": 64,
+              "self_seconds": 0.0019718830000000002,
+              "cumulative_seconds": 6.969134090000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/fx/Resize.py",
+              "line": 48,
+              "function": "resizer",
+              "calls": 64,
+              "self_seconds": 0.0018268070000000002,
+              "cumulative_seconds": 6.8792270900000005
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 2215,
+              "function": "resize",
+              "calls": 64,
+              "self_seconds": 0.001209872,
+              "cumulative_seconds": 6.0978679520000005
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'resize' of 'ImagingCore' objects>",
+              "calls": 64,
+              "self_seconds": 6.094716051000001,
+              "cumulative_seconds": 6.094716051000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 166,
+              "function": "write_frame",
+              "calls": 120,
+              "self_seconds": 0.001257929,
+              "cumulative_seconds": 1.7250953980000001
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'tobytes' of 'numpy.ndarray' objects>",
+              "calls": 209,
+              "self_seconds": 1.3518720850000001,
+              "cumulative_seconds": 1.3518720850000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 720,
+              "function": "compose_on",
+              "calls": 120,
+              "self_seconds": 0.059434501,
+              "cumulative_seconds": 1.22968308
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method numpy.array>",
+              "calls": 378,
+              "self_seconds": 0.37051645800000005,
+              "cumulative_seconds": 1.061418041
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/scripts/benchmark_render.py",
+              "line": 82,
+              "function": "timed",
+              "calls": 18,
+              "self_seconds": 0.00018378400000000001,
+              "cumulative_seconds": 0.901684298
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'read' of '_io.BufferedReader' objects>",
+              "calls": 124,
+              "self_seconds": 0.738920074,
+              "cumulative_seconds": 0.738920074
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 178,
+              "function": "read_frame",
+              "calls": 120,
+              "self_seconds": 0.0042289910000000005,
+              "cumulative_seconds": 0.7071550910000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 726,
+              "function": "__array_interface__",
+              "calls": 200,
+              "self_seconds": 0.0035861960000000003,
+              "cumulative_seconds": 0.690901583
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 764,
+              "function": "tobytes",
+              "calls": 200,
+              "self_seconds": 0.018312597,
+              "cumulative_seconds": 0.684481612
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1261,
+              "function": "_build_background",
+              "calls": 1,
+              "self_seconds": 0.00012735,
+              "cumulative_seconds": 0.6838145680000001
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'astype' of 'numpy.ndarray' objects>",
+              "calls": 692,
+              "self_seconds": 0.5711554950000001,
+              "cumulative_seconds": 0.5711554950000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/VideoFileClip.py",
+              "line": 140,
+              "function": "<lambda>",
+              "calls": 124,
+              "self_seconds": 0.000534655,
+              "cumulative_seconds": 0.542507466
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 234,
+              "function": "get_frame",
+              "calls": 124,
+              "self_seconds": 0.0009195410000000001,
+              "cumulative_seconds": 0.541972811
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3250,
+              "function": "fromarray",
+              "calls": 424,
+              "self_seconds": 0.012545949,
+              "cumulative_seconds": 0.416731766
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3166,
+              "function": "frombuffer",
+              "calls": 424,
+              "self_seconds": 0.00209806,
+              "cumulative_seconds": 0.40372721
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3120,
+              "function": "frombytes",
+              "calls": 304,
+              "self_seconds": 0.002598473,
+              "cumulative_seconds": 0.398151898
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'write' of '_io.BufferedWriter' objects>",
+              "calls": 209,
+              "self_seconds": 0.372684622,
+              "cumulative_seconds": 0.372684622
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method posix.waitpid>",
+              "calls": 15,
+              "self_seconds": 0.360957322,
+              "cumulative_seconds": 0.360957322
+            },
+            {
+              "file": "/usr/lib/python3.12/subprocess.py",
+              "line": 1259,
+              "function": "wait",
+              "calls": 15,
+              "self_seconds": 2.2403000000000002e-05,
+              "cumulative_seconds": 0.360513336
+            },
+            {
+              "file": "/usr/lib/python3.12/subprocess.py",
+              "line": 2021,
+              "function": "_wait",
+              "calls": 15,
+              "self_seconds": 7.022300000000001e-05,
+              "cumulative_seconds": 0.360490543
+            },
+            {
+              "file": "/usr/lib/python3.12/subprocess.py",
+              "line": 2008,
+              "function": "_try_wait",
+              "calls": 8,
+              "self_seconds": 2.0479e-05,
+              "cumulative_seconds": 0.360395666
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 11,
+              "function": "outplace",
+              "calls": 107,
+              "self_seconds": 0.00018335200000000002,
+              "cumulative_seconds": 0.35935441500000004
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 191,
+              "function": "with_effects",
+              "calls": 4,
+              "self_seconds": 2.7733e-05,
+              "cumulative_seconds": 0.35778644600000004
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 89,
+              "function": "transform",
+              "calls": 5,
+              "self_seconds": 3.2252e-05,
+              "cumulative_seconds": 0.35735499400000004
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 914,
+              "function": "with_updated_frame_function",
+              "calls": 3,
+              "self_seconds": 0.0039619270000000005,
+              "cumulative_seconds": 0.357022498
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'encode' of 'ImagingEncoder' objects>",
+              "calls": 36336,
+              "self_seconds": 0.33409911200000003,
+              "cumulative_seconds": 0.33409911200000003
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 83,
+              "function": "initialize",
+              "calls": 4,
+              "self_seconds": 0.000102133,
+              "cumulative_seconds": 0.321958896
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'join' of 'bytes' objects>",
+              "calls": 212,
+              "self_seconds": 0.318188672,
+              "cumulative_seconds": 0.318188672
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 931,
+              "function": "convert",
+              "calls": 360,
+              "self_seconds": 0.0018297900000000002,
+              "cumulative_seconds": 0.30939710800000003
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'convert' of 'ImagingCore' objects>",
+              "calls": 240,
+              "self_seconds": 0.299038541,
+              "cumulative_seconds": 0.299038541
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3587,
+              "function": "alpha_composite",
+              "calls": 120,
+              "self_seconds": 0.0007326300000000001,
+              "cumulative_seconds": 0.288120209
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method PIL._imaging.alpha_composite>",
+              "calls": 120,
+              "self_seconds": 0.284652511,
+              "cumulative_seconds": 0.284652511
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3068,
+              "function": "new",
+              "calls": 560,
+              "self_seconds": 0.003981111,
+              "cumulative_seconds": 0.26758933900000004
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method PIL._imaging.fill>",
+              "calls": 592,
+              "self_seconds": 0.256352955,
+              "cumulative_seconds": 0.256352955
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 238,
+              "function": "__exit__",
+              "calls": 1,
+              "self_seconds": 5.31e-06,
+              "cumulative_seconds": 0.252326785
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 223,
+              "function": "close",
+              "calls": 1,
+              "self_seconds": 2.1581000000000002e-05,
+              "cumulative_seconds": 0.252321475
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1290,
+              "function": "_fit_vertical",
+              "calls": 2,
+              "self_seconds": 5.6897e-05,
+              "cumulative_seconds": 0.244178672
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 675,
+              "function": "image_transform",
+              "calls": 2,
+              "self_seconds": 1.6032e-05,
+              "cumulative_seconds": 0.243863711
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 847,
+              "function": "frombytes",
+              "calls": 304,
+              "self_seconds": 0.002060483,
+              "cumulative_seconds": 0.231603041
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'decode' of 'ImagingDecoder' objects>",
+              "calls": 304,
+              "self_seconds": 0.22356877200000003,
+              "cumulative_seconds": 0.22356877200000003
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/VideoFileClip.py",
+              "line": 87,
+              "function": "__init__",
+              "calls": 2,
+              "self_seconds": 6.8118e-05,
+              "cumulative_seconds": 0.19294919300000002
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 21,
+              "function": "__init__",
+              "calls": 2,
+              "self_seconds": 4.0735e-05,
+              "cumulative_seconds": 0.19286388200000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1311,
+              "function": "_word_layer",
+              "calls": 16,
+              "self_seconds": 0.000437861,
+              "cumulative_seconds": 0.159703503
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/audio/AudioClip.py",
+              "line": 182,
+              "function": "write_audiofile",
+              "calls": 1,
+              "self_seconds": 4.418e-06,
+              "cumulative_seconds": 0.150815095
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/audio/io/ffmpeg_audiowriter.py",
+              "line": 186,
+              "function": "ffmpeg_audiowrite",
+              "calls": 1,
+              "self_seconds": 0.00010665200000000001,
+              "cumulative_seconds": 0.15074662700000002
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 567,
+              "function": "clip_resized",
+              "calls": 1,
+              "self_seconds": 5.3500000000000004e-06,
+              "cumulative_seconds": 0.13351975000000002
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 1022,
+              "function": "resized",
+              "calls": 1,
+              "self_seconds": 1.3184000000000001e-05,
+              "cumulative_seconds": 0.133513207
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/fx/Resize.py",
+              "line": 55,
+              "function": "apply",
+              "calls": 1,
+              "self_seconds": 1.4657e-05,
+              "cumulative_seconds": 0.133389895
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/compositing/CompositeVideoClip.py",
+              "line": 268,
+              "function": "concatenate_videoclips",
+              "calls": 1,
+              "self_seconds": 0.000185328,
+              "cumulative_seconds": 0.13212552500000002
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 105,
+              "function": "__init__",
+              "calls": 36,
+              "self_seconds": 0.001767799,
+              "cumulative_seconds": 0.132068189
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "trial": 1,
+      "batch_wall_seconds": 16.80366281700026,
+      "peak": {
+        "cpu_percent": 399.8235038915652,
+        "rss_bytes": 1987203072,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "logical_read_bytes": 1552907509,
+        "logical_write_bytes": 1500729730
+      },
+      "gpu_samples": [
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51"
+      ],
+      "mean_cpu_percent": 146.37554619022632,
+      "failures": [],
+      "videos_per_hour": 214.23900486493227,
+      "renders": [
+        {
+          "wall_seconds": 12.633425970000644,
+          "effective_fps": 9.498611088152352,
+          "stages_seconds": {
+            "_build_background": 0.6912561989993264,
+            "_word_layer": 0.16085253300025215,
+            "_build_audio": 0.05826811299994006,
+            "write_videofile_including_audio": 11.68841090800015
+          },
+          "output_bytes": 3806649,
+          "probe": {
+            "streams": [
+              {
+                "index": 0,
+                "codec_name": "h264",
+                "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+                "profile": "High",
+                "codec_type": "video",
+                "codec_tag_string": "avc1",
+                "codec_tag": "0x31637661",
+                "mime_codec_string": "avc1.640028",
+                "width": 1080,
+                "height": 1920,
+                "coded_width": 1088,
+                "coded_height": 1920,
+                "has_b_frames": 2,
+                "pix_fmt": "yuv420p",
+                "level": 40,
+                "chroma_location": "left",
+                "field_order": "progressive",
+                "refs": 4,
+                "is_avc": "true",
+                "nal_length_size": "4",
+                "id": "0x1",
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1",
+                "time_base": "1/15360",
+                "start_pts": 0,
+                "start_time": "0.000000",
+                "duration_ts": 61440,
+                "duration": "4.000000",
+                "bit_rate": "7473398",
+                "bits_per_raw_sample": "8",
+                "nb_frames": "120",
+                "nb_read_frames": "120",
+                "extradata_size": 46,
+                "disposition": {
+                  "default": 1,
+                  "dub": 0,
+                  "original": 0,
+                  "comment": 0,
+                  "lyrics": 0,
+                  "karaoke": 0,
+                  "forced": 0,
+                  "hearing_impaired": 0,
+                  "visual_impaired": 0,
+                  "clean_effects": 0,
+                  "attached_pic": 0,
+                  "timed_thumbnails": 0,
+                  "non_diegetic": 0,
+                  "captions": 0,
+                  "descriptions": 0,
+                  "metadata": 0,
+                  "dependent": 0,
+                  "still_image": 0,
+                  "multilayer": 0
+                },
+                "tags": {
+                  "language": "und",
+                  "handler_name": "VideoHandler",
+                  "encoder": "Lavc61.3.100 libx264"
+                }
+              },
+              {
+                "index": 1,
+                "codec_name": "aac",
+                "codec_long_name": "AAC (Advanced Audio Coding)",
+                "profile": "LC",
+                "codec_type": "audio",
+                "codec_tag_string": "mp4a",
+                "codec_tag": "0x6134706d",
+                "mime_codec_string": "mp4a.40.2",
+                "sample_fmt": "fltp",
+                "sample_rate": "44100",
+                "channels": 2,
+                "channel_layout": "stereo",
+                "bits_per_sample": 0,
+                "initial_padding": 1024,
+                "id": "0x2",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0",
+                "time_base": "1/44100",
+                "start_pts": 0,
+                "start_time": "0.000000",
+                "duration_ts": 176400,
+                "duration": "4.000000",
+                "bit_rate": "127863",
+                "nb_frames": "174",
+                "nb_read_frames": "173",
+                "extradata_size": 5,
+                "disposition": {
+                  "default": 1,
+                  "dub": 0,
+                  "original": 0,
+                  "comment": 0,
+                  "lyrics": 0,
+                  "karaoke": 0,
+                  "forced": 0,
+                  "hearing_impaired": 0,
+                  "visual_impaired": 0,
+                  "clean_effects": 0,
+                  "attached_pic": 0,
+                  "timed_thumbnails": 0,
+                  "non_diegetic": 0,
+                  "captions": 0,
+                  "descriptions": 0,
+                  "metadata": 0,
+                  "dependent": 0,
+                  "still_image": 0,
+                  "multilayer": 0
+                },
+                "tags": {
+                  "language": "und",
+                  "handler_name": "SoundHandler"
+                }
+              }
+            ],
+            "format": {
+              "filename": "/tmp/slopengine-bench-uplevanx/0.mp4",
+              "nb_streams": 2,
+              "nb_programs": 0,
+              "nb_stream_groups": 0,
+              "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+              "format_long_name": "QuickTime / MOV",
+              "start_time": "0.000000",
+              "duration": "4.000000",
+              "size": "3806649",
+              "bit_rate": "7613298",
+              "probe_score": 100,
+              "tags": {
+                "major_brand": "isom",
+                "minor_version": "512",
+                "compatible_brands": "isomiso2avc1mp41",
+                "encoder": "Lavf61.1.100"
+              }
+            }
+          },
+          "profile": [
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1187,
+              "function": "compile",
+              "calls": 1,
+              "self_seconds": 0.00012003900000000001,
+              "cumulative_seconds": 12.629802046
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/decorator/__init__.py",
+              "line": 244,
+              "function": "fun",
+              "calls": 3797,
+              "self_seconds": 0.008123729,
+              "cumulative_seconds": 12.473427901
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 89,
+              "function": "wrapper",
+              "calls": 3472,
+              "self_seconds": 0.010056533000000001,
+              "cumulative_seconds": 12.461496633000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/scripts/benchmark_render.py",
+              "line": 90,
+              "function": "write",
+              "calls": 1,
+              "self_seconds": 1.0680000000000001e-05,
+              "cumulative_seconds": 11.688416658000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 47,
+              "function": "requires_duration",
+              "calls": 94,
+              "self_seconds": 0.00012910300000000001,
+              "cumulative_seconds": 11.688299258
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 143,
+              "function": "wrapper",
+              "calls": 2,
+              "self_seconds": 1.2755e-05,
+              "cumulative_seconds": 11.688223014
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 19,
+              "function": "convert_masks_to_RGB",
+              "calls": 1,
+              "self_seconds": 2.6650000000000003e-06,
+              "cumulative_seconds": 11.688145969
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 204,
+              "function": "write_videofile",
+              "calls": 1,
+              "self_seconds": 0.0012827960000000001,
+              "cumulative_seconds": 11.688064236
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 242,
+              "function": "ffmpeg_write_video",
+              "calls": 1,
+              "self_seconds": 0.007087723000000001,
+              "cumulative_seconds": 11.532391965
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 66,
+              "function": "get_frame",
+              "calls": 1299,
+              "self_seconds": 0.0042890210000000005,
+              "cumulative_seconds": 9.947682642
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 510,
+              "function": "iter_frames",
+              "calls": 121,
+              "self_seconds": 0.002728676,
+              "cumulative_seconds": 9.438662301
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/compositing/CompositeVideoClip.py",
+              "line": 130,
+              "function": "frame_function",
+              "calls": 120,
+              "self_seconds": 0.062095130000000005,
+              "cumulative_seconds": 9.419695364
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 130,
+              "function": "<lambda>",
+              "calls": 426,
+              "self_seconds": 0.0010026710000000001,
+              "cumulative_seconds": 7.690822252
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/compositing/CompositeVideoClip.py",
+              "line": 334,
+              "function": "frame_function",
+              "calls": 122,
+              "self_seconds": 0.0039411690000000004,
+              "cumulative_seconds": 7.424988124
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 680,
+              "function": "<lambda>",
+              "calls": 127,
+              "self_seconds": 0.00067022,
+              "cumulative_seconds": 7.388160411
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 186,
+              "function": "<lambda>",
+              "calls": 210,
+              "self_seconds": 0.000661757,
+              "cumulative_seconds": 7.315217455000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/fx/Resize.py",
+              "line": 148,
+              "function": "image_filter",
+              "calls": 64,
+              "self_seconds": 0.002108137,
+              "cumulative_seconds": 7.079342632
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/fx/Resize.py",
+              "line": 48,
+              "function": "resizer",
+              "calls": 64,
+              "self_seconds": 0.002113222,
+              "cumulative_seconds": 6.98213518
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 2215,
+              "function": "resize",
+              "calls": 64,
+              "self_seconds": 0.001148715,
+              "cumulative_seconds": 6.15832401
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'resize' of 'ImagingCore' objects>",
+              "calls": 64,
+              "self_seconds": 6.1552251810000005,
+              "cumulative_seconds": 6.1552251810000005
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 166,
+              "function": "write_frame",
+              "calls": 120,
+              "self_seconds": 0.0014758540000000002,
+              "cumulative_seconds": 1.7886299460000001
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'tobytes' of 'numpy.ndarray' objects>",
+              "calls": 209,
+              "self_seconds": 1.3964752120000001,
+              "cumulative_seconds": 1.3964752120000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 720,
+              "function": "compose_on",
+              "calls": 120,
+              "self_seconds": 0.068218917,
+              "cumulative_seconds": 1.293404446
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method numpy.array>",
+              "calls": 378,
+              "self_seconds": 0.39503588300000003,
+              "cumulative_seconds": 1.144079623
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/scripts/benchmark_render.py",
+              "line": 82,
+              "function": "timed",
+              "calls": 18,
+              "self_seconds": 0.00020354900000000003,
+              "cumulative_seconds": 0.9104188120000001
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'read' of '_io.BufferedReader' objects>",
+              "calls": 124,
+              "self_seconds": 0.7695019700000001,
+              "cumulative_seconds": 0.7695019700000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 726,
+              "function": "__array_interface__",
+              "calls": 200,
+              "self_seconds": 0.003893226,
+              "cumulative_seconds": 0.7490437400000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 764,
+              "function": "tobytes",
+              "calls": 200,
+              "self_seconds": 0.018941622,
+              "cumulative_seconds": 0.742117557
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 178,
+              "function": "read_frame",
+              "calls": 120,
+              "self_seconds": 0.004637635,
+              "cumulative_seconds": 0.740981993
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1261,
+              "function": "_build_background",
+              "calls": 1,
+              "self_seconds": 0.000149602,
+              "cumulative_seconds": 0.691247943
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'astype' of 'numpy.ndarray' objects>",
+              "calls": 692,
+              "self_seconds": 0.600784965,
+              "cumulative_seconds": 0.600784965
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/VideoFileClip.py",
+              "line": 140,
+              "function": "<lambda>",
+              "calls": 124,
+              "self_seconds": 0.0005825520000000001,
+              "cumulative_seconds": 0.577205794
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 234,
+              "function": "get_frame",
+              "calls": 124,
+              "self_seconds": 0.001001388,
+              "cumulative_seconds": 0.576623242
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3250,
+              "function": "fromarray",
+              "calls": 424,
+              "self_seconds": 0.013811592000000001,
+              "cumulative_seconds": 0.454061875
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3166,
+              "function": "frombuffer",
+              "calls": 424,
+              "self_seconds": 0.0023360100000000003,
+              "cumulative_seconds": 0.43976166800000005
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3120,
+              "function": "frombytes",
+              "calls": 304,
+              "self_seconds": 0.00266276,
+              "cumulative_seconds": 0.433622379
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method posix.waitpid>",
+              "calls": 15,
+              "self_seconds": 0.405223213,
+              "cumulative_seconds": 0.405223213
+            },
+            {
+              "file": "/usr/lib/python3.12/subprocess.py",
+              "line": 1259,
+              "function": "wait",
+              "calls": 15,
+              "self_seconds": 2.7175000000000003e-05,
+              "cumulative_seconds": 0.40489229400000004
+            },
+            {
+              "file": "/usr/lib/python3.12/subprocess.py",
+              "line": 2021,
+              "function": "_wait",
+              "calls": 15,
+              "self_seconds": 7.524300000000001e-05,
+              "cumulative_seconds": 0.404864798
+            },
+            {
+              "file": "/usr/lib/python3.12/subprocess.py",
+              "line": 2008,
+              "function": "_try_wait",
+              "calls": 8,
+              "self_seconds": 1.9085e-05,
+              "cumulative_seconds": 0.40476420900000004
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'write' of '_io.BufferedWriter' objects>",
+              "calls": 209,
+              "self_seconds": 0.39147773900000005,
+              "cumulative_seconds": 0.39147773900000005
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 11,
+              "function": "outplace",
+              "calls": 107,
+              "self_seconds": 0.000186037,
+              "cumulative_seconds": 0.36887436
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 191,
+              "function": "with_effects",
+              "calls": 4,
+              "self_seconds": 3.0305000000000002e-05,
+              "cumulative_seconds": 0.36733606
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 89,
+              "function": "transform",
+              "calls": 5,
+              "self_seconds": 2.7644e-05,
+              "cumulative_seconds": 0.366889721
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 914,
+              "function": "with_updated_frame_function",
+              "calls": 3,
+              "self_seconds": 0.004400323,
+              "cumulative_seconds": 0.36655913700000003
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'join' of 'bytes' objects>",
+              "calls": 212,
+              "self_seconds": 0.35724329800000004,
+              "cumulative_seconds": 0.35724329800000004
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'encode' of 'ImagingEncoder' objects>",
+              "calls": 36336,
+              "self_seconds": 0.351511579,
+              "cumulative_seconds": 0.351511579
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 931,
+              "function": "convert",
+              "calls": 360,
+              "self_seconds": 0.002125461,
+              "cumulative_seconds": 0.327432298
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 83,
+              "function": "initialize",
+              "calls": 4,
+              "self_seconds": 0.000101829,
+              "cumulative_seconds": 0.326343182
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'convert' of 'ImagingCore' objects>",
+              "calls": 240,
+              "self_seconds": 0.315770469,
+              "cumulative_seconds": 0.315770469
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3587,
+              "function": "alpha_composite",
+              "calls": 120,
+              "self_seconds": 0.0007441780000000001,
+              "cumulative_seconds": 0.29863406600000003
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 238,
+              "function": "__exit__",
+              "calls": 1,
+              "self_seconds": 6.082e-06,
+              "cumulative_seconds": 0.297528715
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 223,
+              "function": "close",
+              "calls": 1,
+              "self_seconds": 2.2412e-05,
+              "cumulative_seconds": 0.29752263300000004
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method PIL._imaging.alpha_composite>",
+              "calls": 120,
+              "self_seconds": 0.294902591,
+              "cumulative_seconds": 0.294902591
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3068,
+              "function": "new",
+              "calls": 560,
+              "self_seconds": 0.004317978,
+              "cumulative_seconds": 0.278831952
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method PIL._imaging.fill>",
+              "calls": 592,
+              "self_seconds": 0.266602445,
+              "cumulative_seconds": 0.266602445
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 847,
+              "function": "frombytes",
+              "calls": 304,
+              "self_seconds": 0.002262951,
+              "cumulative_seconds": 0.259517912
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'decode' of 'ImagingDecoder' objects>",
+              "calls": 304,
+              "self_seconds": 0.250678265,
+              "cumulative_seconds": 0.250678265
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1290,
+              "function": "_fit_vertical",
+              "calls": 2,
+              "self_seconds": 3.9523e-05,
+              "cumulative_seconds": 0.250195067
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 675,
+              "function": "image_transform",
+              "calls": 2,
+              "self_seconds": 7.934e-06,
+              "cumulative_seconds": 0.249874123
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/VideoFileClip.py",
+              "line": 87,
+              "function": "__init__",
+              "calls": 2,
+              "self_seconds": 9.770400000000001e-05,
+              "cumulative_seconds": 0.19472315
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 21,
+              "function": "__init__",
+              "calls": 2,
+              "self_seconds": 4.2656e-05,
+              "cumulative_seconds": 0.19461122
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1311,
+              "function": "_word_layer",
+              "calls": 16,
+              "self_seconds": 0.00048044600000000004,
+              "cumulative_seconds": 0.16067441500000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/audio/AudioClip.py",
+              "line": 182,
+              "function": "write_audiofile",
+              "calls": 1,
+              "self_seconds": 3.938e-06,
+              "cumulative_seconds": 0.15420176200000002
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/audio/io/ffmpeg_audiowriter.py",
+              "line": 186,
+              "function": "ffmpeg_audiowrite",
+              "calls": 1,
+              "self_seconds": 0.000125155,
+              "cumulative_seconds": 0.154146728
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 567,
+              "function": "clip_resized",
+              "calls": 1,
+              "self_seconds": 3.1770000000000002e-06,
+              "cumulative_seconds": 0.13701289
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 1022,
+              "function": "resized",
+              "calls": 1,
+              "self_seconds": 1.4859000000000001e-05,
+              "cumulative_seconds": 0.137008872
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/fx/Resize.py",
+              "line": 55,
+              "function": "apply",
+              "calls": 1,
+              "self_seconds": 1.3496000000000001e-05,
+              "cumulative_seconds": 0.136858439
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/compositing/CompositeVideoClip.py",
+              "line": 268,
+              "function": "concatenate_videoclips",
+              "calls": 1,
+              "self_seconds": 0.000262715,
+              "cumulative_seconds": 0.128196696
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 105,
+              "function": "__init__",
+              "calls": 36,
+              "self_seconds": 0.001779084,
+              "cumulative_seconds": 0.128030196
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "trial": 2,
+      "batch_wall_seconds": 16.346998588000133,
+      "peak": {
+        "cpu_percent": 562.9051699054722,
+        "rss_bytes": 2001227776,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "logical_read_bytes": 1552907606,
+        "logical_write_bytes": 1500729740
+      },
+      "gpu_samples": [
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51",
+        "0, 51"
+      ],
+      "mean_cpu_percent": 152.98474271976545,
+      "failures": [],
+      "videos_per_hour": 220.22391331474498,
+      "renders": [
+        {
+          "wall_seconds": 12.421691655000359,
+          "effective_fps": 9.660519946306502,
+          "stages_seconds": {
+            "_build_background": 0.700946978000502,
+            "_word_layer": 0.1702555609999763,
+            "_build_audio": 0.059991441999954986,
+            "write_videofile_including_audio": 11.453168072000153
+          },
+          "output_bytes": 3806649,
+          "probe": {
+            "streams": [
+              {
+                "index": 0,
+                "codec_name": "h264",
+                "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+                "profile": "High",
+                "codec_type": "video",
+                "codec_tag_string": "avc1",
+                "codec_tag": "0x31637661",
+                "mime_codec_string": "avc1.640028",
+                "width": 1080,
+                "height": 1920,
+                "coded_width": 1088,
+                "coded_height": 1920,
+                "has_b_frames": 2,
+                "pix_fmt": "yuv420p",
+                "level": 40,
+                "chroma_location": "left",
+                "field_order": "progressive",
+                "refs": 4,
+                "is_avc": "true",
+                "nal_length_size": "4",
+                "id": "0x1",
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1",
+                "time_base": "1/15360",
+                "start_pts": 0,
+                "start_time": "0.000000",
+                "duration_ts": 61440,
+                "duration": "4.000000",
+                "bit_rate": "7473398",
+                "bits_per_raw_sample": "8",
+                "nb_frames": "120",
+                "nb_read_frames": "120",
+                "extradata_size": 46,
+                "disposition": {
+                  "default": 1,
+                  "dub": 0,
+                  "original": 0,
+                  "comment": 0,
+                  "lyrics": 0,
+                  "karaoke": 0,
+                  "forced": 0,
+                  "hearing_impaired": 0,
+                  "visual_impaired": 0,
+                  "clean_effects": 0,
+                  "attached_pic": 0,
+                  "timed_thumbnails": 0,
+                  "non_diegetic": 0,
+                  "captions": 0,
+                  "descriptions": 0,
+                  "metadata": 0,
+                  "dependent": 0,
+                  "still_image": 0,
+                  "multilayer": 0
+                },
+                "tags": {
+                  "language": "und",
+                  "handler_name": "VideoHandler",
+                  "encoder": "Lavc61.3.100 libx264"
+                }
+              },
+              {
+                "index": 1,
+                "codec_name": "aac",
+                "codec_long_name": "AAC (Advanced Audio Coding)",
+                "profile": "LC",
+                "codec_type": "audio",
+                "codec_tag_string": "mp4a",
+                "codec_tag": "0x6134706d",
+                "mime_codec_string": "mp4a.40.2",
+                "sample_fmt": "fltp",
+                "sample_rate": "44100",
+                "channels": 2,
+                "channel_layout": "stereo",
+                "bits_per_sample": 0,
+                "initial_padding": 1024,
+                "id": "0x2",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0",
+                "time_base": "1/44100",
+                "start_pts": 0,
+                "start_time": "0.000000",
+                "duration_ts": 176400,
+                "duration": "4.000000",
+                "bit_rate": "127863",
+                "nb_frames": "174",
+                "nb_read_frames": "173",
+                "extradata_size": 5,
+                "disposition": {
+                  "default": 1,
+                  "dub": 0,
+                  "original": 0,
+                  "comment": 0,
+                  "lyrics": 0,
+                  "karaoke": 0,
+                  "forced": 0,
+                  "hearing_impaired": 0,
+                  "visual_impaired": 0,
+                  "clean_effects": 0,
+                  "attached_pic": 0,
+                  "timed_thumbnails": 0,
+                  "non_diegetic": 0,
+                  "captions": 0,
+                  "descriptions": 0,
+                  "metadata": 0,
+                  "dependent": 0,
+                  "still_image": 0,
+                  "multilayer": 0
+                },
+                "tags": {
+                  "language": "und",
+                  "handler_name": "SoundHandler"
+                }
+              }
+            ],
+            "format": {
+              "filename": "/tmp/slopengine-bench-uplevanx/0.mp4",
+              "nb_streams": 2,
+              "nb_programs": 0,
+              "nb_stream_groups": 0,
+              "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+              "format_long_name": "QuickTime / MOV",
+              "start_time": "0.000000",
+              "duration": "4.000000",
+              "size": "3806649",
+              "bit_rate": "7613298",
+              "probe_score": 100,
+              "tags": {
+                "major_brand": "isom",
+                "minor_version": "512",
+                "compatible_brands": "isomiso2avc1mp41",
+                "encoder": "Lavf61.1.100"
+              }
+            }
+          },
+          "profile": [
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1187,
+              "function": "compile",
+              "calls": 1,
+              "self_seconds": 0.00011596600000000001,
+              "cumulative_seconds": 12.415247409000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/decorator/__init__.py",
+              "line": 244,
+              "function": "fun",
+              "calls": 3797,
+              "self_seconds": 0.0075880340000000004,
+              "cumulative_seconds": 12.25030087
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 89,
+              "function": "wrapper",
+              "calls": 3472,
+              "self_seconds": 0.009727585,
+              "cumulative_seconds": 12.238252257000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/scripts/benchmark_render.py",
+              "line": 90,
+              "function": "write",
+              "calls": 1,
+              "self_seconds": 1.1893000000000001e-05,
+              "cumulative_seconds": 11.453174343
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 47,
+              "function": "requires_duration",
+              "calls": 94,
+              "self_seconds": 0.000106859,
+              "cumulative_seconds": 11.453071299000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 143,
+              "function": "wrapper",
+              "calls": 2,
+              "self_seconds": 1.4597000000000001e-05,
+              "cumulative_seconds": 11.453002891
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 19,
+              "function": "convert_masks_to_RGB",
+              "calls": 1,
+              "self_seconds": 2.735e-06,
+              "cumulative_seconds": 11.452932568000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 204,
+              "function": "write_videofile",
+              "calls": 1,
+              "self_seconds": 0.001851016,
+              "cumulative_seconds": 11.452857697
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 242,
+              "function": "ffmpeg_write_video",
+              "calls": 1,
+              "self_seconds": 0.0050921460000000005,
+              "cumulative_seconds": 11.292410762000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 66,
+              "function": "get_frame",
+              "calls": 1299,
+              "self_seconds": 0.004137371,
+              "cumulative_seconds": 9.726573163000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 510,
+              "function": "iter_frames",
+              "calls": 121,
+              "self_seconds": 0.0025416230000000002,
+              "cumulative_seconds": 9.209296041
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/compositing/CompositeVideoClip.py",
+              "line": 130,
+              "function": "frame_function",
+              "calls": 120,
+              "self_seconds": 0.058558694,
+              "cumulative_seconds": 9.192629154
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 130,
+              "function": "<lambda>",
+              "calls": 426,
+              "self_seconds": 0.001000683,
+              "cumulative_seconds": 7.530288432000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/compositing/CompositeVideoClip.py",
+              "line": 334,
+              "function": "frame_function",
+              "calls": 122,
+              "self_seconds": 0.004438013,
+              "cumulative_seconds": 7.255969809000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 680,
+              "function": "<lambda>",
+              "calls": 127,
+              "self_seconds": 0.000577095,
+              "cumulative_seconds": 7.226865347
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 186,
+              "function": "<lambda>",
+              "calls": 210,
+              "self_seconds": 0.000685953,
+              "cumulative_seconds": 7.145921936000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/fx/Resize.py",
+              "line": 148,
+              "function": "image_filter",
+              "calls": 64,
+              "self_seconds": 0.002243183,
+              "cumulative_seconds": 6.919267796000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/fx/Resize.py",
+              "line": 48,
+              "function": "resizer",
+              "calls": 64,
+              "self_seconds": 0.0018982220000000002,
+              "cumulative_seconds": 6.823815927
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 2215,
+              "function": "resize",
+              "calls": 64,
+              "self_seconds": 0.001059321,
+              "cumulative_seconds": 6.0140792670000005
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'resize' of 'ImagingCore' objects>",
+              "calls": 64,
+              "self_seconds": 6.0111977990000005,
+              "cumulative_seconds": 6.0111977990000005
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 166,
+              "function": "write_frame",
+              "calls": 120,
+              "self_seconds": 0.0013182410000000002,
+              "cumulative_seconds": 1.7718466380000002
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'tobytes' of 'numpy.ndarray' objects>",
+              "calls": 209,
+              "self_seconds": 1.3917056250000002,
+              "cumulative_seconds": 1.3917056250000002
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 720,
+              "function": "compose_on",
+              "calls": 120,
+              "self_seconds": 0.064900514,
+              "cumulative_seconds": 1.266158566
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method numpy.array>",
+              "calls": 378,
+              "self_seconds": 0.388514311,
+              "cumulative_seconds": 1.1254095800000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/scripts/benchmark_render.py",
+              "line": 82,
+              "function": "timed",
+              "calls": 18,
+              "self_seconds": 0.000190573,
+              "cumulative_seconds": 0.9312304320000001
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'read' of '_io.BufferedReader' objects>",
+              "calls": 124,
+              "self_seconds": 0.7754809540000001,
+              "cumulative_seconds": 0.7754809540000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 178,
+              "function": "read_frame",
+              "calls": 120,
+              "self_seconds": 0.004478086,
+              "cumulative_seconds": 0.7430679490000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 726,
+              "function": "__array_interface__",
+              "calls": 200,
+              "self_seconds": 0.003821184,
+              "cumulative_seconds": 0.736895269
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 764,
+              "function": "tobytes",
+              "calls": 200,
+              "self_seconds": 0.0185063,
+              "cumulative_seconds": 0.730078479
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1261,
+              "function": "_build_background",
+              "calls": 1,
+              "self_seconds": 9.5332e-05,
+              "cumulative_seconds": 0.700927441
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'astype' of 'numpy.ndarray' objects>",
+              "calls": 692,
+              "self_seconds": 0.600244918,
+              "cumulative_seconds": 0.600244918
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/VideoFileClip.py",
+              "line": 140,
+              "function": "<lambda>",
+              "calls": 124,
+              "self_seconds": 0.000542286,
+              "cumulative_seconds": 0.5769080050000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 234,
+              "function": "get_frame",
+              "calls": 124,
+              "self_seconds": 0.001156563,
+              "cumulative_seconds": 0.576365719
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3250,
+              "function": "fromarray",
+              "calls": 424,
+              "self_seconds": 0.013238726000000001,
+              "cumulative_seconds": 0.42855488900000005
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method posix.waitpid>",
+              "calls": 15,
+              "self_seconds": 0.41849850400000005,
+              "cumulative_seconds": 0.41849850400000005
+            },
+            {
+              "file": "/usr/lib/python3.12/subprocess.py",
+              "line": 1259,
+              "function": "wait",
+              "calls": 15,
+              "self_seconds": 2.5138000000000002e-05,
+              "cumulative_seconds": 0.418106849
+            },
+            {
+              "file": "/usr/lib/python3.12/subprocess.py",
+              "line": 2021,
+              "function": "_wait",
+              "calls": 15,
+              "self_seconds": 7.9431e-05,
+              "cumulative_seconds": 0.41808130000000004
+            },
+            {
+              "file": "/usr/lib/python3.12/subprocess.py",
+              "line": 2008,
+              "function": "_try_wait",
+              "calls": 8,
+              "self_seconds": 2.4677e-05,
+              "cumulative_seconds": 0.41797491000000003
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3166,
+              "function": "frombuffer",
+              "calls": 424,
+              "self_seconds": 0.002191635,
+              "cumulative_seconds": 0.41483844200000003
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3120,
+              "function": "frombytes",
+              "calls": 304,
+              "self_seconds": 0.0025051920000000003,
+              "cumulative_seconds": 0.408915831
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'write' of '_io.BufferedWriter' objects>",
+              "calls": 209,
+              "self_seconds": 0.37962006400000003,
+              "cumulative_seconds": 0.37962006400000003
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/decorators.py",
+              "line": 11,
+              "function": "outplace",
+              "calls": 107,
+              "self_seconds": 0.000167362,
+              "cumulative_seconds": 0.37545378700000004
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 191,
+              "function": "with_effects",
+              "calls": 4,
+              "self_seconds": 2.4907e-05,
+              "cumulative_seconds": 0.373888779
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/Clip.py",
+              "line": 89,
+              "function": "transform",
+              "calls": 5,
+              "self_seconds": 2.5237000000000002e-05,
+              "cumulative_seconds": 0.373466944
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 914,
+              "function": "with_updated_frame_function",
+              "calls": 3,
+              "self_seconds": 0.004289388,
+              "cumulative_seconds": 0.373191005
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'join' of 'bytes' objects>",
+              "calls": 212,
+              "self_seconds": 0.352759044,
+              "cumulative_seconds": 0.352759044
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'encode' of 'ImagingEncoder' objects>",
+              "calls": 36336,
+              "self_seconds": 0.344328468,
+              "cumulative_seconds": 0.344328468
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 83,
+              "function": "initialize",
+              "calls": 4,
+              "self_seconds": 0.000107565,
+              "cumulative_seconds": 0.334194408
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 931,
+              "function": "convert",
+              "calls": 360,
+              "self_seconds": 0.0020388710000000003,
+              "cumulative_seconds": 0.316283097
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 238,
+              "function": "__exit__",
+              "calls": 1,
+              "self_seconds": 7.774e-06,
+              "cumulative_seconds": 0.305606825
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_writer.py",
+              "line": 223,
+              "function": "close",
+              "calls": 1,
+              "self_seconds": 2.3855e-05,
+              "cumulative_seconds": 0.305599051
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'convert' of 'ImagingCore' objects>",
+              "calls": 240,
+              "self_seconds": 0.304839142,
+              "cumulative_seconds": 0.304839142
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3587,
+              "function": "alpha_composite",
+              "calls": 120,
+              "self_seconds": 0.0007604630000000001,
+              "cumulative_seconds": 0.295718233
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method PIL._imaging.alpha_composite>",
+              "calls": 120,
+              "self_seconds": 0.292169341,
+              "cumulative_seconds": 0.292169341
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 3068,
+              "function": "new",
+              "calls": 560,
+              "self_seconds": 0.004117543,
+              "cumulative_seconds": 0.275432887
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<built-in method PIL._imaging.fill>",
+              "calls": 592,
+              "self_seconds": 0.26384139500000003,
+              "cumulative_seconds": 0.26384139500000003
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1290,
+              "function": "_fit_vertical",
+              "calls": 2,
+              "self_seconds": 3.6519e-05,
+              "cumulative_seconds": 0.258758486
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 675,
+              "function": "image_transform",
+              "calls": 2,
+              "self_seconds": 7.1540000000000005e-06,
+              "cumulative_seconds": 0.258501462
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/PIL/Image.py",
+              "line": 847,
+              "function": "frombytes",
+              "calls": 304,
+              "self_seconds": 0.002112765,
+              "cumulative_seconds": 0.23528278200000002
+            },
+            {
+              "file": "~",
+              "line": 0,
+              "function": "<method 'decode' of 'ImagingDecoder' objects>",
+              "calls": 304,
+              "self_seconds": 0.227132259,
+              "cumulative_seconds": 0.227132259
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/VideoFileClip.py",
+              "line": 87,
+              "function": "__init__",
+              "calls": 2,
+              "self_seconds": 4.7009000000000003e-05,
+              "cumulative_seconds": 0.19808919000000003
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/io/ffmpeg_reader.py",
+              "line": 21,
+              "function": "__init__",
+              "calls": 2,
+              "self_seconds": 4.2658000000000004e-05,
+              "cumulative_seconds": 0.198025109
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 1311,
+              "function": "_word_layer",
+              "calls": 16,
+              "self_seconds": 0.000547859,
+              "cumulative_seconds": 0.170098767
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/audio/AudioClip.py",
+              "line": 182,
+              "function": "write_audiofile",
+              "calls": 1,
+              "self_seconds": 4.269e-06,
+              "cumulative_seconds": 0.15839024300000001
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/audio/io/ffmpeg_audiowriter.py",
+              "line": 186,
+              "function": "ffmpeg_audiowrite",
+              "calls": 1,
+              "self_seconds": 0.000121508,
+              "cumulative_seconds": 0.15833360600000002
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/shorts_core.py",
+              "line": 567,
+              "function": "clip_resized",
+              "calls": 1,
+              "self_seconds": 3.717e-06,
+              "cumulative_seconds": 0.145180115
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 1022,
+              "function": "resized",
+              "calls": 1,
+              "self_seconds": 1.1691e-05,
+              "cumulative_seconds": 0.145175576
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/fx/Resize.py",
+              "line": 55,
+              "function": "apply",
+              "calls": 1,
+              "self_seconds": 9.989e-06,
+              "cumulative_seconds": 0.145077582
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/VideoClip.py",
+              "line": 105,
+              "function": "__init__",
+              "calls": 36,
+              "self_seconds": 0.0017528280000000001,
+              "cumulative_seconds": 0.128184993
+            },
+            {
+              "file": "/home/papajittan/Documents/SlopEngine/.venv312/lib/python3.12/site-packages/moviepy/video/compositing/CompositeVideoClip.py",
+              "line": 268,
+              "function": "concatenate_videoclips",
+              "calls": 1,
+              "self_seconds": 0.000138051,
+              "cumulative_seconds": 0.128096407
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

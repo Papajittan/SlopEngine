@@ -1,0 +1,55 @@
+{
+  "reference_sha256": "2abec33ca022a85fa26f1e77ff092e1637b4a0748104567c08502779ff5ab9bc",
+  "frames_compared": 120,
+  "fps": 30,
+  "duration_seconds": 4,
+  "width": 1080,
+  "height": 1920,
+  "raw_pixels_equal": true,
+  "raw_audio_equal": true,
+  "max_pixel_difference": 0,
+  "caption_events": [
+    {
+      "text": "measure",
+      "start_ms": 0,
+      "end_ms": 250
+    },
+    {
+      "text": "every",
+      "start_ms": 250,
+      "end_ms": 500
+    },
+    {
+      "text": "overlap",
+      "start_ms": 450,
+      "end_ms": 700
+    },
+    {
+      "text": "tiny",
+      "start_ms": 1000,
+      "end_ms": 1010
+    },
+    {
+      "text": "synchronized",
+      "start_ms": 1999,
+      "end_ms": 2500
+    },
+    {
+      "text": "end",
+      "start_ms": 3500,
+      "end_ms": 4000
+    }
+  ],
+  "before_mask_present": true,
+  "audio_samples": 176400,
+  "before_empty_captions_fallback_correct": true,
+  "after_mask_present": false,
+  "after_empty_captions_fallback_correct": true,
+  "encoded_videos_decode_without_errors": true,
+  "decoded_video_frames_equal": true,
+  "decoded_audio_pcm_equal": true,
+  "decoded_frame_count": [
+    120,
+    120
+  ]
+}

@@ -1,0 +1,66 @@
+--- a/shorts_core.py
++++ b/shorts_core.py
+@@ -1181,8 +1181,6 @@
+ class MoviePyShortCompiler:
+     def __init__(self, config: PipelineConfig) -> None:
+         self.config = config
+-        self._font_cache: dict[int, Any] = {}
+-        self._font_candidates: list[str | None] | None = None
+ 
+     def compile(
+         self,
+@@ -1208,13 +1206,7 @@
+             layers.extend(caption_clips)
+ 
+             audio_clip = self._build_audio(audio_path, final_duration, audio_clips)
+-            # The fitted background fills the frame and is opaque. Using it directly
+-            # avoids generating and exporting a redundant full-frame alpha mask.
+-            final_clip = CompositeVideoClip(
+-                layers, size=(self.config.width, self.config.height),
+-                # MoviePy 2.1 cannot use_bgclip with an empty overlay list.
+-                use_bgclip=bool(caption_clips), bg_color=(0, 0, 0),
+-            )
++            final_clip = CompositeVideoClip(layers, size=(self.config.width, self.config.height))
+             final_clip = clip_with_duration(final_clip, final_duration)
+             final_clip = clip_with_audio(final_clip, audio_clip)
+             final_clip = clip_with_fps(final_clip, self.config.fps)
+@@ -1280,10 +1272,7 @@
+         if len(prepared) == 1:
+             return loop_clip_to_duration(prepared[0], duration)
+ 
+-        # Equal-sized clips need only timestamp selection, not another composite
+-        # (and its per-frame transparency mask) around every source frame.
+-        same_size = all(tuple(clip.size) == tuple(prepared[0].size) for clip in prepared)
+-        joined = concatenate_videoclips(prepared, method="chain" if same_size else "compose")
++        joined = concatenate_videoclips(prepared, method="compose")
+         opened_clips.append(joined)
+         return loop_clip_to_duration(joined, duration)
+ 
+@@ -1292,8 +1281,6 @@
+         target_h = self.config.height
+         clip_w = float(getattr(clip, "w", target_w) or target_w)
+         clip_h = float(getattr(clip, "h", target_h) or target_h)
+-        if (clip_w, clip_h) == (target_w, target_h):
+-            return clip
+         target_aspect = target_w / target_h
+         source_aspect = clip_w / clip_h
+ 
+@@ -1360,15 +1347,10 @@
+         return image
+ 
+     def _load_font(self, size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+-        if size in self._font_cache:
+-            return self._font_cache[size]
+-        if self._font_candidates is None:
+-            self._font_candidates = [self.config.caption_font_path, *system_font_candidates()]
+-        for candidate in self._font_candidates:
++        candidates = [self.config.caption_font_path, *system_font_candidates()]
++        for candidate in candidates:
+             if candidate and Path(candidate).exists():
+-                font = ImageFont.truetype(candidate, size=size)
+-                self._font_cache[size] = font
+-                return font
++                return ImageFont.truetype(candidate, size=size)
+         return ImageFont.load_default()
+ 
+ 

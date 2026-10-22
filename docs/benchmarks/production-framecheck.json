@@ -1,0 +1,51 @@
+{
+  "source_relative_time": 20.170000000000016,
+  "sequential_expected_frame": 1208,
+  "comparisons": [
+    {
+      "source_frame": 1205,
+      "mean_absolute_error": 17.21829619984568,
+      "psnr_db": 19.09783382228976
+    },
+    {
+      "source_frame": 1206,
+      "mean_absolute_error": 15.763195891203704,
+      "psnr_db": 19.80641726976181
+    },
+    {
+      "source_frame": 1207,
+      "mean_absolute_error": 13.3848722029321,
+      "psnr_db": 21.08838590130409
+    },
+    {
+      "source_frame": 1208,
+      "mean_absolute_error": 3.869309413580247,
+      "psnr_db": 33.173103642327725
+    },
+    {
+      "source_frame": 1209,
+      "mean_absolute_error": 13.39649514531893,
+      "psnr_db": 21.090065186141267
+    },
+    {
+      "source_frame": 1210,
+      "mean_absolute_error": 15.798745177469137,
+      "psnr_db": 19.7897009869355
+    },
+    {
+      "source_frame": 1211,
+      "mean_absolute_error": 17.369404899691357,
+      "psnr_db": 19.036546201781686
+    },
+    {
+      "source_frame": 1212,
+      "mean_absolute_error": 18.51952031893004,
+      "psnr_db": 18.516044623293826
+    }
+  ],
+  "best_frame": {
+    "source_frame": 1208,
+    "mean_absolute_error": 3.869309413580247,
+    "psnr_db": 33.173103642327725
+  }
+}
