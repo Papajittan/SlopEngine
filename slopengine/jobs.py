@@ -22,8 +22,10 @@ import psutil
 from .config_core import PipelineConfig
 from .processes import WorkerProcess, read_logs
 from .settings import build_config, state_dir
+from .topic_history import TopicHistory
 
 GiB = 1024 ** 3
+AUTO_QUEUE_TARGET = 3
 
 
 class JobStatus(StrEnum):
@@ -168,9 +170,32 @@ class JobManager:
                 status TEXT NOT NULL, stage TEXT NOT NULL DEFAULT '',
                 stage_states TEXT NOT NULL, waiting_reason TEXT NOT NULL DEFAULT '',
                 priority INTEGER NOT NULL, created TEXT NOT NULL, pid INTEGER, process_created REAL,
-                message TEXT NOT NULL DEFAULT '');
+                message TEXT NOT NULL DEFAULT '', auto_session_id TEXT, auto_topic_id TEXT,
+                auto_paused INTEGER NOT NULL DEFAULT 0, video_finalized INTEGER NOT NULL DEFAULT 0);
             CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS auto_sessions (
+                id TEXT PRIMARY KEY, niche TEXT NOT NULL, target INTEGER, status TEXT NOT NULL,
+                config TEXT NOT NULL, request_count INTEGER NOT NULL DEFAULT 0,
+                consecutive_failures INTEGER NOT NULL DEFAULT 0, consecutive_rejections INTEGER NOT NULL DEFAULT 0,
+                duplicate_count INTEGER NOT NULL DEFAULT 0,
+                message TEXT NOT NULL DEFAULT '', created TEXT NOT NULL, updated TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS auto_events (
+                seq INTEGER PRIMARY KEY AUTOINCREMENT, session_id TEXT NOT NULL, time TEXT NOT NULL,
+                level TEXT NOT NULL, kind TEXT NOT NULL, message TEXT NOT NULL);
         """)
+        job_columns = {row[1] for row in self.db.execute("PRAGMA table_info(jobs)")}
+        for name, declaration in (("auto_session_id", "TEXT"), ("auto_topic_id", "TEXT"),
+                                  ("auto_paused", "INTEGER NOT NULL DEFAULT 0"),
+                                  ("video_finalized", "INTEGER NOT NULL DEFAULT 0")):
+            if name not in job_columns:
+                self.db.execute(f"ALTER TABLE jobs ADD COLUMN {name} {declaration}")
+        if "video_finalized" not in job_columns:
+            self.db.execute("UPDATE jobs SET video_finalized=1 WHERE status='COMPLETED'")
+        session_columns = {row[1] for row in self.db.execute("PRAGMA table_info(auto_sessions)")}
+        if "consecutive_rejections" not in session_columns:
+            self.db.execute("ALTER TABLE auto_sessions ADD COLUMN consecutive_rejections INTEGER NOT NULL DEFAULT 0")
+        self.history = TopicHistory(self.db)
+        self.db.commit()
         saved = self.db.execute("SELECT value FROM settings WHERE key='limits'").fetchone()
         self.limits = limits or (ResourceLimits(**json.loads(saved[0])) if saved else ResourceLimits())
         self.resources = ResourceManager(self.limits, memory_available)
@@ -219,6 +244,18 @@ class JobManager:
         staging = Path(row["output"]).parent / (".slopengine-" + row["id"])
         shutil.rmtree(staging, ignore_errors=True)
 
+    @staticmethod
+    def _finalized_output(output):
+        target = Path(output)
+        metadata_path = target.with_suffix(".metadata.json")
+        try:
+            if not target.is_file() or target.stat().st_size == 0 or not metadata_path.is_file():
+                return None
+            metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+            return metadata if isinstance(metadata, dict) else None
+        except (OSError, ValueError, TypeError):
+            return None
+
     @property
     def running(self):
         with self._lock:
@@ -258,6 +295,31 @@ class JobManager:
             self.db.commit()
             self.limits = self.resources.limits = limits
 
+    def _insert_job(self, topic, output, config, *, auto_session_id=None, auto_topic_id=None, schedule=True):
+        snapshot = asdict(config)
+        credentials = {key: snapshot.pop(key) for key in SECRET_FIELDS}
+        job_id = uuid.uuid4().hex
+        target = (Path(output).expanduser() if output else config.output_dir / (job_id + ".mp4")).resolve()
+        if target.suffix.lower() != ".mp4" or target.exists() or target.with_suffix(".metadata.json").exists():
+            raise ValueError("Output must be a new .mp4 destination.")
+        snapshot["temp_root"] = str(Path(config.temp_root).resolve() / job_id)
+        for name in PATH_FIELDS:
+            if snapshot.get(name) is not None:
+                snapshot[name] = str(Path(snapshot[name]).expanduser().resolve())
+        priority = self.db.execute("SELECT COALESCE(MAX(priority),0)+1 FROM jobs").fetchone()[0]
+        self.db.execute(
+            "INSERT INTO jobs (id,topic,config,output,temp_dir,status,stage_states,priority,created,auto_session_id,auto_topic_id) "
+            "VALUES (?,?,?,?,?,'QUEUED',?,?,?,?,?)",
+            (job_id, topic.strip(), json.dumps(snapshot), str(target), snapshot["temp_root"],
+             json.dumps(dict.fromkeys(STAGES, "PENDING")), priority, datetime.now(timezone.utc).isoformat(),
+             auto_session_id, auto_topic_id),
+        )
+        self._credentials[job_id] = credentials
+        self._last_id = job_id
+        if schedule:
+            self._schedule()
+        return job_id
+
     def start(self, topic, output=None, overrides=None, *, config=None):
         with self._lock:
             if self._closed:
@@ -265,29 +327,303 @@ class JobManager:
             if not topic.strip():
                 raise ValueError("Enter a topic.")
             config = config or build_config(overrides=overrides)
-            snapshot = asdict(config)
-            credentials = {key: snapshot.pop(key) for key in SECRET_FIELDS}
-            job_id = uuid.uuid4().hex
-            target = (Path(output).expanduser() if output else config.output_dir / (job_id + ".mp4")).resolve()
-            if target.suffix.lower() != ".mp4" or target.exists() or target.with_suffix(".metadata.json").exists():
-                raise ValueError("Output must be a new .mp4 destination.")
-            snapshot["temp_root"] = str(Path(config.temp_root).resolve() / job_id)
-            # Paths are resolved at enqueue, independent of future working dirs.
-            for name in PATH_FIELDS:
-                if snapshot.get(name) is not None:
-                    snapshot[name] = str(Path(snapshot[name]).expanduser().resolve())
-            priority = self.db.execute("SELECT COALESCE(MAX(priority),0)+1 FROM jobs").fetchone()[0]
             try:
-                self.db.execute("INSERT INTO jobs (id,topic,config,output,temp_dir,status,stage_states,priority,created) VALUES (?,?,?,?,?,'QUEUED',?,?,?)",
-                                (job_id, topic.strip(), json.dumps(snapshot), str(target), snapshot["temp_root"],
-                                 json.dumps(dict.fromkeys(STAGES, "PENDING")), priority, datetime.now(timezone.utc).isoformat()))
+                self.db.execute("BEGIN IMMEDIATE")
+                job_id = self._insert_job(topic, output, config, schedule=False)
+                self.history.record_manual(topic, job_id)
                 self.db.commit()
             except sqlite3.IntegrityError:
+                self.db.rollback()
                 raise ValueError("Output destination is already reserved by another job.") from None
-            self._credentials[job_id] = credentials
-            self._last_id = job_id
+            except Exception:
+                self.db.rollback()
+                raise
             self._schedule()
             return job_id
+
+    def start_auto(self, topic, session_id, title, angle="", *, config=None, niche="", similarity_threshold=0.9):
+        """Atomically check history, reserve a title, and insert its job."""
+        with self._lock:
+            if self._closed:
+                raise RuntimeError("Job manager is closed.")
+            if not str(topic).strip() or not str(title).strip():
+                raise ValueError("Auto topics need a nonempty topic and title.")
+            config = config or build_config()
+            topic_id = uuid.uuid4().hex
+            now = datetime.now(timezone.utc).isoformat()
+            try:
+                self.db.execute("BEGIN IMMEDIATE")
+                session = self.db.execute("SELECT status,target FROM auto_sessions WHERE id=?", (session_id,)).fetchone()
+                if session is None or session["status"] not in {"STARTING", "RUNNING"}:
+                    raise RuntimeError("Auto session is no longer accepting topics.")
+                if session["target"] is not None:
+                    counts = self.db.execute(
+                        "SELECT SUM(video_finalized=1) completed, "
+                        "SUM(video_finalized=0 AND status IN ('QUEUED','RUNNING','WAITING','CANCELLING')) outstanding "
+                        "FROM jobs WHERE auto_session_id=?", (session_id,)
+                    ).fetchone()
+                    if (counts["completed"] or 0) + (counts["outstanding"] or 0) >= session["target"]:
+                        self.db.rollback()
+                        return {"accepted": False, "reason": "capacity"}
+                counts = self.db.execute(
+                    "SELECT SUM(status IN ('RUNNING','WAITING','CANCELLING')) active, "
+                    "SUM(status IN ('QUEUED','HELD')) queued "
+                    "FROM jobs WHERE auto_session_id=?", (session_id,)
+                ).fetchone()
+                active, queued = counts["active"] or 0, counts["queued"] or 0
+                if queued >= AUTO_QUEUE_TARGET or active + queued >= self.limits.max_active_jobs + AUTO_QUEUE_TARGET:
+                    self.db.rollback()
+                    return {"accepted": False, "reason": "capacity"}
+                matched = self.history.find_duplicate(title, angle, threshold=similarity_threshold)
+                if matched:
+                    self.history.record_rejection(topic_id=topic_id, session_id=session_id, niche=niche,
+                                                  title=title, angle=angle, matched=matched, timestamp=now)
+                    self.db.execute("UPDATE auto_sessions SET duplicate_count=duplicate_count+1,updated=? WHERE id=?",
+                                    (now, session_id))
+                    self.db.commit()
+                    return {"accepted": False, "reason": "duplicate", "matched": matched}
+                self.db.execute(
+                    "INSERT INTO auto_topics (id,session_id,niche,title,proposed_title,angle,fingerprint,status,source,created,updated) "
+                    "VALUES (?,?,?,?,?,?,?,'RESERVED','auto',?,?)",
+                    (topic_id, session_id, niche, str(title).strip(), str(title).strip(), str(angle).strip(),
+                     self.history_fingerprint(title, angle), now, now),
+                )
+                job_id = self._insert_job(topic, None, config, auto_session_id=session_id,
+                                          auto_topic_id=topic_id, schedule=False)
+                self.db.execute("UPDATE auto_topics SET job_id=?,status='QUEUED',updated=? WHERE id=?",
+                                (job_id, now, topic_id))
+                self.db.commit()
+            except sqlite3.IntegrityError:
+                self.db.rollback()
+                raise ValueError("Output destination is already reserved by another job.") from None
+            except Exception:
+                self.db.rollback()
+                raise
+            self._schedule()
+            return {"accepted": True, "job_id": job_id, "topic_id": topic_id}
+
+    @staticmethod
+    def history_fingerprint(title, angle):
+        from .topic_history import fingerprint
+        return fingerprint(title, angle)
+
+    def create_auto_session(self, *, session_id, niche, target, config):
+        with self._lock:
+            now = datetime.now(timezone.utc).isoformat()
+            self.db.execute("BEGIN IMMEDIATE")
+            try:
+                self.db.execute(
+                    "INSERT INTO auto_sessions (id,niche,target,status,config,created,updated) VALUES (?,?,?,'STARTING',?,?,?)",
+                    (session_id, niche, target, json.dumps(config, default=str), now, now),
+                )
+                self.db.commit()
+            except Exception:
+                self.db.rollback()
+                raise
+
+    def auto_session(self, session_id=None):
+        with self._lock:
+            if session_id is None:
+                row = self.db.execute("SELECT * FROM auto_sessions ORDER BY created DESC LIMIT 1").fetchone()
+            else:
+                row = self.db.execute("SELECT * FROM auto_sessions WHERE id=?", (session_id,)).fetchone()
+            return dict(row) if row else None
+
+    def auto_sessions(self):
+        with self._lock:
+            return [dict(row) for row in self.db.execute("SELECT * FROM auto_sessions ORDER BY created DESC")]
+
+    def auto_event(self, session_id, kind, message, level="INFO"):
+        with self._lock:
+            now = datetime.now(timezone.utc).isoformat()
+            self.db.execute("INSERT INTO auto_events (session_id,time,level,kind,message) VALUES (?,?,?,?,?)",
+                            (session_id, now, level, kind, str(message)))
+            self.db.execute("UPDATE auto_sessions SET message=?,updated=? WHERE id=?", (str(message), now, session_id))
+            self.db.commit()
+
+    def auto_events(self, session_id, after=0, limit=500):
+        with self._lock:
+            if after:
+                query = "SELECT * FROM auto_events WHERE session_id=? AND seq>? ORDER BY seq LIMIT ?"
+                values = (session_id, after, limit)
+            else:
+                query = "SELECT * FROM (SELECT * FROM auto_events WHERE session_id=? ORDER BY seq DESC LIMIT ?) ORDER BY seq"
+                values = (session_id, limit)
+            return [dict(row) for row in self.db.execute(
+                query, values)]
+
+    def auto_request_events(self, session_id, limit=1000):
+        """Return the newest topic API requests even in very chatty sessions."""
+        with self._lock:
+            return [dict(row) for row in self.db.execute(
+                "SELECT * FROM auto_events WHERE session_id=? AND kind='request' ORDER BY seq DESC LIMIT ?",
+                (session_id, limit))]
+
+    def set_auto_state(self, session_id, status, *, message=None, request_count=None,
+                       consecutive_failures=None, consecutive_rejections=None):
+        with self._lock:
+            fields = ["status=?", "updated=?"]
+            values = [status, datetime.now(timezone.utc).isoformat()]
+            if message is not None:
+                fields.append("message=?")
+                values.append(str(message))
+            if request_count is not None:
+                fields.append("request_count=?")
+                values.append(int(request_count))
+            if consecutive_failures is not None:
+                fields.append("consecutive_failures=?")
+                values.append(int(consecutive_failures))
+            if consecutive_rejections is not None:
+                fields.append("consecutive_rejections=?")
+                values.append(int(consecutive_rejections))
+            self.db.execute(f"UPDATE auto_sessions SET {', '.join(fields)} WHERE id=?", (*values, session_id))
+            self.db.commit()
+
+    def account_auto_terminal(self, session_id, job_id, outcome_class, *, kind, message, level="INFO"):
+        """Count and log one terminal Auto job exactly once in a single transaction."""
+        if outcome_class not in {"success", "failure", "rejection"}:
+            raise ValueError("Unknown Auto terminal outcome class.")
+        with self._lock:
+            now = datetime.now(timezone.utc).isoformat()
+            self.db.execute("BEGIN IMMEDIATE")
+            try:
+                topic = self.db.execute(
+                    "SELECT id,accounted FROM auto_topics WHERE job_id=? AND session_id=? ORDER BY created DESC LIMIT 1",
+                    (job_id, session_id),
+                ).fetchone()
+                if topic is None or topic["accounted"]:
+                    self.db.rollback()
+                    return None
+                session = self.db.execute(
+                    "SELECT consecutive_failures,consecutive_rejections,duplicate_count FROM auto_sessions WHERE id=?",
+                    (session_id,),
+                ).fetchone()
+                if session is None:
+                    self.db.rollback()
+                    return None
+                failures = 0 if outcome_class == "success" else session["consecutive_failures"]
+                rejections = 0 if outcome_class == "success" else session["consecutive_rejections"]
+                duplicates = session["duplicate_count"]
+                if outcome_class == "failure":
+                    failures += 1
+                elif outcome_class == "rejection":
+                    rejections += 1
+                    duplicates += 1
+                self.db.execute("UPDATE auto_topics SET accounted=1,updated=? WHERE id=?", (now, topic["id"]))
+                self.db.execute(
+                    "UPDATE auto_sessions SET consecutive_failures=?,consecutive_rejections=?,duplicate_count=?,message=?,updated=? WHERE id=?",
+                    (failures, rejections, duplicates, str(message), now, session_id),
+                )
+                self.db.execute("INSERT INTO auto_events (session_id,time,level,kind,message) VALUES (?,?,?,?,?)",
+                                (session_id, now, level, kind, str(message)))
+                self.db.commit()
+                return {"consecutive_failures": failures, "consecutive_rejections": rejections,
+                        "duplicate_count": duplicates}
+            except Exception:
+                self.db.rollback()
+                raise
+
+    def auto_topic_rows(self, session_id):
+        with self._lock:
+            return [dict(row) for row in self.db.execute(
+                "SELECT t.*,j.status job_status,j.stage,j.stage_states,j.waiting_reason,j.output job_output,j.message job_message,j.video_finalized "
+                "FROM auto_topics t LEFT JOIN jobs j ON j.id=t.job_id WHERE t.session_id=? ORDER BY t.created,t.id",
+                (session_id,))]
+
+    def import_auto_outputs(self, directory):
+        with self._lock:
+            count = self.history.import_outputs(directory)
+            self.db.commit()
+            return count
+
+    def auto_prompt_context(self, limit=40):
+        with self._lock:
+            return self.history.prompt_context(limit)
+
+    def update_auto_topic(self, job_id, status, output=None, *, title=None, outcome=""):
+        with self._lock:
+            self.history.update_job(job_id, status, output, title=title, outcome=outcome)
+            self.db.commit()
+
+    def set_auto_session_paused(self, session_id, paused):
+        with self._lock:
+            self.db.execute("UPDATE jobs SET auto_paused=? WHERE auto_session_id=? AND status NOT IN ('COMPLETED','FAILED','CANCELLED','INTERRUPTED')",
+                            (1 if paused else 0, session_id))
+            self.db.commit()
+            if not paused:
+                self._schedule()
+
+    def resume_auto_session(self, session_id):
+        """Explicit resume: reuse held queue rows and account committed files."""
+        with self._lock:
+            rows = self.db.execute("SELECT * FROM jobs WHERE auto_session_id=? AND status IN ('HELD','INTERRUPTED')", (session_id,)).fetchall()
+            for raw in rows:
+                row = dict(raw)
+                row["config"] = json.loads(row["config"])
+                output = Path(row["output"])
+                metadata_path = output.with_suffix(".metadata.json")
+                metadata = self._finalized_output(output)
+                stage_states = json.loads(row["stage_states"])
+                save_reached = stage_states.get("save") in {"COMPLETED", "INTERRUPTED"}
+                if metadata is not None and save_reached:
+                    payload = metadata.get("script_payload") or {}
+                    title = str(payload.get("title") or "") if isinstance(payload, dict) else ""
+                    upload_interrupted = (
+                        bool(row["auto_session_id"])
+                        and row["config"].get("youtube_upload_enabled", False)
+                        and stage_states.get("save") == "COMPLETED"
+                        and stage_states.get("upload") in {"WAITING", "RUNNING", "INTERRUPTED", "FAILED"}
+                    )
+                    if upload_interrupted:
+                        message = f"Video saved at {output}; YouTube upload was interrupted before completion. The MP4 is preserved and will not be uploaded again automatically."
+                        self.db.execute("UPDATE jobs SET status='FAILED',video_finalized=1,message=? WHERE id=?",
+                                        (message, row["id"]))
+                        self.history.update_job(row["id"], "FAILED", str(output), title=title, outcome=message)
+                    else:
+                        self.db.execute("UPDATE jobs SET status='COMPLETED',video_finalized=1,message='Recovered finalized output after restart' WHERE id=?", (row["id"],))
+                        self.history.update_job(row["id"], "COMPLETED", str(output), title=title, outcome="recovered output")
+                elif row["status"] == "HELD" and not output.exists() and not metadata_path.exists():
+                    states = dict.fromkeys(STAGES, "PENDING")
+                    self.db.execute("UPDATE jobs SET status='QUEUED',stage='',stage_states=?,waiting_reason='',message='Explicitly resumed by user' WHERE id=?",
+                                    (json.dumps(states), row["id"]))
+                    self.history.update_job(row["id"], "QUEUED", outcome="explicitly resumed")
+                else:
+                    self.db.execute("UPDATE jobs SET status='FAILED',message='Interrupted job was not restarted because its output may already exist' WHERE id=?", (row["id"],))
+                    self.history.update_job(row["id"], "FAILED", outcome="interrupted; replacement required")
+            self.db.execute("UPDATE auto_sessions SET status='RUNNING',message='Explicitly resumed by user',updated=? WHERE id=?",
+                            (datetime.now(timezone.utc).isoformat(), session_id))
+            self.db.execute("UPDATE jobs SET auto_paused=0 WHERE auto_session_id=?", (session_id,))
+            self.db.commit()
+            self._schedule()
+            return len(rows)
+
+    def stop_auto_session(self, session_id, *, cancel=False):
+        with self._lock:
+            rows = self.db.execute("SELECT id,status FROM jobs WHERE auto_session_id=? AND status NOT IN ('COMPLETED','FAILED','CANCELLED','INTERRUPTED')", (session_id,)).fetchall()
+            for row in rows:
+                job_id, status = row["id"], row["status"]
+                worker = self._workers.get(job_id)
+                if cancel:
+                    if worker:
+                        self._update(job_id, status="CANCELLING", waiting_reason="", message="Auto session cancelled")
+                        worker.cancel()
+                    else:
+                        self._update(job_id, status="CANCELLED", waiting_reason="", message="Auto session cancelled")
+                        self.history.update_job(job_id, "CANCELLED", outcome="cancelled")
+                elif worker is None and status in {"QUEUED", "HELD"}:
+                    self._update(job_id, status="CANCELLED", waiting_reason="", message="Auto session stopped before startup")
+                    self.history.update_job(job_id, "CANCELLED", outcome="stopped before startup")
+            self.db.execute("UPDATE jobs SET auto_paused=0 WHERE auto_session_id=?", (session_id,))
+            self.db.commit()
+            self._schedule()
+
+    def auto_checkpoint(self, session_id):
+        with self._lock:
+            rows = self.db.execute("SELECT j.id,j.stage_states,j.status FROM jobs j WHERE auto_session_id=? AND j.status NOT IN ('COMPLETED','FAILED','CANCELLED','INTERRUPTED')",
+                                   (session_id,)).fetchall()
+            return not any(any(value == "RUNNING" for value in json.loads(row["stage_states"]).values())
+                           or row["status"] == "RUNNING" and row["id"] not in self._workers
+                           for row in rows)
 
     def _usage(self):
         usage = {}
@@ -315,6 +651,10 @@ class JobManager:
             if row["status"] != "WAITING" or row["id"] not in self._workers:
                 continue
             stage, job_id = row["stage"], row["id"]
+            if row.get("auto_paused"):
+                if row["waiting_reason"] != "Auto session paused at stage boundary":
+                    self._update(job_id, waiting_reason="Auto session paused at stage boundary")
+                continue
             draining = self.resources.can_drain(job_id, stage, row["config"])
             if memory_blocked and not draining:
                 self._update(job_id, waiting_reason="Waiting for available memory")
@@ -346,6 +686,10 @@ class JobManager:
             if row["status"] != "QUEUED":
                 continue
             job_id = row["id"]
+            if row.get("auto_paused"):
+                if row["waiting_reason"] != "Auto session paused before startup":
+                    self._update(job_id, waiting_reason="Auto session paused before startup")
+                continue
             if len(self._workers) >= self.limits.max_active_jobs:
                 self._update(job_id, waiting_reason="Waiting for active job slot")
                 continue
@@ -402,6 +746,31 @@ class JobManager:
                     elif kind in {"stage_started", "stage_completed", "stage_failed"} and stage in STAGES:
                         states[stage] = {"stage_started": "RUNNING", "stage_completed": "COMPLETED", "stage_failed": "FAILED"}[kind]
                         values["stage"] = stage
+                        if kind == "stage_completed" and stage == "script" and row.get("auto_topic_id") and event.get("title"):
+                            try:
+                                self.db.execute("BEGIN IMMEDIATE")
+                                topic_row = self.db.execute("SELECT angle FROM auto_topics WHERE id=?",
+                                                             (row["auto_topic_id"],)).fetchone()
+                                angle = topic_row["angle"] if topic_row else ""
+                                matched = self.history.find_duplicate(event["title"], angle,
+                                                                     exclude_id=row["auto_topic_id"])
+                                if matched:
+                                    self.history.reject_final_title(row["auto_topic_id"], event["title"], matched)
+                                    self.db.commit()
+                                    message = f"Final script title duplicates {matched['title']}; stopped before narration/render."
+                                    self._update(job_id, status="CANCELLING", waiting_reason="", message=message)
+                                    self.auto_event(row["auto_session_id"], "final_title_duplicate",
+                                                   f"{event['title']} → {matched['title']}", "WARN")
+                                    event["message"] = message
+                                    worker.cancel()
+                                else:
+                                    self.history.accept_final_title(row["auto_topic_id"], event["title"])
+                                    self.db.commit()
+                            except Exception:
+                                if self.db.in_transaction:
+                                    self.db.rollback()
+                                worker.cancel()
+                                raise
                         if kind == "stage_completed":
                             # The stage has released its own resources before
                             # reporting completion. Retain resident memory plus a
@@ -431,20 +800,42 @@ class JobManager:
                     terminal = getattr(worker, "_queue_terminal", "FAILED")
                     event = getattr(worker, "_terminal_event", {"type": "job_failed", "job_id": job_id,
                                                                 "message": "Worker exited without completion"})
+                    metadata = None
+                    video_finalized = False
                     if terminal == "COMPLETED":
                         target = Path(row["output"])
-                        if (worker.process.returncode != 0 or not target.is_file() or target.stat().st_size == 0
-                            or not target.with_suffix(".metadata.json").is_file()):
+                        metadata = self._finalized_output(target)
+                        if worker.process.returncode != 0 or metadata is None:
                             terminal = "FAILED"
                             event = {"type": "job_failed", "job_id": job_id,
                                      "message": "Worker completion could not be verified; inspect job logs and output."}
                             worker._record(event)
+                        else:
+                            video_finalized = True
+                    elif (terminal == "FAILED" and row.get("auto_session_id")
+                          and row["config"].get("youtube_upload_enabled")
+                          and row["stage_states"].get("save") == "COMPLETED"
+                          and (event.get("stage") == "upload" or row.get("stage") == "upload"
+                               or row["stage_states"].get("upload") in {"WAITING", "RUNNING", "FAILED", "INTERRUPTED"})):
+                        # Auto production is successful once the saved MP4 and its
+                        # metadata are verified, even if its requested upload failed.
+                        metadata = self._finalized_output(Path(row["output"]))
+                        video_finalized = metadata is not None
                     events.append(event)
                     states = row["stage_states"]
                     for stage in states:
                         if states[stage] in {"WAITING", "RUNNING"}:
                             states[stage] = terminal if terminal != "COMPLETED" else "COMPLETED"
-                    self._update(job_id, status=terminal, waiting_reason="", pid=None, message=event.get("message", terminal), stage_states=json.dumps(states))
+                    self._update(job_id, status=terminal, video_finalized=int(video_finalized or row.get("video_finalized", 0)),
+                                 waiting_reason="", pid=None, message=event.get("message", terminal),
+                                 stage_states=json.dumps(states))
+                    title = ""
+                    if video_finalized and metadata:
+                        payload = metadata.get("script_payload") or {}
+                        title = str(payload.get("title") or "") if isinstance(payload, dict) else ""
+                    self.history.update_job(job_id, terminal, row["output"] if video_finalized else None,
+                                            title=title or None, outcome=event.get("message", ""))
+                    self.db.commit()
                     self._last_process = worker.process
                     worker.close()
                     self._cleanup(row, keep_temp=terminal == "COMPLETED" and row["config"].get("keep_temp", False))
@@ -470,6 +861,8 @@ class JobManager:
     def retry(self, job_id):
         with self._lock:
             row = next(row for row in self.list_jobs() if row["id"] == job_id)
+            if row.get("auto_session_id"):
+                raise ValueError("Automatic jobs are recovered through their Auto session.")
             if row["status"] not in {"FAILED", "CANCELLED", "INTERRUPTED", "HELD"}:
                 raise ValueError("Only failed, cancelled, interrupted or held jobs can be retried.")
             config = dict(row["config"])

@@ -1447,7 +1447,7 @@ class ShortsPipeline:
             self._emit("stage_started", stage)
             payload = self.script_engine.synthesize(topic)
             save_json(run_dir / "script_payload.json", asdict(payload))
-            self._emit("stage_completed", stage)
+            self._emit("stage_completed", stage, title=payload.title)
 
             stage = "narration"
             self._emit("stage_started", stage)

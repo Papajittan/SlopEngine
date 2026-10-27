@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import shutil
 import signal
+import sqlite3
 
 from textual import on
 from textual.app import App, ComposeResult
@@ -21,6 +22,7 @@ from textual.widgets import (
     RichLog, Select, Static, TabbedContent, TabPane, TextArea,
 )
 
+from .auto_mode import AutoMode
 from .jobs import JobManager
 from .config_core import gemini_key_is_configured
 from .library import discover_outputs, open_output
@@ -77,6 +79,12 @@ class SlopEngineApp(App):
         Binding("ctrl+5", "navigate('logs')", "Logs"),
         Binding("ctrl+6", "navigate('monitor')", "Monitor"),
         Binding("ctrl+7", "navigate('queue')", "Queue"),
+        Binding("ctrl+8", "navigate('auto')", "Create · Auto"),
+        Binding("p", "auto_pause", "Pause Auto", show=False),
+        Binding("r", "auto_resume", "Resume Auto", show=False),
+        Binding("s", "auto_stop", "Stop Auto", show=False),
+        Binding("x", "auto_cancel", "Cancel Auto", show=False),
+        Binding("question_mark", "auto_help", "Auto help", show=False),
         Binding("ctrl+r", "retry_job", "Retry selected", show=False),
         Binding("alt+up", "move_job(-1)", "Move up", show=False),
         Binding("alt+down", "move_job(1)", "Move down", show=False),
@@ -98,6 +106,11 @@ class SlopEngineApp(App):
             from .config_core import PipelineConfig
             self.config = PipelineConfig(gemini_api_key="", pexels_api_key="")
         self.jobs = jobs or JobManager()
+        self.auto_mode = AutoMode(self.jobs, preferences=self.preferences) if hasattr(self.jobs, "auto_sessions") else None
+        self._poll_busy = False
+        self._auto_event_seq = 0
+        self._auto_display_session = None
+        self._auto_topic_snapshot = []
         self.job = JobState()
         self.entries = []
         self.selected_entry = None
@@ -133,17 +146,45 @@ class SlopEngineApp(App):
                     yield Button("View generation", id="view-monitor")
             with TabPane("Create", id="create"):
                 with VerticalScroll():
-                    yield Label("Topic or detailed generation prompt *")
-                    yield TextArea(id="topic", soft_wrap=True)
-                    yield Label("Output filename or path (blank = automatic)")
-                    yield Input(placeholder="my-video.mp4", id="output")
+                    yield Label("Generation mode")
+                    yield Select((("Manual video", "manual"), ("Auto Mode", "auto")),
+                                 value="manual", allow_blank=False, id="create-mode")
+                    with Vertical(id="manual-create-fields"):
+                        yield Label("Topic or detailed generation prompt *")
+                        yield TextArea(id="topic", soft_wrap=True)
+                        yield Label("Output filename or path (blank = automatic)")
+                        yield Input(placeholder="my-video.mp4", id="output")
+                    with Vertical(id="auto-panel"):
+                        with Collapsible(title="Session setup · niche and target", collapsed=False, id="auto-setup"):
+                            yield Label("Niche or channel focus")
+                            yield Input(placeholder="e.g. overlooked engineering failures", id="auto-niche")
+                            yield Label("Number of Videos (blank = unlimited)")
+                            yield Input(placeholder="blank = unlimited", id="auto-count")
+                        yield Static("Duplicate checks use normalized text and local concept rules; history is never silently edited.", id="auto-duplicate-mode", markup=False)
                     with Collapsible(title="Voice, transcription and music", collapsed=True):
                         yield from self.fields("job", FIELDS)
                         yield Checkbox("Keep temporary media", value=self.config.keep_temp, id="keep-temp")
-                    yield Checkbox("I consent to upload this video to YouTube", id="upload")
+                    yield Checkbox("I consent to upload", id="upload")
+                    yield Static(id="upload-description", markup=False)
                     yield Static(id="summary", classes="panel", markup=False)
-                    yield Static(id="form-error", classes="message", markup=False)
-                    yield Button("Generate video", id="generate", variant="primary")
+                    with Vertical(id="manual-actions"):
+                        yield Static(id="form-error", classes="message", markup=False)
+                        yield Button("Generate video", id="generate", variant="primary")
+                    with Vertical(id="auto-actions-panel"):
+                        with Horizontal(classes="actions auto-actions"):
+                            yield Button("Start Auto", id="auto-start", variant="primary")
+                            yield Button("Pause", id="auto-pause")
+                            yield Button("Resume", id="auto-resume")
+                        with Horizontal(classes="actions auto-actions"):
+                            yield Button("Stop after active", id="auto-stop")
+                            yield Button("Cancel session", id="auto-cancel", variant="error")
+                        yield Static(id="auto-stats", classes="panel", markup=False)
+                        yield Static(id="auto-status", classes="message", markup=False)
+                        yield Static(id="auto-form-error", classes="message", markup=False)
+                        yield Static("P pause · R resume · S stop after active · X cancel this session · ? help", markup=False)
+                        yield DataTable(id="auto-table", cursor_type="row")
+                        yield Label("Auto session event log (saved in the jobs database)")
+                        yield RichLog(id="auto-log", wrap=True, markup=False, max_lines=3000)
             with TabPane("Monitor", id="monitor"):
                 with VerticalScroll():
                     yield Static("No generation started", id="job-status", classes="heading", markup=False)
@@ -205,31 +246,84 @@ class SlopEngineApp(App):
     def on_mount(self) -> None:
         self.query_one("#library-table", DataTable).add_columns("Title", "Topic", "Created", "Filename", "Size", "YouTube")
         self.query_one("#queue-table", DataTable).add_columns("ID", "Topic", "Stage", "Status / waiting reason")
+        self.query_one("#auto-table", DataTable).add_columns("Topic", "Status", "Stage", "Progress")
         limits = getattr(self.jobs, "limits", None)
         for key, field in [("max_active_jobs", "active"), ("max_concurrent_renders", "render"), ("max_concurrent_gpu_whisper", "gpu")]:
             if limits is not None:
                 self.query_one(f"#limit-{field}", Input).value = str(getattr(limits, key))
+        if self.auto_mode and self.auto_mode.session_id:
+            self.query_one("#auto-niche", Input).value = self.auto_mode.niche
+            self.query_one("#auto-count", Input).value = str(self.auto_mode.target or "")
+            if self.auto_mode.state not in {"STOPPED", "COMPLETED"}:
+                self.query_one("#create-mode", Select).value = "auto"
+        self.update_create_mode()
         self.refresh_queue()
         self.refresh_library()
         self.refresh_logs()
         self.update_summary()
         self.update_monitor()
         self.refresh_dashboard()
-        self.poll_timer = self.set_interval(0.2, self.poll_job)
+        self.refresh_auto()
+        self.poll_timer = self.set_interval(0.2, self.poll_background)
 
     def action_navigate(self, page: str) -> None:
+        if page == "auto":
+            page = "create"
+            self.query_one("#create-mode", Select).value = "auto"
+            self.update_create_mode()
+        elif page == "create":
+            self.query_one("#create-mode", Select).value = "manual"
+            self.update_create_mode()
         self.query_one("#pages", TabbedContent).active = page
-        if page == "library":
+        if page == "dashboard":
+            self.query_one("#new-video", Button).focus()
+            self.refresh_dashboard()
+        elif page == "create":
+            focus = "#auto-niche" if self.create_mode() == "auto" else "#topic"
+            self.query_one(focus).focus()
+        elif page == "library":
             self.refresh_library()
+            self.query_one("#library-table", DataTable).focus()
         elif page == "logs":
             self.refresh_logs()
-        elif page == "dashboard":
-            self.refresh_dashboard()
+            self.query_one("#log-select", Select).focus()
         elif page == "queue":
             self.refresh_queue()
             self.query_one("#queue-table", DataTable).focus()
         elif page == "monitor":
             self.query_one("#monitor-log", RichLog).focus()
+        elif page == "settings":
+            self.query_one("#setting-gemini_model", Input).focus()
+
+    def create_mode(self) -> str:
+        return str(self.query_one("#create-mode", Select).value or "manual")
+
+    def update_create_mode(self) -> None:
+        if not self.is_mounted or not self.query("#create-mode"):
+            return
+        automatic = self.create_mode() == "auto"
+        self.query_one("#manual-create-fields").display = not automatic
+        self.query_one("#auto-panel").display = automatic
+        self.query_one("#manual-actions").display = not automatic
+        self.query_one("#auto-actions-panel").display = automatic
+        self.update_upload_description()
+        self.update_summary()
+
+    def update_upload_description(self, snapshot=None) -> None:
+        if not self.is_mounted or not self.query("#upload-description"):
+            return
+        automatic = self.create_mode() == "auto"
+        if automatic and snapshot and snapshot.get("id"):
+            enabled = snapshot.get("upload_enabled", False)
+            privacy = snapshot.get("upload_privacy", "private")
+            text = (f"This Auto session captured upload consent {'ON' if enabled else 'OFF'} · privacy {privacy}. "
+                    "The checkbox applies to the next session.")
+        elif automatic:
+            text = ("Checked at Start: upload every video in this Auto session using the selected privacy setting. "
+                    "Unchecked: keep all session videos local.")
+        else:
+            text = "Checked: upload this manual video after it is saved. Unchecked: keep it local."
+        self.query_one("#upload-description", Static).update(text)
 
     def refresh_dashboard(self) -> None:
         dependencies = []
@@ -251,6 +345,143 @@ class SlopEngineApp(App):
             "Missing keys? Copy .env.example to .env and configure GEMINI_API_KEY and PEXELS_API_KEY."
         )
         self.query_one("#dashboard-job", Static).update(f"Generation: {self.job.status} · elapsed {self.job.elapsed}s\n{self.job.output or self.job.detail}")
+
+    def refresh_auto(self) -> None:
+        if not self.query("#auto-stats"):
+            return
+        if self.auto_mode is None:
+            self.query_one("#auto-stats", Static).update("Auto Mode requires the persistent JobManager.")
+            self.query_one("#auto-status", Static).update("Auto controls are unavailable for this job manager.")
+            return
+        try:
+            snapshot = self.auto_mode.snapshot()
+        except (OSError, RuntimeError, ValueError, sqlite3.Error) as exc:
+            self.query_one("#auto-status", Static).update(redact(f"Auto Mode database error: {exc}"))
+            return
+        self.update_upload_description(snapshot)
+        target = "unlimited" if snapshot["target"] is None else str(snapshot["target"])
+        budget = "unlimited" if snapshot["request_budget"] == 0 else str(snapshot["request_budget"])
+        self.query_one("#auto-stats", Static).update(
+            f"Niche: {snapshot['niche'] or '—'} · Target: {target} · Generated: {snapshot['generated']} · Active: {snapshot['active']} · "
+            f"Queued: {snapshot['queued']} · Duplicate rejections: {snapshot['duplicates']} · "
+            f"Topic requests: {snapshot['request_count']} / {budget} · {snapshot['requests_per_minute']} per minute · "
+            f"YouTube: {'upload enabled' if snapshot['upload_enabled'] else 'local only'} ({snapshot['upload_privacy']})"
+        )
+        self.update_upload_description(snapshot)
+        self.query_one("#auto-status", Static).update(f"{snapshot['state']} · {snapshot['message']}")
+        table = self.query_one("#auto-table", DataTable)
+        rendered = []
+        core_stages = ("script", "narration", "timestamps", "footage", "render", "save")
+        for row in snapshot["topics"]:
+            if row.get("job_status") not in {"QUEUED", "HELD", "RUNNING", "WAITING", "CANCELLING"}:
+                continue
+            states = row.get("stage_states") or "{}"
+            try:
+                states = json.loads(states) if isinstance(states, str) else states
+            except ValueError:
+                states = {}
+            completed = sum(states.get(stage) == "COMPLETED" for stage in core_stages)
+            status = row.get("job_status") or row.get("status") or "Reserved"
+            stage = row.get("stage") or row.get("waiting_reason") or "Queued"
+            rendered.append((row.get("title", ""), str(status), str(stage), f"{completed}/6 stages"))
+        if rendered != self._auto_topic_snapshot:
+            self._auto_topic_snapshot = rendered
+            table.clear()
+            for title, status, stage, progress in rendered:
+                table.add_row(title, status, stage, progress)
+        if snapshot["id"] != self._auto_display_session:
+            self._auto_display_session = snapshot["id"]
+            self._auto_event_seq = 0
+            self.query_one("#auto-log", RichLog).clear()
+        if snapshot["id"]:
+            for event in self.jobs.auto_events(snapshot["id"], after=self._auto_event_seq):
+                self.query_one("#auto-log", RichLog).write(
+                    f"{event['time']} {event['level']} [{event['kind']}] {redact(event['message'])}"
+                )
+                self._auto_event_seq = max(self._auto_event_seq, event["seq"])
+        active = snapshot["state"] in {"STARTING", "RUNNING", "PAUSING", "PAUSED", "STOPPING"}
+        blocked_error = snapshot["state"] == "ERROR" and bool(snapshot["id"]) and bool(snapshot["active"] or snapshot["queued"])
+        self.query_one("#auto-setup", Collapsible).collapsed = active or bool(blocked_error)
+        self.query_one("#auto-start", Button).disabled = active or blocked_error
+        self.query_one("#auto-pause", Button).disabled = snapshot["state"] != "RUNNING"
+        self.query_one("#auto-resume", Button).disabled = snapshot["state"] not in {"PAUSED", "ERROR"} or not snapshot["id"]
+        can_stop = snapshot["state"] in {"RUNNING", "PAUSING", "PAUSED"} or (
+            snapshot["state"] == "ERROR" and bool(snapshot["id"]) and bool(snapshot["active"] or snapshot["queued"]))
+        self.query_one("#auto-stop", Button).disabled = not can_stop
+        self.query_one("#auto-cancel", Button).disabled = not can_stop
+
+    def auto_shortcut_allowed(self) -> bool:
+        if (not self.is_mounted or self.query_one("#pages", TabbedContent).active != "create"
+                or self.create_mode() != "auto"):
+            return False
+        return not isinstance(self.focused, (Input, TextArea))
+
+    def action_auto_help(self) -> None:
+        if not self.auto_shortcut_allowed():
+            return
+        self.notify("P pauses at stage boundaries; R resumes; S stops after started Auto jobs finish; X cancels only jobs in this Auto session. A blank count runs until stopped. The Create upload checkbox covers the session; topic RPM/budget settings count discovery requests, not script-generation calls.", timeout=8)
+
+    async def action_auto_start(self) -> None:
+        if self.auto_mode is None:
+            self.query_one("#auto-status", Static).update("Auto Mode requires the persistent JobManager.")
+            return
+        niche = self.query_one("#auto-niche", Input).value.strip()
+        raw_count = self.query_one("#auto-count", Input).value.strip()
+        if raw_count and (not raw_count.isdecimal() or int(raw_count) <= 0):
+            self.query_one("#auto-form-error", Static).update("Number of Videos must be a positive whole number, or blank for unlimited.")
+            return
+        target = int(raw_count) if raw_count else None
+        try:
+            _, config = self.create_config()
+            errors = validate_config(config, topic=niche, require_keys=True)
+            if errors:
+                raise ValueError("\n".join(errors))
+            await asyncio.to_thread(self.auto_mode.start, niche, target, config=config)
+            # AutoMode already captured the checkbox into the durable session
+            # snapshot; a later session must receive fresh explicit consent.
+            self.query_one("#upload", Checkbox).value = False
+            self.query_one("#auto-form-error", Static).update("")
+        except (OSError, ValueError, RuntimeError, TypeError, sqlite3.Error) as exc:
+            self.query_one("#auto-form-error", Static).update(redact(exc))
+        self.refresh_auto()
+
+    async def action_auto_pause(self) -> None:
+        if not self.auto_shortcut_allowed():
+            return
+        if self.auto_mode:
+            await asyncio.to_thread(self.auto_mode.pause)
+            self.refresh_auto()
+
+    async def action_auto_resume(self) -> None:
+        if not self.auto_shortcut_allowed():
+            return
+        if self.auto_mode:
+            try:
+                await asyncio.to_thread(self.auto_mode.resume, config=self.config)
+                self.query_one("#upload", Checkbox).value = False
+            except (OSError, ValueError, RuntimeError, TypeError, sqlite3.Error) as exc:
+                self.query_one("#auto-form-error", Static).update(redact(exc))
+            self.refresh_auto()
+
+    async def action_auto_stop(self) -> None:
+        if not self.auto_shortcut_allowed():
+            return
+        if self.auto_mode:
+            try:
+                await asyncio.to_thread(self.auto_mode.stop)
+            except (OSError, RuntimeError, sqlite3.Error) as exc:
+                self.query_one("#auto-form-error", Static).update(redact(exc))
+            self.refresh_auto()
+
+    async def action_auto_cancel(self) -> None:
+        if not self.auto_shortcut_allowed():
+            return
+        if self.auto_mode:
+            try:
+                await asyncio.to_thread(self.auto_mode.stop, cancel=True)
+            except (OSError, RuntimeError, sqlite3.Error) as exc:
+                self.query_one("#auto-form-error", Static).update(redact(exc))
+            self.refresh_auto()
 
     @on(Input.Submitted, "#gemini-api-key")
     def use_gemini_key(self) -> None:
@@ -281,12 +512,16 @@ class SlopEngineApp(App):
             result["edge_voice"] = self.config.edge_voice
         return result
 
-    def job_inputs(self):
-        topic = self.query_one("#topic", TextArea).text.strip()
+    def create_config(self):
         overrides = self.read_fields("job", FIELDS)
         overrides["keep_temp"] = self.query_one("#keep-temp", Checkbox).value
         overrides["youtube_upload_enabled"] = self.query_one("#upload", Checkbox).value
         config = build_config(self.preferences, overrides)
+        return overrides, config
+
+    def job_inputs(self):
+        topic = self.query_one("#topic", TextArea).text.strip()
+        overrides, config = self.create_config()
         raw_output = self.query_one("#output", Input).value.strip()
         output = Path(raw_output).expanduser() if raw_output else None
         if output is not None and output.parent == Path("."):
@@ -299,18 +534,38 @@ class SlopEngineApp(App):
         if not self.is_mounted or not self.query("#summary"):
             return
         try:
-            _, _, config, output = self.job_inputs()
-            summary = f"Output: {output or config.output_dir / '<automatic>.mp4'}\nVoice: {config.edge_voice if config.tts_voice_overridden else 'automatic by narration language'} · rate {config.edge_rate} · Whisper {config.whisper_model} / {config.whisper_device}\nYouTube: {'UPLOAD REQUESTED · ' + config.youtube_privacy_status if config.youtube_upload_enabled else 'off'}"
+            _, config = self.create_config()
+            voice = f"{config.edge_voice if config.tts_voice_overridden else 'automatic by narration language'} · rate {config.edge_rate} · Whisper {config.whisper_model} / {config.whisper_device}"
+            if self.create_mode() == "auto":
+                niche = self.query_one("#auto-niche", Input).value.strip() or "—"
+                target = self.query_one("#auto-count", Input).value.strip() or "unlimited"
+                summary = f"Auto niche: {niche} · target: {target}\nVoice: {voice}\nYouTube: {'UPLOAD REQUESTED · ' + config.youtube_privacy_status if config.youtube_upload_enabled else 'local only'}"
+            else:
+                raw_output = self.query_one("#output", Input).value.strip()
+                output = Path(raw_output).expanduser() if raw_output else None
+                if output is not None and output.parent == Path("."):
+                    output = config.output_dir / output
+                if output is not None and output.suffix.lower() != ".mp4":
+                    raise ValueError("Output filename must end in .mp4.")
+                summary = f"Output: {output or config.output_dir / '<automatic>.mp4'}\nVoice: {voice}\nYouTube: {'UPLOAD REQUESTED · ' + config.youtube_privacy_status if config.youtube_upload_enabled else 'off'}"
         except (ValueError, RuntimeError, TypeError) as exc:
             summary = str(exc)
         self.query_one("#summary", Static).update(summary)
 
     @on(Input.Changed)
     @on(Checkbox.Changed)
-    def form_changed(self) -> None:
+    @on(Select.Changed)
+    def form_changed(self, event=None) -> None:
+        if isinstance(event, Select.Changed) and event.select.id == "create-mode":
+            self.update_create_mode()
+            return
         self.update_summary()
+        self.update_upload_description()
 
     async def action_generate(self) -> None:
+        if self.create_mode() == "auto":
+            await self.action_auto_start()
+            return
         if self.jobs.running and not hasattr(self.jobs, "list_jobs"):
             self.notify("A generation is already running. See Monitor.")
             self.action_navigate("monitor")
@@ -345,7 +600,30 @@ class SlopEngineApp(App):
     def poll_job(self) -> None:
         if not self.query("#job-status"):
             return
-        for event in self.jobs.poll():
+        events = self.jobs.poll()
+        if self.auto_mode:
+            self.auto_mode.tick()
+        self.apply_poll_events(events)
+
+    async def poll_background(self) -> None:
+        if self._poll_busy or not self.is_mounted:
+            return
+        self._poll_busy = True
+        try:
+            events = await asyncio.to_thread(self.jobs.poll)
+            if self.auto_mode:
+                await asyncio.to_thread(self.auto_mode.tick)
+            self.apply_poll_events(events)
+        except Exception as exc:
+            if self.query("#auto-status"):
+                self.query_one("#auto-status", Static).update(redact(f"Background controller error: {type(exc).__name__}: {exc}"))
+        finally:
+            self._poll_busy = False
+
+    def apply_poll_events(self, events) -> None:
+        if not self.query("#job-status"):
+            return
+        for event in events:
             job_id = event.get("job_id")
             state = self.job_states.setdefault(job_id, JobState()) if job_id else self.job
             state.apply(event)
@@ -363,6 +641,7 @@ class SlopEngineApp(App):
                 self.notify(f"Generation {str(job_id or '')[:8]} {state.status.lower()}")
         self.update_monitor()
         self.refresh_queue()
+        self.refresh_auto()
 
     @staticmethod
     def event_line(event: dict) -> str:
@@ -486,6 +765,8 @@ class SlopEngineApp(App):
         if not hasattr(self.jobs, "list_jobs"):
             message.update("Bulk generation requires the persistent job manager.")
             return
+        self.query_one("#create-mode", Select).value = "manual"
+        self.update_create_mode()
         topics = [line.strip() for line in self.query_one("#bulk-topics", TextArea).text.splitlines() if line.strip()]
         try:
             if not topics:
@@ -617,6 +898,16 @@ class SlopEngineApp(App):
             self.add_bulk_jobs()
         elif action == "apply-limits":
             self.apply_concurrency_limits()
+        elif action == "auto-start":
+            await self.action_auto_start()
+        elif action == "auto-pause":
+            await self.action_auto_pause()
+        elif action == "auto-resume":
+            await self.action_auto_resume()
+        elif action == "auto-stop":
+            await self.action_auto_stop()
+        elif action == "auto-cancel":
+            await self.action_auto_cancel()
         elif action == "save-settings":
             self.save_settings()
         elif action == "refresh-library":
@@ -641,19 +932,23 @@ class SlopEngineApp(App):
                     self.notify(str(exc), severity="error")
 
     async def action_request_quit(self) -> None:
-        if self.jobs.running:
+        if self.jobs.running or (self.auto_mode and self.auto_mode.state in {"STARTING", "RUNNING", "PAUSING", "PAUSED", "STOPPING"}):
             self.push_screen(ConfirmExit(), self.confirm_exit)
         else:
             self.exit()
 
     async def confirm_exit(self, confirmed: bool) -> None:
         if confirmed:
+            if self.auto_mode:
+                await asyncio.to_thread(self.auto_mode.close)
             await asyncio.to_thread(self.jobs.close)
             self.exit()
 
     async def on_unmount(self) -> None:
         if hasattr(self, "poll_timer"):
             self.poll_timer.stop()
+        if self.auto_mode:
+            await asyncio.to_thread(self.auto_mode.close)
         await asyncio.to_thread(self.jobs.close)
 
 

@@ -17,7 +17,10 @@ PREFERENCE_FIELDS = {
     "caption_color", "caption_stroke_color", "caption_stroke_width", "caption_y_ratio",
     "youtube_privacy_status", "keep_temp", "tts_voice_overridden",
 }
-PATH_FIELDS = {"output_dir", "background_music_path"}
+PATH_FIELDS = {
+    "output_dir", "temp_root", "background_music_path",
+    "youtube_client_secrets_file", "youtube_token_file",
+}
 
 
 def state_dir() -> Path:

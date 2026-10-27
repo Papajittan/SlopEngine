@@ -17,9 +17,16 @@ Collapsible { background: #17243B; padding: 0 1; }
 Collapsible Contents { padding: 0 1; }
 #topic { height: 6; }
 #bulk-topics { height: 6; }
+#manual-create-fields, #auto-panel, #manual-actions { height: auto; }
 #queue-table { height: 10; min-height: 5; }
 #queue-log { height: 12; min-height: 5; border: round #31435E; }
 #queue-detail { height: auto; }
+#auto-duplicate-mode { height: auto; color: #94A3B8; margin-bottom: 1; }
+#auto-actions-panel { height: auto; }
+#auto-actions-panel .auto-actions { height: auto; margin: 0; }
+#auto-actions-panel Button { margin: 0 1 0 0; min-width: 10; }
+#auto-log { height: 1fr; min-height: 6; border: round #31435E; }
+#auto-table { height: 9; }
 #monitor-log, #log-view { min-height: 8; height: 1fr; border: round #31435E; }
 #stage-list { height: auto; }
 #library-table { height: 10; min-height: 5; }

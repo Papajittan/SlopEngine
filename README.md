@@ -74,7 +74,7 @@ The Textual interface has seven views:
 | View | Features |
 | --- | --- |
 | Dashboard | Local dependency/key readiness, video count, latest output, active job |
-| Create | Topic, optional filename, voice/transcription/music options, upload consent, summary |
+| Create | Manual or Auto mode, shared voice/transcription/music options, upload consent, summary |
 | Monitor | Actual pipeline stages, elapsed time, live logs, cancellation, saved output or errors |
 | Queue | Persistent jobs, bulk add, independent logs, retry/recovery, reordering, concurrency controls |
 | Library | Existing MP4s, titles/topics, timestamps, sizes, upload status, metadata, open/copy path, topic reuse |
@@ -87,13 +87,15 @@ panels scroll in smaller terminals. Advanced Create options expand with Enter.
 
 | Shortcut | Action |
 | --- | --- |
-| Ctrl+1 / Ctrl+2 / Ctrl+3 / Ctrl+4 / Ctrl+5 / Ctrl+6 / Ctrl+7 | Dashboard, Create, Library, Settings, Logs, Monitor, Queue |
-| Ctrl+G | Generate using the Create form |
+| Ctrl+1 / Ctrl+2 / Ctrl+3 / Ctrl+4 / Ctrl+5 / Ctrl+6 / Ctrl+7 | Dashboard, Create Manual, Library, Settings, Logs, Monitor, Queue |
+| Ctrl+8 | Open Create in Auto Mode |
+| Ctrl+G | Start the selected Create mode |
 | Ctrl+X | Cancel the current generation |
 | Ctrl+Q / Ctrl+C | Quit (asks before cancelling an active job) |
 
-To generate: open Create, enter a topic or detailed prompt, optionally name the
-MP4, expand advanced options if needed, review the summary, and choose Generate.
+To generate manually: open Create, choose Manual, enter a topic or detailed
+prompt, optionally name the MP4, expand shared options if needed, review the
+summary, and choose Generate.
 Plain filenames go into your configured output directory; paths with directories
 are used as entered. Existing video or metadata files are never overwritten.
 Leave the voice blank for automatic language selection, or enter an Edge TTS
@@ -104,11 +106,16 @@ up to two active jobs by default, while limiting concurrent renders to one and G
 Whisper stages to one. Preparation can overlap a render; adjust these limits in
 Queue. The app must remain open to advance queued work.
 
-Upload is off for every new TUI session regardless of `YOUTUBE_UPLOAD_ENABLED`.
-Check the explicit consent box for a job to upload; review privacy in the summary.
-Privacy defaults to `private`. Existing CLI environment-driven upload behavior
-is preserved. OAuth can open your browser during the upload stage. An upload
-failure retains the finished local video and reports the error.
+Upload is off for every new TUI job or Auto session regardless of
+`YOUTUBE_UPLOAD_ENABLED`. Check the shared consent box to upload one manual video;
+in Auto mode, the same checkbox covers every video in that session. Privacy and
+voice, transcription, music, and OAuth paths come from the shared Create settings.
+Privacy defaults to `private`. Consent and those settings are saved with the Auto
+session, so an explicit resume keeps the original choices. A new session needs a
+new checkbox opt-in. OAuth can open your browser during upload. If an Auto upload
+fails, the finalized MP4 stays in Library, counts toward the target, and pauses
+the session with the upload error. Resume continues with remaining videos without
+rerendering or automatically retrying that upload.
 
 Open Library to inspect finished outputs or reuse a topic. Missing or malformed
 metadata does not prevent listing a nonempty MP4. The system opener requires
@@ -121,7 +128,8 @@ Configuration precedence is environment / `.env` defaults, then saved applicatio
 preferences, then temporary Create options. Exported environment variables take
 precedence over `.env`. CLI runs continue to use environment configuration only.
 Settings are stored in `$XDG_STATE_HOME/slopengine/preferences.json`, defaulting to
-`~/.local/state/slopengine/preferences.json`; job logs are in its `logs/` directory.
+`~/.local/state/slopengine/preferences.json`; `jobs.sqlite3` and job logs are in
+that same state directory and its `logs/` subdirectory.
 API keys are never saved in preferences. Key status shows presence only.
 If the Gemini key is missing or still contains the `.env.example` placeholder,
 Dashboard shows a masked input. Enter the key and press Enter or choose
@@ -165,6 +173,68 @@ If Whisper or MoviePy cannot read media, check FFmpeg first:
 ffmpeg -version
 ```
 
+## Auto Mode
+
+Open **Create** and select **Auto Mode**, or press **Ctrl+8**. Enter a niche, then
+enter a positive whole number in **Number of Videos**. Leave it blank to run
+without a target. Check the shared upload-consent box to upload all videos in the
+session; leave it unchecked for local-only videos. Auto Mode asks
+Gemini for up to five topic ideas at a time, while reserving at most three
+not-yet-started jobs in the existing resource-aware queue. The default limits
+remain two active jobs, one render at a time, a 7 GiB render-stage reservation,
+and 3 GiB of system memory headroom. Auto Mode shares these limits with manual
+jobs. It keeps requesting
+replacement topics after individual video failures. A finite target counts only
+videos whose MP4 and metadata file both exist and are nonempty, with metadata that
+parses as a JSON object; it stops after exactly that many finalized MP4s. If an
+opted-in upload fails, the verified video still counts, remains available
+locally, and pauses the session with an actionable error; resuming continues
+without rerendering or retrying that upload. For example, set the niche to
+`Space mysteries` and the count to `10`; leave the count blank to run until you
+press **S** or **X**.
+
+The Auto section in Create shows the niche, target, generated count, active and queued jobs,
+duplicate rejections, topic-request usage, each accepted topic's current stage,
+and the count of completed pipeline stages. It never estimates render
+percentages. Its event log is saved in the same `jobs.sqlite3` database as the
+job queue.
+
+Use **P** to pause, **R** to resume, **S** to stop after started Auto jobs
+finish, and **X** to cancel only jobs owned by the current Auto session. Pause
+stops new topic requests and worker dispatch, then lets an active pipeline stage
+finish before holding at the next stage boundary. The reserved queue stays
+saved. Stop cancels Auto jobs that have not started and lets active Auto jobs
+finish; cancel also terminates active Auto workers. Neither action touches
+manual jobs. These shortcuts work only when Create is set to Auto and are ignored while a
+text input has focus. **?** shows help.
+
+After an application restart, an interrupted Auto session is paused and needs
+an explicit **R**. Resuming reuses held job IDs, counts already finalized files
+from a crash window, preserves the session's upload consent and privacy
+configuration, and never silently starts a new session. An upload interrupted
+after save is recorded as a failed delivery while the finalized video remains
+counted and available.
+
+Duplicate protection compares NFKC/case-folded text after punctuation and
+spacing normalization, conservative text similarity, and a small deterministic
+concept/synonym map. It checks all stored Auto sessions, manual jobs, and
+existing output metadata. Rejected ideas retain their match and score. This is
+a local heuristic rather than an embedding model; it can miss paraphrases that
+do not share the mapped concepts. When a rendered script title overlaps another
+topic, Auto Mode records the overlap and cancels that job before narration and
+rendering. A fallback overlap discovered after publication is annotated in
+history, and the finalized file is retained.
+
+`AUTO_MAX_TOPIC_REQUESTS_PER_MINUTE` and `AUTO_MAX_TOPIC_REQUESTS_SESSION`
+meter Auto **topic-discovery** Gemini calls, including explicit fallback model
+lookup and generation calls. They do not meter the separate Gemini script
+request made by each video worker. A session budget of `0` means no request
+limit; these are request counts, not a dollar estimate. `AUTO_TOPIC_REQUEST_COOLDOWN_SECONDS`
+sets the minimum delay between discovery calls. `AUTO_MIN_FREE_DISK_GIB` sets
+the minimum free space required on both output and temp filesystems. Consecutive
+video failures and batches with no unique ideas stop in an actionable `ERROR`
+state with queued work preserved.
+
 ## Configuration
 
 Copy the example env file and fill in your own keys:
@@ -188,6 +258,13 @@ Common optional keys:
 | --- | --- | --- |
 | `GEMINI_MODEL` | `gemini-2.5-flash` | Gemini model for content generation |
 | `GEMINI_TIMEOUT_SECONDS` | `60` | Gemini content generation timeout |
+| `AUTO_MAX_TOPIC_REQUESTS_PER_MINUTE` | `4` | Maximum Auto topic-discovery Gemini calls in a rolling minute; excludes video-script requests |
+| `AUTO_MAX_TOPIC_REQUESTS_SESSION` | `0` | Maximum Auto topic-discovery Gemini calls in one session; `0` means unlimited |
+| `AUTO_TOPIC_REQUEST_COOLDOWN_SECONDS` | `5` | Minimum delay between topic-discovery provider calls |
+| `AUTO_MIN_FREE_DISK_GIB` | `1` | Required free space on output and temporary-media filesystems |
+| `AUTO_MAX_CONSECUTIVE_FAILURES` | `5` | Consecutive failed Auto video jobs before preserving work in `ERROR` |
+| `AUTO_DUPLICATE_BATCH_LIMIT` | `3` | Duplicate-only topic batches before Auto pauses with an actionable error |
+| `AUTO_DUPLICATE_SIMILARITY` | `0.9` | Conservative normalized-title similarity threshold (0–1) |
 | `EDGE_TTS_VOICE` | `en-US-AriaNeural` | Edge TTS voice |
 | `EDGE_TTS_RATE` | `+7%` | Speech rate |
 | `EDGE_TTS_PITCH` | `-3Hz` | Speech pitch |
