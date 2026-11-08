@@ -1,0 +1,866 @@
+{
+  "benchmark": "milestone-1.4-repeated-background-frame-cache",
+  "source_hashes": {
+    "baseline": "7ae497294b88a252a5302bcce397c87f13f4413d549afb2361e932f6a11b3c3a",
+    "optimized": "2966a1d854444d30a27c134293109f74b2c53efcd095a8e0b6566b601e6760b7"
+  },
+  "total_render_count": 32,
+  "passed": true,
+  "modest_fps_matrix": {
+    "workload_count": 6,
+    "summed_workload_medians": {
+      "render_wall_seconds": {
+        "baseline": 18.39127492050102,
+        "optimized": 16.469871663997765
+      },
+      "python_cpu_seconds": {
+        "baseline": 35.51,
+        "optimized": 33.595
+      }
+    },
+    "render_wall_reduction_percent": 10.447363028440394,
+    "python_cpu_reduction_percent": 5.392847085328074,
+    "sum_note": "Sum of each workload's two-trial median; workloads have different output frame rates and are not a single production job."
+  },
+  "full_resolution_controls": {
+    "workload_count": 2,
+    "summed_workload_medians": {
+      "render_wall_seconds": {
+        "baseline": 19.13325071700092,
+        "optimized": 18.36649716300235
+      },
+      "python_cpu_seconds": {
+        "baseline": 23.809999999999995,
+        "optimized": 23.145
+      }
+    },
+    "render_wall_reduction_percent": 4.007440059922842,
+    "python_cpu_reduction_percent": 2.7929441411171596,
+    "sum_note": "Sum of each workload's two-trial median; workloads have different output frame rates and are not a single production job."
+  },
+  "isolated_lookup": {
+    "result_file": "docs/benchmarks/milestone14-lookup.json",
+    "medians": {
+      "uncached_fit_wall_seconds": 0.48823815749892674,
+      "warmed_cache_hit_copy_wall_seconds": 0.009333029001936666,
+      "cold_cache_cycle_wall_seconds": 0.07232344149997516,
+      "uncached_fit_process_cpu_seconds": 0.48454577949999966,
+      "warmed_cache_hit_copy_process_cpu_seconds": 0.009224740999999925,
+      "cold_cache_cycle_process_cpu_seconds": 0.07171193850000046
+    },
+    "all_outputs_equal": true,
+    "all_cache_entries_cleared": true,
+    "note": "Separate no-decode/no-encode diagnostic; its timings are not render speedups."
+  },
+  "cases": [
+    {
+      "name": "24-to-30",
+      "scope": "all-six-pair-modest-render",
+      "source_fps": "24/1",
+      "output_fps": 30,
+      "output_size": [
+        540,
+        960
+      ],
+      "seconds": 3.0,
+      "trials_per_variant": {
+        "baseline": 2,
+        "optimized": 2
+      },
+      "medians": {
+        "render_wall_seconds": {
+          "baseline": 2.7519273399993835,
+          "optimized": 2.4805174084976898
+        },
+        "process_wall_seconds_including_import": {
+          "baseline": 5.677516288500556,
+          "optimized": 5.520079768501091
+        },
+        "python_cpu_seconds": {
+          "baseline": 5.584999999999999,
+          "optimized": 5.359999999999999
+        },
+        "ffmpeg_cpu_seconds": {
+          "baseline": 1.305,
+          "optimized": 1.34
+        },
+        "pillow_resize_calls": {
+          "baseline": 184.0,
+          "optimized": 144.0
+        },
+        "pillow_resize_process_cpu_seconds": {
+          "baseline": 1.3602681480000032,
+          "optimized": 1.0470088850000014
+        },
+        "fitted_transform_calls": {
+          "baseline": 92.0,
+          "optimized": 72.0
+        },
+        "fitted_transform_process_cpu_seconds": {
+          "baseline": 1.4816350280000012,
+          "optimized": 1.1426762649999982
+        },
+        "source_reader_frame_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "source_reader_same_array_requests": {
+          "baseline": 20.0,
+          "optimized": 20.0
+        },
+        "source_reader_immutable_bytes_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "cache_requests": {
+          "baseline": 0.0,
+          "optimized": 92.0
+        },
+        "cache_hits": {
+          "baseline": 0.0,
+          "optimized": 20.0
+        },
+        "cache_misses": {
+          "baseline": 0.0,
+          "optimized": 72.0
+        },
+        "peak_tree_rss_bytes": {
+          "baseline": 1033005056.0,
+          "optimized": 1033058304.0
+        },
+        "peak_tree_pss_bytes": {
+          "baseline": 981551616.0,
+          "optimized": 981452800.0
+        },
+        "peak_temporary_intermediate_bytes": {
+          "baseline": 49718.0,
+          "optimized": 49718.0
+        },
+        "output_bytes": {
+          "baseline": 1733433.0,
+          "optimized": 1733433.0
+        }
+      },
+      "render_wall_reduction_percent": 9.862539884565216,
+      "python_cpu_reduction_percent": 4.028648164726942,
+      "fitted_transform_reduction_percent": 21.73913043478261,
+      "cache_hit_fraction": 0.21739130434782608,
+      "peak_cache_source_bytes": 1555200,
+      "peak_cache_fitted_bytes": 1555200,
+      "peak_cache_entries": 1,
+      "all_four_encoded_files_equal": true,
+      "decoded_rgb24_equal": true,
+      "decoded_pcm_equal": true,
+      "reader_cleanup_passed": true,
+      "passed": true
+    },
+    {
+      "name": "25-to-30",
+      "scope": "all-six-pair-modest-render",
+      "source_fps": "25/1",
+      "output_fps": 30,
+      "output_size": [
+        540,
+        960
+      ],
+      "seconds": 3.0,
+      "trials_per_variant": {
+        "baseline": 2,
+        "optimized": 2
+      },
+      "medians": {
+        "render_wall_seconds": {
+          "baseline": 2.6673850900024263,
+          "optimized": 2.395067313000254
+        },
+        "process_wall_seconds_including_import": {
+          "baseline": 5.6617464994997135,
+          "optimized": 5.387300829999731
+        },
+        "python_cpu_seconds": {
+          "baseline": 5.6,
+          "optimized": 5.29
+        },
+        "ffmpeg_cpu_seconds": {
+          "baseline": 1.21,
+          "optimized": 1.2149999999999999
+        },
+        "pillow_resize_calls": {
+          "baseline": 184.0,
+          "optimized": 150.0
+        },
+        "pillow_resize_process_cpu_seconds": {
+          "baseline": 1.3313710695000005,
+          "optimized": 1.0630331934999993
+        },
+        "fitted_transform_calls": {
+          "baseline": 92.0,
+          "optimized": 75.0
+        },
+        "fitted_transform_process_cpu_seconds": {
+          "baseline": 1.450049544000001,
+          "optimized": 1.1596916505000023
+        },
+        "source_reader_frame_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "source_reader_same_array_requests": {
+          "baseline": 17.0,
+          "optimized": 17.0
+        },
+        "source_reader_immutable_bytes_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "cache_requests": {
+          "baseline": 0.0,
+          "optimized": 92.0
+        },
+        "cache_hits": {
+          "baseline": 0.0,
+          "optimized": 17.0
+        },
+        "cache_misses": {
+          "baseline": 0.0,
+          "optimized": 75.0
+        },
+        "peak_tree_rss_bytes": {
+          "baseline": 1032544256.0,
+          "optimized": 1032183808.0
+        },
+        "peak_tree_pss_bytes": {
+          "baseline": 980790272.0,
+          "optimized": 980824064.0
+        },
+        "peak_temporary_intermediate_bytes": {
+          "baseline": 49718.0,
+          "optimized": 49718.0
+        },
+        "output_bytes": {
+          "baseline": 1752600.0,
+          "optimized": 1752600.0
+        }
+      },
+      "render_wall_reduction_percent": 10.209166198867985,
+      "python_cpu_reduction_percent": 5.535714285714279,
+      "fitted_transform_reduction_percent": 18.47826086956522,
+      "cache_hit_fraction": 0.18478260869565216,
+      "peak_cache_source_bytes": 1555200,
+      "peak_cache_fitted_bytes": 1555200,
+      "peak_cache_entries": 1,
+      "all_four_encoded_files_equal": true,
+      "decoded_rgb24_equal": true,
+      "decoded_pcm_equal": true,
+      "reader_cleanup_passed": true,
+      "passed": true
+    },
+    {
+      "name": "30-to-30",
+      "scope": "all-six-pair-modest-render",
+      "source_fps": "30/1",
+      "output_fps": 30,
+      "output_size": [
+        540,
+        960
+      ],
+      "seconds": 3.0,
+      "trials_per_variant": {
+        "baseline": 2,
+        "optimized": 2
+      },
+      "medians": {
+        "render_wall_seconds": {
+          "baseline": 2.7692828989984264,
+          "optimized": 2.856062047500018
+        },
+        "process_wall_seconds_including_import": {
+          "baseline": 5.663460762001705,
+          "optimized": 5.82763392599918
+        },
+        "python_cpu_seconds": {
+          "baseline": 5.605,
+          "optimized": 5.715
+        },
+        "ffmpeg_cpu_seconds": {
+          "baseline": 1.6,
+          "optimized": 1.56
+        },
+        "pillow_resize_calls": {
+          "baseline": 184.0,
+          "optimized": 184.0
+        },
+        "pillow_resize_process_cpu_seconds": {
+          "baseline": 1.3363870875000032,
+          "optimized": 1.3635688460000037
+        },
+        "fitted_transform_calls": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "fitted_transform_process_cpu_seconds": {
+          "baseline": 1.4643292700000023,
+          "optimized": 1.4931061805000023
+        },
+        "source_reader_frame_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "source_reader_same_array_requests": {
+          "baseline": 2.0,
+          "optimized": 2.0
+        },
+        "source_reader_immutable_bytes_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "cache_requests": {
+          "baseline": 0.0,
+          "optimized": 0.0
+        },
+        "cache_hits": {
+          "baseline": 0.0,
+          "optimized": 0.0
+        },
+        "cache_misses": {
+          "baseline": 0.0,
+          "optimized": 0.0
+        },
+        "peak_tree_rss_bytes": {
+          "baseline": 1033797632.0,
+          "optimized": 1032775680.0
+        },
+        "peak_tree_pss_bytes": {
+          "baseline": 982038528.0,
+          "optimized": 981108224.0
+        },
+        "peak_temporary_intermediate_bytes": {
+          "baseline": 49718.0,
+          "optimized": 49718.0
+        },
+        "output_bytes": {
+          "baseline": 1905484.0,
+          "optimized": 1905484.0
+        }
+      },
+      "render_wall_reduction_percent": -3.1336324841704344,
+      "python_cpu_reduction_percent": -1.9625334522747444,
+      "fitted_transform_reduction_percent": 0.0,
+      "cache_hit_fraction": null,
+      "peak_cache_source_bytes": 0,
+      "peak_cache_fitted_bytes": 0,
+      "peak_cache_entries": 0,
+      "all_four_encoded_files_equal": true,
+      "decoded_rgb24_equal": true,
+      "decoded_pcm_equal": true,
+      "reader_cleanup_passed": true,
+      "passed": true
+    },
+    {
+      "name": "30-to-60",
+      "scope": "all-six-pair-modest-render",
+      "source_fps": "30/1",
+      "output_fps": 60,
+      "output_size": [
+        540,
+        960
+      ],
+      "seconds": 3.0,
+      "trials_per_variant": {
+        "baseline": 2,
+        "optimized": 2
+      },
+      "medians": {
+        "render_wall_seconds": {
+          "baseline": 4.549831238500701,
+          "optimized": 3.3796150609996403
+        },
+        "process_wall_seconds_including_import": {
+          "baseline": 7.580686068000432,
+          "optimized": 6.224037869000313
+        },
+        "python_cpu_seconds": {
+          "baseline": 7.48,
+          "optimized": 6.145
+        },
+        "ffmpeg_cpu_seconds": {
+          "baseline": 2.17,
+          "optimized": 2.365
+        },
+        "pillow_resize_calls": {
+          "baseline": 364.0,
+          "optimized": 180.0
+        },
+        "pillow_resize_process_cpu_seconds": {
+          "baseline": 2.575116937999997,
+          "optimized": 1.3079444309999992
+        },
+        "fitted_transform_calls": {
+          "baseline": 182.0,
+          "optimized": 90.0
+        },
+        "fitted_transform_process_cpu_seconds": {
+          "baseline": 2.801464333000006,
+          "optimized": 1.4281654354999989
+        },
+        "source_reader_frame_requests": {
+          "baseline": 182.0,
+          "optimized": 182.0
+        },
+        "source_reader_same_array_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "source_reader_immutable_bytes_requests": {
+          "baseline": 182.0,
+          "optimized": 182.0
+        },
+        "cache_requests": {
+          "baseline": 0.0,
+          "optimized": 182.0
+        },
+        "cache_hits": {
+          "baseline": 0.0,
+          "optimized": 92.0
+        },
+        "cache_misses": {
+          "baseline": 0.0,
+          "optimized": 90.0
+        },
+        "peak_tree_rss_bytes": {
+          "baseline": 1032552448.0,
+          "optimized": 1034125312.0
+        },
+        "peak_tree_pss_bytes": {
+          "baseline": 980961280.0,
+          "optimized": 982447104.0
+        },
+        "peak_temporary_intermediate_bytes": {
+          "baseline": 49718.0,
+          "optimized": 49718.0
+        },
+        "output_bytes": {
+          "baseline": 1821513.0,
+          "optimized": 1821513.0
+        }
+      },
+      "render_wall_reduction_percent": 25.719990833916743,
+      "python_cpu_reduction_percent": 17.84759358288771,
+      "fitted_transform_reduction_percent": 50.54945054945055,
+      "cache_hit_fraction": 0.5054945054945055,
+      "peak_cache_source_bytes": 1555200,
+      "peak_cache_fitted_bytes": 1555200,
+      "peak_cache_entries": 1,
+      "all_four_encoded_files_equal": true,
+      "decoded_rgb24_equal": true,
+      "decoded_pcm_equal": true,
+      "reader_cleanup_passed": true,
+      "passed": true
+    },
+    {
+      "name": "60-to-30",
+      "scope": "all-six-pair-modest-render",
+      "source_fps": "60/1",
+      "output_fps": 30,
+      "output_size": [
+        540,
+        960
+      ],
+      "seconds": 3.0,
+      "trials_per_variant": {
+        "baseline": 2,
+        "optimized": 2
+      },
+      "medians": {
+        "render_wall_seconds": {
+          "baseline": 2.9402410439997766,
+          "optimized": 2.959915554500185
+        },
+        "process_wall_seconds_including_import": {
+          "baseline": 5.951835890999064,
+          "optimized": 5.950949940999635
+        },
+        "python_cpu_seconds": {
+          "baseline": 5.695,
+          "optimized": 5.755000000000001
+        },
+        "ffmpeg_cpu_seconds": {
+          "baseline": 1.8800000000000001,
+          "optimized": 1.8050000000000002
+        },
+        "pillow_resize_calls": {
+          "baseline": 184.0,
+          "optimized": 184.0
+        },
+        "pillow_resize_process_cpu_seconds": {
+          "baseline": 1.3507176770000042,
+          "optimized": 1.3598299809999987
+        },
+        "fitted_transform_calls": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "fitted_transform_process_cpu_seconds": {
+          "baseline": 1.4782298795000006,
+          "optimized": 1.4845238309999966
+        },
+        "source_reader_frame_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "source_reader_same_array_requests": {
+          "baseline": 2.0,
+          "optimized": 2.0
+        },
+        "source_reader_immutable_bytes_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "cache_requests": {
+          "baseline": 0.0,
+          "optimized": 0.0
+        },
+        "cache_hits": {
+          "baseline": 0.0,
+          "optimized": 0.0
+        },
+        "cache_misses": {
+          "baseline": 0.0,
+          "optimized": 0.0
+        },
+        "peak_tree_rss_bytes": {
+          "baseline": 1033158656.0,
+          "optimized": 1032482816.0
+        },
+        "peak_tree_pss_bytes": {
+          "baseline": 981920256.0,
+          "optimized": 980323840.0
+        },
+        "peak_temporary_intermediate_bytes": {
+          "baseline": 49718.0,
+          "optimized": 49718.0
+        },
+        "output_bytes": {
+          "baseline": 1991556.0,
+          "optimized": 1991556.0
+        }
+      },
+      "render_wall_reduction_percent": -0.6691461756361311,
+      "python_cpu_reduction_percent": -1.053555750658481,
+      "fitted_transform_reduction_percent": 0.0,
+      "cache_hit_fraction": null,
+      "peak_cache_source_bytes": 0,
+      "peak_cache_fitted_bytes": 0,
+      "peak_cache_entries": 0,
+      "all_four_encoded_files_equal": true,
+      "decoded_rgb24_equal": true,
+      "decoded_pcm_equal": true,
+      "reader_cleanup_passed": true,
+      "passed": true
+    },
+    {
+      "name": "24000-1001-to-30",
+      "scope": "all-six-pair-modest-render",
+      "source_fps": "24000/1001",
+      "output_fps": 30,
+      "output_size": [
+        540,
+        960
+      ],
+      "seconds": 3.0,
+      "trials_per_variant": {
+        "baseline": 2,
+        "optimized": 2
+      },
+      "medians": {
+        "render_wall_seconds": {
+          "baseline": 2.7126073090003047,
+          "optimized": 2.3986942794999777
+        },
+        "process_wall_seconds_including_import": {
+          "baseline": 5.661164945000564,
+          "optimized": 5.383886338498996
+        },
+        "python_cpu_seconds": {
+          "baseline": 5.545,
+          "optimized": 5.33
+        },
+        "ffmpeg_cpu_seconds": {
+          "baseline": 1.365,
+          "optimized": 1.475
+        },
+        "pillow_resize_calls": {
+          "baseline": 184.0,
+          "optimized": 144.0
+        },
+        "pillow_resize_process_cpu_seconds": {
+          "baseline": 1.3414422430000001,
+          "optimized": 1.0432307879999998
+        },
+        "fitted_transform_calls": {
+          "baseline": 92.0,
+          "optimized": 72.0
+        },
+        "fitted_transform_process_cpu_seconds": {
+          "baseline": 1.4604843914999983,
+          "optimized": 1.1391531575000011
+        },
+        "source_reader_frame_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "source_reader_same_array_requests": {
+          "baseline": 20.0,
+          "optimized": 20.0
+        },
+        "source_reader_immutable_bytes_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "cache_requests": {
+          "baseline": 0.0,
+          "optimized": 92.0
+        },
+        "cache_hits": {
+          "baseline": 0.0,
+          "optimized": 20.0
+        },
+        "cache_misses": {
+          "baseline": 0.0,
+          "optimized": 72.0
+        },
+        "peak_tree_rss_bytes": {
+          "baseline": 1032720384.0,
+          "optimized": 1034199040.0
+        },
+        "peak_tree_pss_bytes": {
+          "baseline": 981054464.0,
+          "optimized": 982521856.0
+        },
+        "peak_temporary_intermediate_bytes": {
+          "baseline": 49718.0,
+          "optimized": 49718.0
+        },
+        "output_bytes": {
+          "baseline": 1754991.0,
+          "optimized": 1754991.0
+        }
+      },
+      "render_wall_reduction_percent": 11.572372766923474,
+      "python_cpu_reduction_percent": 3.8773669972948577,
+      "fitted_transform_reduction_percent": 21.73913043478261,
+      "cache_hit_fraction": 0.21739130434782608,
+      "peak_cache_source_bytes": 1555200,
+      "peak_cache_fitted_bytes": 1555200,
+      "peak_cache_entries": 1,
+      "all_four_encoded_files_equal": true,
+      "decoded_rgb24_equal": true,
+      "decoded_pcm_equal": true,
+      "reader_cleanup_passed": true,
+      "passed": true
+    },
+    {
+      "name": "full-resolution-24-to-30",
+      "scope": "full-resolution-resize-heavy",
+      "source_fps": "24/1",
+      "output_fps": 30,
+      "output_size": [
+        1080,
+        1920
+      ],
+      "seconds": 3.0,
+      "trials_per_variant": {
+        "baseline": 2,
+        "optimized": 2
+      },
+      "medians": {
+        "render_wall_seconds": {
+          "baseline": 9.657072727000923,
+          "optimized": 8.78711161350111
+        },
+        "process_wall_seconds_including_import": {
+          "baseline": 12.639836923000985,
+          "optimized": 12.056279452001036
+        },
+        "python_cpu_seconds": {
+          "baseline": 11.995,
+          "optimized": 11.165
+        },
+        "ffmpeg_cpu_seconds": {
+          "baseline": 4.66,
+          "optimized": 4.875
+        },
+        "pillow_resize_calls": {
+          "baseline": 184.0,
+          "optimized": 144.0
+        },
+        "pillow_resize_process_cpu_seconds": {
+          "baseline": 5.235253801499994,
+          "optimized": 4.076568015499997
+        },
+        "fitted_transform_calls": {
+          "baseline": 92.0,
+          "optimized": 72.0
+        },
+        "fitted_transform_process_cpu_seconds": {
+          "baseline": 5.7735211170000005,
+          "optimized": 4.519320622500002
+        },
+        "source_reader_frame_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "source_reader_same_array_requests": {
+          "baseline": 20.0,
+          "optimized": 20.0
+        },
+        "source_reader_immutable_bytes_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "cache_requests": {
+          "baseline": 0.0,
+          "optimized": 92.0
+        },
+        "cache_hits": {
+          "baseline": 0.0,
+          "optimized": 20.0
+        },
+        "cache_misses": {
+          "baseline": 0.0,
+          "optimized": 72.0
+        },
+        "peak_tree_rss_bytes": {
+          "baseline": 1680834560.0,
+          "optimized": 1692155904.0
+        },
+        "peak_tree_pss_bytes": {
+          "baseline": 1634352128.0,
+          "optimized": 1645645824.0
+        },
+        "peak_temporary_intermediate_bytes": {
+          "baseline": 49718.0,
+          "optimized": 49718.0
+        },
+        "output_bytes": {
+          "baseline": 2272400.0,
+          "optimized": 2272400.0
+        }
+      },
+      "render_wall_reduction_percent": 9.00853848876403,
+      "python_cpu_reduction_percent": 6.919549812421843,
+      "fitted_transform_reduction_percent": 21.73913043478261,
+      "cache_hit_fraction": 0.21739130434782608,
+      "peak_cache_source_bytes": 6220800,
+      "peak_cache_fitted_bytes": 6220800,
+      "peak_cache_entries": 1,
+      "all_four_encoded_files_equal": true,
+      "decoded_rgb24_equal": true,
+      "decoded_pcm_equal": true,
+      "reader_cleanup_passed": true,
+      "passed": true
+    },
+    {
+      "name": "full-resolution-30-to-30",
+      "scope": "full-resolution-resize-heavy",
+      "source_fps": "30/1",
+      "output_fps": 30,
+      "output_size": [
+        1080,
+        1920
+      ],
+      "seconds": 3.0,
+      "trials_per_variant": {
+        "baseline": 2,
+        "optimized": 2
+      },
+      "medians": {
+        "render_wall_seconds": {
+          "baseline": 9.476177989999996,
+          "optimized": 9.57938554950124
+        },
+        "process_wall_seconds_including_import": {
+          "baseline": 12.481183018500815,
+          "optimized": 12.678821465500732
+        },
+        "python_cpu_seconds": {
+          "baseline": 11.814999999999998,
+          "optimized": 11.98
+        },
+        "ffmpeg_cpu_seconds": {
+          "baseline": 5.359999999999999,
+          "optimized": 5.195
+        },
+        "pillow_resize_calls": {
+          "baseline": 184.0,
+          "optimized": 184.0
+        },
+        "pillow_resize_process_cpu_seconds": {
+          "baseline": 5.142392821000004,
+          "optimized": 5.205762872000004
+        },
+        "fitted_transform_calls": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "fitted_transform_process_cpu_seconds": {
+          "baseline": 5.713199907499996,
+          "optimized": 5.778568523999999
+        },
+        "source_reader_frame_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "source_reader_same_array_requests": {
+          "baseline": 2.0,
+          "optimized": 2.0
+        },
+        "source_reader_immutable_bytes_requests": {
+          "baseline": 92.0,
+          "optimized": 92.0
+        },
+        "cache_requests": {
+          "baseline": 0.0,
+          "optimized": 0.0
+        },
+        "cache_hits": {
+          "baseline": 0.0,
+          "optimized": 0.0
+        },
+        "cache_misses": {
+          "baseline": 0.0,
+          "optimized": 0.0
+        },
+        "peak_tree_rss_bytes": {
+          "baseline": 1664346112.0,
+          "optimized": 1666342912.0
+        },
+        "peak_tree_pss_bytes": {
+          "baseline": 1617677312.0,
+          "optimized": 1619766784.0
+        },
+        "peak_temporary_intermediate_bytes": {
+          "baseline": 49718.0,
+          "optimized": 49718.0
+        },
+        "output_bytes": {
+          "baseline": 2304677.0,
+          "optimized": 2304677.0
+        }
+      },
+      "render_wall_reduction_percent": -1.089126434836446,
+      "python_cpu_reduction_percent": -1.3965298349555881,
+      "fitted_transform_reduction_percent": 0.0,
+      "cache_hit_fraction": null,
+      "peak_cache_source_bytes": 0,
+      "peak_cache_fitted_bytes": 0,
+      "peak_cache_entries": 0,
+      "all_four_encoded_files_equal": true,
+      "decoded_rgb24_equal": true,
+      "decoded_pcm_equal": true,
+      "reader_cleanup_passed": true,
+      "passed": true
+    }
+  ],
+  "interpretation_note": "Observed values from short synthetic full renders on this machine. Two trials per variant do not establish general performance. The separate isolated lookup diagnostic is reported for mechanism-level context and is not a render-speedup estimate."
+}

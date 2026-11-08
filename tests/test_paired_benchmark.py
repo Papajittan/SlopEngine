@@ -1,6 +1,7 @@
 """Offline safety checks; no media imports or real renders required."""
 import json
 from pathlib import Path
+import signal
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -50,9 +51,19 @@ class PairedBenchmarkTests(unittest.TestCase):
     def test_cleanup_targets_only_owned_groups_even_after_parent_exit(self):
         process = Mock(pid=45678)
         process.poll.return_value = 0
-        with patch('scripts.benchmark_paired_render.os.killpg') as killpg:
+        signals_sent = []
+
+        def fake_killpg(group, sig):
+            if sig == 0:
+                if signals_sent:
+                    raise ProcessLookupError
+                return
+            signals_sent.append(sig)
+
+        with patch('scripts.benchmark_paired_render.os.killpg', side_effect=fake_killpg) as killpg:
             stop_groups([process])
-        self.assertEqual([call.args[0] for call in killpg.call_args_list], [45678, 45678])
+        self.assertEqual(signals_sent, [signal.SIGTERM])
+        self.assertTrue(all(call.args[0] == 45678 for call in killpg.call_args_list))
         process.wait.assert_called_once()
 
     def test_memory_pressure_after_admission_aborts_before_launch(self):

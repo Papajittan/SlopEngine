@@ -1,0 +1,123 @@
+--- shorts_core.py
++++ shorts_core.py
+@@ -17,7 +17,6 @@
+ import gc
+ import json
+ import math
+-from numbers import Real
+ import os
+ import re
+ import shutil
+@@ -1179,101 +1178,6 @@
+             raise PipelineError("downloaded empty Pexels video")
+ 
+ 
+-class _ClipIntervalNode:
+-    def __init__(self, intervals: list[tuple[int, float, float]]) -> None:
+-        midpoints = sorted(self._midpoint(start, end) for _, start, end in intervals)
+-        self.center = midpoints[len(midpoints) // 2]
+-        crossing: list[tuple[int, float, float]] = []
+-        left: list[tuple[int, float, float]] = []
+-        right: list[tuple[int, float, float]] = []
+-        for interval in intervals:
+-            _, start, end = interval
+-            if end <= self.center:
+-                left.append(interval)
+-            elif start > self.center:
+-                right.append(interval)
+-            else:
+-                crossing.append(interval)
+-
+-        self.by_start = sorted(crossing, key=lambda interval: interval[1])
+-        self.by_end = sorted(crossing, key=lambda interval: interval[2], reverse=True)
+-        self.left = _ClipIntervalNode(left) if left else None
+-        self.right = _ClipIntervalNode(right) if right else None
+-
+-    @staticmethod
+-    def _midpoint(start: float, end: float) -> float:
+-        if start < 0 < end:
+-            midpoint = start / 2 + end / 2
+-        else:
+-            midpoint = start + (end - start) / 2
+-        return midpoint if start <= midpoint < end else start
+-
+-    def collect(self, time: float, active: list[int]) -> None:
+-        if time < self.center:
+-            for index, start, _ in self.by_start:
+-                if start > time:
+-                    break
+-                active.append(index)
+-            if self.left is not None:
+-                self.left.collect(time, active)
+-            return
+-
+-        for index, _, end in self.by_end:
+-            if end <= time:
+-                break
+-            active.append(index)
+-        if self.right is not None:
+-            self.right.collect(time, active)
+-
+-
+-class _ClipIntervalIndex:
+-    def __init__(self, clips: tuple[Any, ...], intervals: list[tuple[int, float, float]]) -> None:
+-        self.clips = clips
+-        self.root = _ClipIntervalNode(intervals) if intervals else None
+-
+-    def playing_clips(self, time: float) -> list[Any]:
+-        if self.root is None:
+-            return []
+-        active: list[int] = []
+-        self.root.collect(time, active)
+-        active.sort()
+-        return [self.clips[index] for index in active]
+-
+-
+-def _index_caption_clip_selection(composite: Any) -> None:
+-    """Replace linear caption selection with interval lookup, preserving layer order."""
+-    clips = getattr(composite, "clips", None)
+-    if not clips:
+-        return
+-
+-    intervals: list[tuple[int, float, float]] = []
+-    for index, clip in enumerate(clips):
+-        start = getattr(clip, "start", None)
+-        end = getattr(clip, "end", None)
+-        if start is None or end is None:
+-            return
+-        try:
+-            start = float(start)
+-            end = float(end)
+-        except (TypeError, ValueError):
+-            return
+-        if not math.isfinite(start) or not math.isfinite(end) or start >= end:
+-            return
+-        intervals.append((index, start, end))
+-
+-    index = _ClipIntervalIndex(tuple(clips), intervals)
+-    original_playing_clips = composite.playing_clips
+-
+-    def playing_clips(time: Any = 0) -> list[Any]:
+-        if isinstance(time, Real):
+-            numeric_time = float(time)
+-            if math.isfinite(numeric_time):
+-                return index.playing_clips(numeric_time)
+-        return original_playing_clips(time)
+-
+-    composite.playing_clips = playing_clips
+-
+-
+ class MoviePyShortCompiler:
+     def __init__(self, config: PipelineConfig) -> None:
+         self.config = config
+@@ -1311,10 +1215,6 @@
+                 # MoviePy 2.1 cannot use_bgclip with an empty overlay list.
+                 use_bgclip=bool(caption_clips), bg_color=(0, 0, 0),
+             )
+-            if caption_clips:
+-                # Install before duration/audio/fps helpers copy clips. MoviePy 1.x
+-                # frame functions can close over this original composite instance.
+-                _index_caption_clip_selection(final_clip)
+             final_clip = clip_with_duration(final_clip, final_duration)
+             final_clip = clip_with_audio(final_clip, audio_clip)
+             final_clip = clip_with_fps(final_clip, self.config.fps)

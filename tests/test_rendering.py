@@ -24,7 +24,7 @@ class RenderingTests(unittest.TestCase):
         join = Mock(return_value=object())
         with patch.object(self.core, 'VideoFileClip', side_effect=clips), \
              patch.object(self.core, 'clip_without_audio', side_effect=lambda clip: clip), \
-             patch.object(self.compiler, '_fit_vertical', side_effect=lambda clip: clip), \
+             patch.object(self.compiler, '_fit_vertical', side_effect=lambda clip, _opened=None: clip), \
              patch.object(self.core, 'concatenate_videoclips', join), \
              patch.object(self.core, 'loop_clip_to_duration', side_effect=lambda clip, _: clip):
             opened = []
@@ -36,7 +36,7 @@ class RenderingTests(unittest.TestCase):
         clips = [SimpleNamespace(size=(1080, 1920)), SimpleNamespace(size=(1079, 1920))]
         with patch.object(self.core, 'VideoFileClip', side_effect=clips), \
              patch.object(self.core, 'clip_without_audio', side_effect=lambda clip: clip), \
-             patch.object(self.compiler, '_fit_vertical', side_effect=lambda clip: clip), \
+             patch.object(self.compiler, '_fit_vertical', side_effect=lambda clip, _opened=None: clip), \
              patch.object(self.core, 'concatenate_videoclips') as join, \
              patch.object(self.core, 'loop_clip_to_duration'):
             self.compiler._build_background([Path('a.mp4'), Path('b.mp4')], 4, [])

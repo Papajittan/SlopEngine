@@ -1,0 +1,375 @@
+{
+  "reference_sha256": "7ae497294b88a252a5302bcce397c87f13f4413d549afb2361e932f6a11b3c3a",
+  "current_sha256": "2966a1d854444d30a27c134293109f74b2c53efcd095a8e0b6566b601e6760b7",
+  "cases": {
+    "wide": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true,
+      "cache_metrics": {
+        "reference": {
+          "instances": 0,
+          "requests": 0,
+          "hits": 0,
+          "misses": 0,
+          "transforms": 0,
+          "closed_after_compile": true
+        },
+        "optimized": {
+          "instances": 1,
+          "requests": 36,
+          "hits": 5,
+          "misses": 31,
+          "transforms": 31,
+          "closed_after_compile": true
+        }
+      }
+    },
+    "tall": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true,
+      "cache_metrics": {
+        "reference": {
+          "instances": 0,
+          "requests": 0,
+          "hits": 0,
+          "misses": 0,
+          "transforms": 0,
+          "closed_after_compile": true
+        },
+        "optimized": {
+          "instances": 0,
+          "requests": 0,
+          "hits": 0,
+          "misses": 0,
+          "transforms": 0,
+          "closed_after_compile": true
+        }
+      }
+    },
+    "mixed_loop": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true,
+      "cache_metrics": {
+        "reference": {
+          "instances": 0,
+          "requests": 0,
+          "hits": 0,
+          "misses": 0,
+          "transforms": 0,
+          "closed_after_compile": true
+        },
+        "optimized": {
+          "instances": 2,
+          "requests": 27,
+          "hits": 4,
+          "misses": 23,
+          "transforms": 23,
+          "closed_after_compile": true
+        }
+      }
+    },
+    "fallback": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true,
+      "cache_metrics": {
+        "reference": {
+          "instances": 0,
+          "requests": 0,
+          "hits": 0,
+          "misses": 0,
+          "transforms": 0,
+          "closed_after_compile": true
+        },
+        "optimized": {
+          "instances": 0,
+          "requests": 0,
+          "hits": 0,
+          "misses": 0,
+          "transforms": 0,
+          "closed_after_compile": true
+        }
+      }
+    },
+    "native": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true,
+      "cache_metrics": {
+        "reference": {
+          "instances": 0,
+          "requests": 0,
+          "hits": 0,
+          "misses": 0,
+          "transforms": 0,
+          "closed_after_compile": true
+        },
+        "optimized": {
+          "instances": 0,
+          "requests": 0,
+          "hits": 0,
+          "misses": 0,
+          "transforms": 0,
+          "closed_after_compile": true
+        }
+      }
+    },
+    "long_trim": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true,
+      "cache_metrics": {
+        "reference": {
+          "instances": 0,
+          "requests": 0,
+          "hits": 0,
+          "misses": 0,
+          "transforms": 0,
+          "closed_after_compile": true
+        },
+        "optimized": {
+          "instances": 1,
+          "requests": 36,
+          "hits": 3,
+          "misses": 33,
+          "transforms": 33,
+          "closed_after_compile": true
+        }
+      }
+    }
+  },
+  "long_timeline": {
+    "frames_equal": true,
+    "duration_seconds": 180,
+    "seeks": 14,
+    "cache_metrics": {
+      "reference": {
+        "instances": 0,
+        "requests": 0,
+        "hits": 0,
+        "misses": 0,
+        "closed_after_timeline": true
+      },
+      "optimized": {
+        "instances": 2,
+        "requests": 15,
+        "hits": 12,
+        "misses": 3,
+        "closed_after_timeline": true
+      }
+    }
+  },
+  "cleanup": {
+    "cancellation": {
+      "exception_propagated": true,
+      "baseline_groups": [
+        {
+          "item_count": 1,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        }
+      ],
+      "optimized_groups": [
+        {
+          "item_count": 1,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 1,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        }
+      ],
+      "non_cache_cleanup_counts_equal": true,
+      "cache_resources_closed": true,
+      "reader_objects_closed": true,
+      "reader_processes_exited": true,
+      "readers_observed": 4
+    },
+    "render_error": {
+      "exception_propagated": true,
+      "baseline_groups": [
+        {
+          "item_count": 1,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        }
+      ],
+      "optimized_groups": [
+        {
+          "item_count": 1,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 1,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        }
+      ],
+      "non_cache_cleanup_counts_equal": true,
+      "cache_resources_closed": true,
+      "reader_objects_closed": true,
+      "reader_processes_exited": true,
+      "readers_observed": 4
+    }
+  },
+  "encoded": {
+    "decoded_frames_equal": true,
+    "decoded_pcm_equal": true,
+    "video_hash_format": "raw RGB24",
+    "audio_hash_format": "signed 16-bit little-endian PCM",
+    "streams": {
+      "before": {
+        "width": 540,
+        "height": 960,
+        "fps": "30/1",
+        "duration_seconds": 3.0,
+        "frame_count": 90,
+        "decoded_frames_sha256": "6b27f2fc5fdec89a35f2d3d97fc4109b3fdde12df3ab4717133bf28168cc698e",
+        "decoded_pcm_sha256": "786e11c5fb751f756ba875d5a86f2466576ed3b9385a6a4ec9487bc09a56b844",
+        "cache_metrics": {
+          "instances": 0,
+          "requests": 0,
+          "hits": 0,
+          "misses": 0,
+          "transforms": 0,
+          "closed_after_compile": true
+        },
+        "preview_png": "temporary fixture preview; removed after validation"
+      },
+      "after": {
+        "width": 540,
+        "height": 960,
+        "fps": "30/1",
+        "duration_seconds": 3.0,
+        "frame_count": 90,
+        "decoded_frames_sha256": "6b27f2fc5fdec89a35f2d3d97fc4109b3fdde12df3ab4717133bf28168cc698e",
+        "decoded_pcm_sha256": "786e11c5fb751f756ba875d5a86f2466576ed3b9385a6a4ec9487bc09a56b844",
+        "cache_metrics": {
+          "instances": 1,
+          "requests": 63,
+          "hits": 47,
+          "misses": 16,
+          "transforms": 16,
+          "closed_after_compile": true
+        },
+        "preview_png": "temporary fixture preview; removed after validation"
+      }
+    }
+  }
+}

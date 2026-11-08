@@ -1,0 +1,280 @@
+{
+  "benchmark": "milestone-1.4-isolated-frame-cache-lookup",
+  "method": "Four trials alternate the order of eight uncached M1.3 fits and eight warmed cache hit+copy calls; each trial then measures an eight-call cold cache cycle. All use one immutable RGB frame; no FFmpeg decoding, MoviePy composition, caption selection, audio or video encoding is included.",
+  "source_frame": {
+    "size": [
+      1920,
+      1080
+    ],
+    "dtype": "uint8 RGB",
+    "backing": "deterministically generated Python bytes; setup excluded",
+    "sha256": "af9270bfe9bafa06c32aa6a6359e657a0268078cd00817b7e150565e7b7cc7a6"
+  },
+  "output_frame_size": [
+    1080,
+    1920
+  ],
+  "environment": {
+    "python": "3.14.8 (main, Oct  2 2026, 10:23:31) [GCC 16.2.1 20260810]",
+    "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+    "numpy": "2.4.4",
+    "pillow": "11.3.0"
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "order": [
+        "baseline",
+        "warmed-cache",
+        "cold-cache-cycle"
+      ],
+      "iterations_per_measurement": 8,
+      "baseline_uncached_fit": {
+        "wall_seconds": 0.49121300499973586,
+        "process_cpu_seconds": 0.48727341999999974,
+        "pillow_resize": {
+          "calls": 16,
+          "wall_seconds": 0.4506146140047349,
+          "process_cpu_seconds": 0.44725228199999956
+        }
+      },
+      "warmed_cache_hit_copy_only": {
+        "warmup_miss_wall_seconds": 0.06316112000058638,
+        "warmup_miss_process_cpu_seconds": 0.06259632599999998,
+        "wall_seconds": 0.009061890999873867,
+        "process_cpu_seconds": 0.009010808999999842,
+        "pillow_resize": {
+          "calls": 0,
+          "wall_seconds": 0.0,
+          "process_cpu_seconds": 0.0
+        },
+        "cache": {
+          "requests": 9,
+          "hits": 8,
+          "misses": 1,
+          "transforms": 1,
+          "retained_source_bytes": 6220800,
+          "retained_fitted_bytes": 6220800,
+          "retained_entries": 1
+        },
+        "cache_cleared_after_close": true,
+        "was_closed_before_measurement": false
+      },
+      "cold_cache_cycle": {
+        "wall_seconds": 0.07144540900117136,
+        "process_cpu_seconds": 0.07084195099999979,
+        "pillow_resize": {
+          "calls": 2,
+          "wall_seconds": 0.05655404899880523,
+          "process_cpu_seconds": 0.05609391699999966
+        },
+        "cache": {
+          "requests": 8,
+          "hits": 7,
+          "misses": 1,
+          "transforms": 1,
+          "retained_source_bytes": 6220800,
+          "retained_fitted_bytes": 6220800,
+          "retained_entries": 1
+        },
+        "cache_cleared_after_close": true
+      },
+      "outputs_equal": true,
+      "output_sha256": "09ca7cece856b6bb1fe4d55fe2bb1809c6dbb91b7640ed9df8c5ee197b16bc71"
+    },
+    {
+      "trial": 2,
+      "order": [
+        "warmed-cache",
+        "baseline",
+        "cold-cache-cycle"
+      ],
+      "iterations_per_measurement": 8,
+      "baseline_uncached_fit": {
+        "wall_seconds": 0.4840558729993063,
+        "process_cpu_seconds": 0.4801373130000002,
+        "pillow_resize": {
+          "calls": 16,
+          "wall_seconds": 0.44863349000297603,
+          "process_cpu_seconds": 0.44515697399999876
+        }
+      },
+      "warmed_cache_hit_copy_only": {
+        "warmup_miss_wall_seconds": 0.062263380001240876,
+        "warmup_miss_process_cpu_seconds": 0.06181057499999998,
+        "wall_seconds": 0.009355847003462259,
+        "process_cpu_seconds": 0.009239667999999757,
+        "pillow_resize": {
+          "calls": 0,
+          "wall_seconds": 0.0,
+          "process_cpu_seconds": 0.0
+        },
+        "cache": {
+          "requests": 9,
+          "hits": 8,
+          "misses": 1,
+          "transforms": 1,
+          "retained_source_bytes": 6220800,
+          "retained_fitted_bytes": 6220800,
+          "retained_entries": 1
+        },
+        "cache_cleared_after_close": true,
+        "was_closed_before_measurement": false
+      },
+      "cold_cache_cycle": {
+        "wall_seconds": 0.07257251299961354,
+        "process_cpu_seconds": 0.07192335400000083,
+        "pillow_resize": {
+          "calls": 2,
+          "wall_seconds": 0.05675789400265785,
+          "process_cpu_seconds": 0.056269436000000006
+        },
+        "cache": {
+          "requests": 8,
+          "hits": 7,
+          "misses": 1,
+          "transforms": 1,
+          "retained_source_bytes": 6220800,
+          "retained_fitted_bytes": 6220800,
+          "retained_entries": 1
+        },
+        "cache_cleared_after_close": true
+      },
+      "outputs_equal": true,
+      "output_sha256": "09ca7cece856b6bb1fe4d55fe2bb1809c6dbb91b7640ed9df8c5ee197b16bc71"
+    },
+    {
+      "trial": 3,
+      "order": [
+        "baseline",
+        "warmed-cache",
+        "cold-cache-cycle"
+      ],
+      "iterations_per_measurement": 8,
+      "baseline_uncached_fit": {
+        "wall_seconds": 0.4852633099981176,
+        "process_cpu_seconds": 0.4818181389999996,
+        "pillow_resize": {
+          "calls": 16,
+          "wall_seconds": 0.44950504199732677,
+          "process_cpu_seconds": 0.44643316600000116
+        }
+      },
+      "warmed_cache_hit_copy_only": {
+        "warmup_miss_wall_seconds": 0.06411466600184212,
+        "warmup_miss_process_cpu_seconds": 0.06347935299999996,
+        "wall_seconds": 0.009310211000411073,
+        "process_cpu_seconds": 0.009209814000000094,
+        "pillow_resize": {
+          "calls": 0,
+          "wall_seconds": 0.0,
+          "process_cpu_seconds": 0.0
+        },
+        "cache": {
+          "requests": 9,
+          "hits": 8,
+          "misses": 1,
+          "transforms": 1,
+          "retained_source_bytes": 6220800,
+          "retained_fitted_bytes": 6220800,
+          "retained_entries": 1
+        },
+        "cache_cleared_after_close": true,
+        "was_closed_before_measurement": false
+      },
+      "cold_cache_cycle": {
+        "wall_seconds": 0.07207437000033678,
+        "process_cpu_seconds": 0.0715005230000001,
+        "pillow_resize": {
+          "calls": 2,
+          "wall_seconds": 0.056832315003703116,
+          "process_cpu_seconds": 0.056423116000000384
+        },
+        "cache": {
+          "requests": 8,
+          "hits": 7,
+          "misses": 1,
+          "transforms": 1,
+          "retained_source_bytes": 6220800,
+          "retained_fitted_bytes": 6220800,
+          "retained_entries": 1
+        },
+        "cache_cleared_after_close": true
+      },
+      "outputs_equal": true,
+      "output_sha256": "09ca7cece856b6bb1fe4d55fe2bb1809c6dbb91b7640ed9df8c5ee197b16bc71"
+    },
+    {
+      "trial": 4,
+      "order": [
+        "warmed-cache",
+        "baseline",
+        "cold-cache-cycle"
+      ],
+      "iterations_per_measurement": 8,
+      "baseline_uncached_fit": {
+        "wall_seconds": 0.4988374559980002,
+        "process_cpu_seconds": 0.489071504,
+        "pillow_resize": {
+          "calls": 16,
+          "wall_seconds": 0.4614202499979001,
+          "process_cpu_seconds": 0.4529301490000046
+        }
+      },
+      "warmed_cache_hit_copy_only": {
+        "warmup_miss_wall_seconds": 0.06385702799889259,
+        "warmup_miss_process_cpu_seconds": 0.06342570499999933,
+        "wall_seconds": 0.01079329999993206,
+        "process_cpu_seconds": 0.010707689999999381,
+        "pillow_resize": {
+          "calls": 0,
+          "wall_seconds": 0.0,
+          "process_cpu_seconds": 0.0
+        },
+        "cache": {
+          "requests": 9,
+          "hits": 8,
+          "misses": 1,
+          "transforms": 1,
+          "retained_source_bytes": 6220800,
+          "retained_fitted_bytes": 6220800,
+          "retained_entries": 1
+        },
+        "cache_cleared_after_close": true,
+        "was_closed_before_measurement": false
+      },
+      "cold_cache_cycle": {
+        "wall_seconds": 0.07301735500004725,
+        "process_cpu_seconds": 0.07229926199999959,
+        "pillow_resize": {
+          "calls": 2,
+          "wall_seconds": 0.057388509001611965,
+          "process_cpu_seconds": 0.056879314999999764
+        },
+        "cache": {
+          "requests": 8,
+          "hits": 7,
+          "misses": 1,
+          "transforms": 1,
+          "retained_source_bytes": 6220800,
+          "retained_fitted_bytes": 6220800,
+          "retained_entries": 1
+        },
+        "cache_cleared_after_close": true
+      },
+      "outputs_equal": true,
+      "output_sha256": "09ca7cece856b6bb1fe4d55fe2bb1809c6dbb91b7640ed9df8c5ee197b16bc71"
+    }
+  ],
+  "medians": {
+    "uncached_fit_wall_seconds": 0.48823815749892674,
+    "warmed_cache_hit_copy_wall_seconds": 0.009333029001936666,
+    "cold_cache_cycle_wall_seconds": 0.07232344149997516,
+    "uncached_fit_process_cpu_seconds": 0.48454577949999966,
+    "warmed_cache_hit_copy_process_cpu_seconds": 0.009224740999999925,
+    "cold_cache_cycle_process_cpu_seconds": 0.07171193850000046
+  },
+  "all_outputs_equal": true,
+  "all_cache_entries_cleared": true,
+  "interpretation_note": "This diagnostic isolates the fitted transform and cache copy path. Ratios are not render speedups and are sensitive to image size, memory bandwidth, Python/Pillow versions and shared machine load."
+}

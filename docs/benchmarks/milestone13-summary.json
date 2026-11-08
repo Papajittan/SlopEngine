@@ -1,0 +1,1825 @@
+{
+  "baseline_sha256": "d2d47f05b75f6ba6d18e59ebf69d2499c224dc29be98720ce477b08d98b60e38",
+  "optimized_sha256": "7ae497294b88a252a5302bcce397c87f13f4413d549afb2361e932f6a11b3c3a",
+  "run_count": 32,
+  "all_outputs_equal": true,
+  "aggregation_note": "Timing/CPU aggregate sums the four resize-heavy workload medians. Memory/disk aggregate is maximum observed peak across those trials, not a sum of peaks. Two trials per version; standard deviation uses sample denominator.",
+  "cases": {
+    "30s-low-resize-heavy": {
+      "baseline": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              130.07915207900078,
+              124.06867754099949
+            ],
+            "median": 127.07391481000013,
+            "min": 124.06867754099949,
+            "max": 130.07915207900078,
+            "sample_standard_deviation": 4.250047303969794
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              89.19506187999995,
+              88.05806743000021
+            ],
+            "median": 88.62656465500008,
+            "min": 88.05806743000021,
+            "max": 89.19506187999995,
+            "sample_standard_deviation": 0.8039764857662902
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              110.8674201580834,
+              106.08035475003635
+            ],
+            "median": 108.47388745405988,
+            "min": 106.08035475003635,
+            "max": 110.8674201580834,
+            "sample_standard_deviation": 3.3849664120136205
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              107.93173387200005,
+              103.13669166500001
+            ],
+            "median": 105.53421276850003,
+            "min": 103.13669166500001,
+            "max": 107.93173387200005,
+            "sample_standard_deviation": 3.3906068606454354
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2029936640,
+              2049445888
+            ],
+            "median": 2039691264.0,
+            "min": 2029936640,
+            "max": 2049445888,
+            "sample_standard_deviation": 13795121.55665009
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              1969590272,
+              1994895360
+            ],
+            "median": 1982242816.0,
+            "min": 1969590272,
+            "max": 1994895360,
+            "sample_standard_deviation": 17893399.32332233
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              492791,
+              492791
+            ],
+            "median": 492791.0,
+            "min": 492791,
+            "max": 492791,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              127.44,
+              121.88
+            ],
+            "median": 124.66,
+            "min": 121.88,
+            "max": 127.44,
+            "sample_standard_deviation": 3.9315137033972056
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              82.29,
+              80.87
+            ],
+            "median": 81.58000000000001,
+            "min": 80.87,
+            "max": 82.29,
+            "sample_standard_deviation": 1.0040916292848987
+          }
+        },
+        "encoded_file_sha256": "a57b065af04e04c22892cae5b42b792d47dddb80bebba772ac7adc469fad173a",
+        "output_bytes": 24312241,
+        "pss_complete_samples": 922,
+        "resource_sample_count": 925
+      },
+      "optimized": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              79.9007202740031,
+              80.7154115830017
+            ],
+            "median": 80.3080659285024,
+            "min": 79.9007202740031,
+            "max": 80.7154115830017,
+            "sample_standard_deviation": 0.576073749166648
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              52.51531022000002,
+              52.93288477100007
+            ],
+            "median": 52.72409749550005,
+            "min": 52.51531022000002,
+            "max": 52.93288477100007,
+            "sample_standard_deviation": 0.2952697966630639
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              62.74778679797237,
+              63.50312332100657
+            ],
+            "median": 63.12545505948947,
+            "min": 62.74778679797237,
+            "max": 63.50312332100657,
+            "sample_standard_deviation": 0.5341035775153534
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              60.77949672599994,
+              61.29810507399999
+            ],
+            "median": 61.03880089999997,
+            "min": 60.77949672599994,
+            "max": 61.29810507399999,
+            "sample_standard_deviation": 0.3667114796507886
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2007113728,
+              2017599488
+            ],
+            "median": 2012356608.0,
+            "min": 2007113728,
+            "max": 2017599488,
+            "sample_standard_deviation": 7414552.001894653
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              1944666112,
+              1955062784
+            ],
+            "median": 1949864448.0,
+            "min": 1944666112,
+            "max": 1955062784,
+            "sample_standard_deviation": 7351557.272972305
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              492791,
+              492791
+            ],
+            "median": 492791.0,
+            "min": 492791,
+            "max": 492791,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              78.35,
+              78.69
+            ],
+            "median": 78.52,
+            "min": 78.35,
+            "max": 78.69,
+            "sample_standard_deviation": 0.24041630560342858
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              81.64,
+              82.38999999999999
+            ],
+            "median": 82.01499999999999,
+            "min": 81.64,
+            "max": 82.38999999999999,
+            "sample_standard_deviation": 0.5303300858899006
+          }
+        },
+        "encoded_file_sha256": "a57b065af04e04c22892cae5b42b792d47dddb80bebba772ac7adc469fad173a",
+        "output_bytes": 24312241,
+        "pss_complete_samples": 594,
+        "resource_sample_count": 594
+      }
+    },
+    "30s-low-native-control": {
+      "baseline": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              25.36210625899912,
+              25.3338310729996
+            ],
+            "median": 25.34796866599936,
+            "min": 25.3338310729996,
+            "max": 25.36210625899912,
+            "sample_standard_deviation": 0.01999357575957062
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              4.662378348086349,
+              4.776588853001158
+            ],
+            "median": 4.719483600543754,
+            "min": 4.662378348086349,
+            "max": 4.776588853001158,
+            "sample_standard_deviation": 0.08075902250800064
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              3.8465474420000536,
+              3.888652950999973
+            ],
+            "median": 3.867600196500013,
+            "min": 3.8465474420000536,
+            "max": 3.888652950999973,
+            "sample_standard_deviation": 0.029773090939154204
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2043887616,
+              2044600320
+            ],
+            "median": 2044243968.0,
+            "min": 2043887616,
+            "max": 2044600320,
+            "sample_standard_deviation": 503957.83137877716
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              1982785536,
+              1981676544
+            ],
+            "median": 1982231040.0,
+            "min": 1981676544,
+            "max": 1982785536,
+            "sample_standard_deviation": 784175.7634816318
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              492791,
+              492791
+            ],
+            "median": 492791.0,
+            "min": 492791,
+            "max": 492791,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              24.23,
+              23.990000000000002
+            ],
+            "median": 24.11,
+            "min": 23.990000000000002,
+            "max": 24.23,
+            "sample_standard_deviation": 0.1697056274847703
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              94.64,
+              93.52
+            ],
+            "median": 94.08,
+            "min": 93.52,
+            "max": 94.64,
+            "sample_standard_deviation": 0.7919595949289364
+          }
+        },
+        "encoded_file_sha256": "1cb3e20e5b9e86f9775f08c94a83469028ca7c97358c67a3f79e7ff9e15c94ff",
+        "output_bytes": 26342501,
+        "pss_complete_samples": 197,
+        "resource_sample_count": 197
+      },
+      "optimized": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              24.6339287050032,
+              25.44734510300259
+            ],
+            "median": 25.040636904002895,
+            "min": 24.6339287050032,
+            "max": 25.44734510300259,
+            "sample_standard_deviation": 0.5751722509537044
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              4.627766173023701,
+              4.761228672003199
+            ],
+            "median": 4.69449742251345,
+            "min": 4.627766173023701,
+            "max": 4.761228672003199,
+            "sample_standard_deviation": 0.09437223806250535
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              3.84989190099998,
+              3.8947926559999733
+            ],
+            "median": 3.8723422784999766,
+            "min": 3.84989190099998,
+            "max": 3.8947926559999733,
+            "sample_standard_deviation": 0.03174962834089108
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2044133376,
+              2052464640
+            ],
+            "median": 2048299008.0,
+            "min": 2044133376,
+            "max": 2052464640,
+            "sample_standard_deviation": 5891093.270255361
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              1981309952,
+              1990691840
+            ],
+            "median": 1986000896.0,
+            "min": 1981309952,
+            "max": 1990691840,
+            "sample_standard_deviation": 6633996.625132696
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              492791,
+              492791
+            ],
+            "median": 492791.0,
+            "min": 492791,
+            "max": 492791,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              23.55,
+              24.12
+            ],
+            "median": 23.835,
+            "min": 23.55,
+            "max": 24.12,
+            "sample_standard_deviation": 0.40305086527633227
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              92.31,
+              95.2
+            ],
+            "median": 93.755,
+            "min": 92.31,
+            "max": 95.2,
+            "sample_standard_deviation": 2.043538597629123
+          }
+        },
+        "encoded_file_sha256": "1cb3e20e5b9e86f9775f08c94a83469028ca7c97358c67a3f79e7ff9e15c94ff",
+        "output_bytes": 26342501,
+        "pss_complete_samples": 193,
+        "resource_sample_count": 194
+      }
+    },
+    "30s-high-resize-heavy": {
+      "baseline": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              128.4379001669986,
+              132.7235383389998
+            ],
+            "median": 130.5807192529992,
+            "min": 128.4379001669986,
+            "max": 132.7235383389998,
+            "sample_standard_deviation": 3.030403813133968
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              88.15388471499995,
+              89.58362631099983
+            ],
+            "median": 88.86875551299988,
+            "min": 88.15388471499995,
+            "max": 89.58362631099983,
+            "sample_standard_deviation": 1.0109799778759965
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              105.0542744029517,
+              108.14812849994996
+            ],
+            "median": 106.60120145145083,
+            "min": 105.0542744029517,
+            "max": 108.14812849994996,
+            "sample_standard_deviation": 2.18768521198925
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              102.31103172700007,
+              104.96792044500005
+            ],
+            "median": 103.63947608600006,
+            "min": 102.31103172700007,
+            "max": 104.96792044500005,
+            "sample_standard_deviation": 1.878704029355816
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2105942016,
+              2104811520
+            ],
+            "median": 2105376768.0,
+            "min": 2104811520,
+            "max": 2105942016,
+            "sample_standard_deviation": 799381.3877042673
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2043575296,
+              2044948480
+            ],
+            "median": 2044261888.0,
+            "min": 2043575296,
+            "max": 2044948480,
+            "sample_standard_deviation": 970987.7182168681
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              492791,
+              492791
+            ],
+            "median": 492791.0,
+            "min": 492791,
+            "max": 492791,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              126.34,
+              130.08
+            ],
+            "median": 128.21,
+            "min": 126.34,
+            "max": 130.08,
+            "sample_standard_deviation": 2.6445793616376942
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              79.29,
+              82.66000000000001
+            ],
+            "median": 80.97500000000001,
+            "min": 79.29,
+            "max": 82.66000000000001,
+            "sample_standard_deviation": 2.3829498525986685
+          }
+        },
+        "encoded_file_sha256": "abd9f98c3570f7d00f091af213e77e3b2a1acc16bf744dc42fd76da150f11020",
+        "output_bytes": 24289939,
+        "pss_complete_samples": 948,
+        "resource_sample_count": 950
+      },
+      "optimized": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              86.93454748899967,
+              85.97940988999835
+            ],
+            "median": 86.45697868949901,
+            "min": 85.97940988999835,
+            "max": 86.93454748899967,
+            "sample_standard_deviation": 0.6753842732200697
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              53.508071056000354,
+              53.08972973699997
+            ],
+            "median": 53.29890039650016,
+            "min": 53.08972973699997,
+            "max": 53.508071056000354,
+            "sample_standard_deviation": 0.2958119835156957
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              64.0181878979638,
+              63.41726282699892
+            ],
+            "median": 63.71772536248136,
+            "min": 63.41726282699892,
+            "max": 64.0181878979638,
+            "sample_standard_deviation": 0.42491819266427167
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              61.81187190800028,
+              61.28068636499994
+            ],
+            "median": 61.546279136500104,
+            "min": 61.28068636499994,
+            "max": 61.81187190800028,
+            "sample_standard_deviation": 0.3756048995237992
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2081710080,
+              2070740992
+            ],
+            "median": 2076225536.0,
+            "min": 2070740992,
+            "max": 2081710080,
+            "sample_standard_deviation": 7756316.508231984
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2019322880,
+              2008301568
+            ],
+            "median": 2013812224.0,
+            "min": 2008301568,
+            "max": 2019322880,
+            "sample_standard_deviation": 7793244.45277267
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              492791,
+              492791
+            ],
+            "median": 492791.0,
+            "min": 492791,
+            "max": 492791,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              85.45,
+              84.46999999999998
+            ],
+            "median": 84.96,
+            "min": 84.46999999999998,
+            "max": 85.45,
+            "sample_standard_deviation": 0.6929646455628294
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              83.56000000000002,
+              82.15999999999998
+            ],
+            "median": 82.86,
+            "min": 82.15999999999998,
+            "max": 83.56000000000002,
+            "sample_standard_deviation": 0.9899494936611907
+          }
+        },
+        "encoded_file_sha256": "abd9f98c3570f7d00f091af213e77e3b2a1acc16bf744dc42fd76da150f11020",
+        "output_bytes": 24289939,
+        "pss_complete_samples": 634,
+        "resource_sample_count": 636
+      }
+    },
+    "30s-high-native-control": {
+      "baseline": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              33.853592260998994,
+              33.75309735100018
+            ],
+            "median": 33.803344805999586,
+            "min": 33.75309735100018,
+            "max": 33.853592260998994,
+            "sample_standard_deviation": 0.07106063233489406
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              5.611530367979867,
+              4.782223144989985
+            ],
+            "median": 5.196876756484926,
+            "min": 4.782223144989985,
+            "max": 5.611530367979867,
+            "sample_standard_deviation": 0.5864087610631302
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              4.225721769000057,
+              3.9290722189999543
+            ],
+            "median": 4.077396994000005,
+            "min": 3.9290722189999543,
+            "max": 4.225721769000057,
+            "sample_standard_deviation": 0.20976290844101012
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2086191104,
+              2080264192
+            ],
+            "median": 2083227648.0,
+            "min": 2080264192,
+            "max": 2086191104,
+            "sample_standard_deviation": 4190959.6666959226
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2023428096,
+              2019398656
+            ],
+            "median": 2021413376.0,
+            "min": 2019398656,
+            "max": 2023428096,
+            "sample_standard_deviation": 2849244.348384322
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              492791,
+              492791
+            ],
+            "median": 492791.0,
+            "min": 492791,
+            "max": 492791,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              31.1,
+              31.990000000000002
+            ],
+            "median": 31.545,
+            "min": 31.1,
+            "max": 31.990000000000002,
+            "sample_standard_deviation": 0.6293250352560277
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              100.97999999999999,
+              94.69999999999999
+            ],
+            "median": 97.83999999999999,
+            "min": 94.69999999999999,
+            "max": 100.97999999999999,
+            "sample_standard_deviation": 4.440630585851519
+          }
+        },
+        "encoded_file_sha256": "681a38634f4521521bf9ce66b7bafe4df711bf52303dba2584ae9b72334301b0",
+        "output_bytes": 26308312,
+        "pss_complete_samples": 249,
+        "resource_sample_count": 249
+      },
+      "optimized": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              34.01663581399771,
+              34.102475919000426
+            ],
+            "median": 34.05955586649907,
+            "min": 34.01663581399771,
+            "max": 34.102475919000426,
+            "sample_standard_deviation": 0.06069812034518639
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              4.941146946992376,
+              4.819539099986287
+            ],
+            "median": 4.880343023489331,
+            "min": 4.819539099986287,
+            "max": 4.941146946992376,
+            "sample_standard_deviation": 0.08598973326350193
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              3.9190157790000217,
+              3.9546736619999527
+            ],
+            "median": 3.9368447204999875,
+            "min": 3.9190157790000217,
+            "max": 3.9546736619999527,
+            "sample_standard_deviation": 0.025213930872007722
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2079019008,
+              2078752768
+            ],
+            "median": 2078885888.0,
+            "min": 2078752768,
+            "max": 2079019008,
+            "sample_standard_deviation": 188260.10942310642
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2016207872,
+              2015916032
+            ],
+            "median": 2016061952.0,
+            "min": 2015916032,
+            "max": 2016207872,
+            "sample_standard_deviation": 206362.04302148204
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              492791,
+              492791
+            ],
+            "median": 492791.0,
+            "min": 492791,
+            "max": 492791,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              31.639999999999997,
+              32.18
+            ],
+            "median": 31.909999999999997,
+            "min": 31.639999999999997,
+            "max": 32.18,
+            "sample_standard_deviation": 0.3818376618407376
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              94.84,
+              95.66
+            ],
+            "median": 95.25,
+            "min": 94.84,
+            "max": 95.66,
+            "sample_standard_deviation": 0.5798275605729641
+          }
+        },
+        "encoded_file_sha256": "681a38634f4521521bf9ce66b7bafe4df711bf52303dba2584ae9b72334301b0",
+        "output_bytes": 26308312,
+        "pss_complete_samples": 244,
+        "resource_sample_count": 246
+      }
+    },
+    "60s-low-resize-heavy": {
+      "baseline": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              253.40701401800106,
+              245.0810515589983
+            ],
+            "median": 249.24403278849968,
+            "min": 245.0810515589983,
+            "max": 253.40701401800106,
+            "sample_standard_deviation": 5.887344514665479
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              179.57213566899995,
+              173.40981261399935
+            ],
+            "median": 176.49097414149963,
+            "min": 173.40981261399935,
+            "max": 179.57213566899995,
+            "sample_standard_deviation": 4.357420420053125
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              217.3210142839962,
+              209.97563941701083
+            ],
+            "median": 213.6483268505035,
+            "min": 209.97563941701083,
+            "max": 217.3210142839962,
+            "sample_standard_deviation": 5.193964378802587
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              210.63805104699998,
+              203.82554050399978
+            ],
+            "median": 207.23179577549988,
+            "min": 203.82554050399978,
+            "max": 210.63805104699998,
+            "sample_standard_deviation": 4.817172401860291
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2121904128,
+              2119745536
+            ],
+            "median": 2120824832.0,
+            "min": 2119745536,
+            "max": 2121904128,
+            "sample_standard_deviation": 1526355.041015032
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2061901824,
+              2060024832
+            ],
+            "median": 2060963328.0,
+            "min": 2060024832,
+            "max": 2061901824,
+            "sample_standard_deviation": 1327233.7714329
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              986866,
+              986866
+            ],
+            "median": 986866.0,
+            "min": 986866,
+            "max": 986866,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              244.98000000000002,
+              237.56
+            ],
+            "median": 241.27,
+            "min": 237.56,
+            "max": 244.98000000000002,
+            "sample_standard_deviation": 5.246732316404194
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              165.0,
+              161.33999999999997
+            ],
+            "median": 163.17,
+            "min": 161.33999999999997,
+            "max": 165.0,
+            "sample_standard_deviation": 2.5880108191427817
+          }
+        },
+        "encoded_file_sha256": "ceb63d0de07e344bad21169091ca5efaf847012df5b3c9acb947dec12f685b05",
+        "output_bytes": 49704377,
+        "pss_complete_samples": 1782,
+        "resource_sample_count": 1788
+      },
+      "optimized": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              157.9274316150004,
+              152.8238226329995
+            ],
+            "median": 155.37562712399995,
+            "min": 152.8238226329995,
+            "max": 157.9274316150004,
+            "sample_standard_deviation": 3.6087965196973935
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              104.5732283519998,
+              102.36832099599987
+            ],
+            "median": 103.47077467399984,
+            "min": 102.36832099599987,
+            "max": 104.5732283519998,
+            "sample_standard_deviation": 1.5591049433156556
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              125.63367197908883,
+              122.13685215213991
+            ],
+            "median": 123.88526206561437,
+            "min": 122.13685215213991,
+            "max": 125.63367197908883,
+            "sample_standard_deviation": 2.4726250122231526
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              121.23011331700002,
+              117.90521297499976
+            ],
+            "median": 119.56766314599989,
+            "min": 117.90521297499976,
+            "max": 121.23011331700002,
+            "sample_standard_deviation": 2.3510595785978565
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2083561472,
+              2085928960
+            ],
+            "median": 2084745216.0,
+            "min": 2083561472,
+            "max": 2085928960,
+            "sample_standard_deviation": 1674066.819177777
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2021067776,
+              2024253440
+            ],
+            "median": 2022660608.0,
+            "min": 2021067776,
+            "max": 2024253440,
+            "sample_standard_deviation": 2252604.6169818616
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              986866,
+              986866
+            ],
+            "median": 986866.0,
+            "min": 986866,
+            "max": 986866,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              151.95000000000002,
+              147.44000000000003
+            ],
+            "median": 149.69500000000002,
+            "min": 147.44000000000003,
+            "max": 151.95000000000002,
+            "sample_standard_deviation": 3.189051583151323
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              166.72000000000003,
+              160.01
+            ],
+            "median": 163.365,
+            "min": 160.01,
+            "max": 166.72000000000003,
+            "sample_standard_deviation": 4.74468650176176
+          }
+        },
+        "encoded_file_sha256": "ceb63d0de07e344bad21169091ca5efaf847012df5b3c9acb947dec12f685b05",
+        "output_bytes": 49704377,
+        "pss_complete_samples": 1123,
+        "resource_sample_count": 1123
+      }
+    },
+    "60s-low-native-control": {
+      "baseline": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              53.07448674300031,
+              54.20441051599846
+            ],
+            "median": 53.639448629499384,
+            "min": 53.07448674300031,
+            "max": 54.20441051599846,
+            "sample_standard_deviation": 0.798976762110884
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              10.19480718093837,
+              10.358945900057734
+            ],
+            "median": 10.276876540498051,
+            "min": 10.19480718093837,
+            "max": 10.358945900057734,
+            "sample_standard_deviation": 0.11606360134457658
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              7.632919753000018,
+              7.778180186000015
+            ],
+            "median": 7.705549969500017,
+            "min": 7.632919753000018,
+            "max": 7.778180186000015,
+            "sample_standard_deviation": 0.10271463721239212
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2121023488,
+              2122379264
+            ],
+            "median": 2121701376.0,
+            "min": 2121023488,
+            "max": 2122379264,
+            "sample_standard_deviation": 958678.4033699726
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2059377664,
+              2059462656
+            ],
+            "median": 2059420160.0,
+            "min": 2059377664,
+            "max": 2059462656,
+            "sample_standard_deviation": 60098.419546607045
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              986866,
+              986866
+            ],
+            "median": 986866.0,
+            "min": 986866,
+            "max": 986866,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              46.480000000000004,
+              47.06
+            ],
+            "median": 46.77,
+            "min": 46.480000000000004,
+            "max": 47.06,
+            "sample_standard_deviation": 0.41012193308819633
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              233.32,
+              236.84
+            ],
+            "median": 235.07999999999998,
+            "min": 233.32,
+            "max": 236.84,
+            "sample_standard_deviation": 2.4890158697766545
+          }
+        },
+        "encoded_file_sha256": "e27726eb8f42149b2207223d1f9ccd1b7a46de9d2022d0d9ac1425a38e8e4902",
+        "output_bytes": 59380445,
+        "pss_complete_samples": 379,
+        "resource_sample_count": 380
+      },
+      "optimized": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              53.45841386199754,
+              49.752678029999515
+            ],
+            "median": 51.60554594599853,
+            "min": 49.752678029999515,
+            "max": 53.45841386199754,
+            "sample_standard_deviation": 2.620350936091777
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              10.625067917881097,
+              9.657622319002257
+            ],
+            "median": 10.141345118441677,
+            "min": 9.657622319002257,
+            "max": 10.625067917881097,
+            "sample_standard_deviation": 0.6840873433963081
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              7.7179671189999555,
+              7.665121533999862
+            ],
+            "median": 7.691544326499908,
+            "min": 7.665121533999862,
+            "max": 7.7179671189999555,
+            "sample_standard_deviation": 0.03736747150933606
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2124292096,
+              2127417344
+            ],
+            "median": 2125854720.0,
+            "min": 2124292096,
+            "max": 2127417344,
+            "sample_standard_deviation": 2209884.0536896954
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2061628416,
+              2062787584
+            ],
+            "median": 2062208000.0,
+            "min": 2061628416,
+            "max": 2062787584,
+            "sample_standard_deviation": 819655.5533344479
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              986866,
+              986866
+            ],
+            "median": 986866.0,
+            "min": 986866,
+            "max": 986866,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              46.43,
+              44.339999999999996
+            ],
+            "median": 45.385,
+            "min": 44.339999999999996,
+            "max": 46.43,
+            "sample_standard_deviation": 1.4778531726798867
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              236.25,
+              227.52000000000004
+            ],
+            "median": 231.88500000000002,
+            "min": 227.52000000000004,
+            "max": 236.25,
+            "sample_standard_deviation": 6.173042199758533
+          }
+        },
+        "encoded_file_sha256": "e27726eb8f42149b2207223d1f9ccd1b7a46de9d2022d0d9ac1425a38e8e4902",
+        "output_bytes": 59380445,
+        "pss_complete_samples": 367,
+        "resource_sample_count": 368
+      }
+    },
+    "60s-high-resize-heavy": {
+      "baseline": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              263.13579519700215,
+              259.3198038900009
+            ],
+            "median": 261.22779954350153,
+            "min": 259.3198038900009,
+            "max": 263.13579519700215,
+            "sample_standard_deviation": 2.6983133301294937
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              177.34673943000044,
+              173.49109288199986
+            ],
+            "median": 175.41891615600014,
+            "min": 173.49109288199986,
+            "max": 177.34673943000044,
+            "sample_standard_deviation": 2.726353819949712
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              215.24042996404023,
+              211.45519822788265
+            ],
+            "median": 213.34781409596144,
+            "min": 211.45519822788265,
+            "max": 215.24042996404023,
+            "sample_standard_deviation": 2.6765630289995563
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              208.654861781,
+              204.8522709229999
+            ],
+            "median": 206.75356635199995,
+            "min": 204.8522709229999,
+            "max": 208.654861781,
+            "sample_standard_deviation": 2.6888377817698337
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2235441152,
+              2230218752
+            ],
+            "median": 2232829952.0,
+            "min": 2230218752,
+            "max": 2235441152,
+            "sample_standard_deviation": 3692794.454068626
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2175478784,
+              2168927232
+            ],
+            "median": 2172203008.0,
+            "min": 2168927232,
+            "max": 2175478784,
+            "sample_standard_deviation": 4632646.846496288
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              986866,
+              986866
+            ],
+            "median": 986866.0,
+            "min": 986866,
+            "max": 986866,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              254.84,
+              251.0
+            ],
+            "median": 252.92000000000002,
+            "min": 251.0,
+            "max": 254.84,
+            "sample_standard_deviation": 2.715290039756345
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              165.02000000000004,
+              163.7
+            ],
+            "median": 164.36,
+            "min": 163.7,
+            "max": 165.02000000000004,
+            "sample_standard_deviation": 0.9333809511662781
+          }
+        },
+        "encoded_file_sha256": "74da6abc8f02bdee65f55a65e5409de314b7b8b5159755bacc72ed40f2361b94",
+        "output_bytes": 49741028,
+        "pss_complete_samples": 1857,
+        "resource_sample_count": 1859
+      },
+      "optimized": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              165.18885548600156,
+              166.63077116699787
+            ],
+            "median": 165.90981332649972,
+            "min": 165.18885548600156,
+            "max": 166.63077116699787,
+            "sample_standard_deviation": 1.0195883559317143
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              102.63700168200016,
+              102.43364408099984
+            ],
+            "median": 102.53532288150001,
+            "min": 102.43364408099984,
+            "max": 102.63700168200016,
+            "sample_standard_deviation": 0.14379553867315464
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              122.87152663801317,
+              123.25538988389599
+            ],
+            "median": 123.06345826095458,
+            "min": 122.87152663801317,
+            "max": 123.25538988389599,
+            "sample_standard_deviation": 0.27143230421202214
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              118.52180438300034,
+              118.80534437199965
+            ],
+            "median": 118.6635743775,
+            "min": 118.52180438300034,
+            "max": 118.80534437199965,
+            "sample_standard_deviation": 0.20049304895897008
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2187763712,
+              2185809920
+            ],
+            "median": 2186786816.0,
+            "min": 2185809920,
+            "max": 2187763712,
+            "sample_standard_deviation": 1381539.572228027
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2124750848,
+              2122919936
+            ],
+            "median": 2123835392.0,
+            "min": 2122919936,
+            "max": 2124750848,
+            "sample_standard_deviation": 1294650.290955824
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              986866,
+              986866
+            ],
+            "median": 986866.0,
+            "min": 986866,
+            "max": 986866,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              159.56000000000003,
+              160.60000000000002
+            ],
+            "median": 160.08000000000004,
+            "min": 159.56000000000003,
+            "max": 160.60000000000002,
+            "sample_standard_deviation": 0.7353910524340038
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              161.83,
+              163.18
+            ],
+            "median": 162.505,
+            "min": 161.83,
+            "max": 163.18,
+            "sample_standard_deviation": 0.9545941546018352
+          }
+        },
+        "encoded_file_sha256": "74da6abc8f02bdee65f55a65e5409de314b7b8b5159755bacc72ed40f2361b94",
+        "output_bytes": 49741028,
+        "pss_complete_samples": 1190,
+        "resource_sample_count": 1191
+      }
+    },
+    "60s-high-native-control": {
+      "baseline": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              63.70461949200035,
+              67.92167320600129
+            ],
+            "median": 65.81314634900082,
+            "min": 63.70461949200035,
+            "max": 67.92167320600129,
+            "sample_standard_deviation": 2.9819072777979803
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              9.60348794499805,
+              9.683801210088859
+            ],
+            "median": 9.643644577543455,
+            "min": 9.60348794499805,
+            "max": 9.683801210088859,
+            "sample_standard_deviation": 0.05679005436494335
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              7.553160887999935,
+              7.777901162000089
+            ],
+            "median": 7.665531025000012,
+            "min": 7.553160887999935,
+            "max": 7.777901162000089,
+            "sample_standard_deviation": 0.15891537175123152
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2233495552,
+              2227171328
+            ],
+            "median": 2230333440.0,
+            "min": 2227171328,
+            "max": 2233495552,
+            "sample_standard_deviation": 4471901.676142712
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2172173312,
+              2163851264
+            ],
+            "median": 2168012288.0,
+            "min": 2163851264,
+            "max": 2172173312,
+            "sample_standard_deviation": 5884576.574159945
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              986866,
+              986866
+            ],
+            "median": 986866.0,
+            "min": 986866,
+            "max": 986866,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              57.62,
+              59.67000000000001
+            ],
+            "median": 58.645,
+            "min": 57.62,
+            "max": 59.67000000000001,
+            "sample_standard_deviation": 1.4495689014324304
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              219.24,
+              224.8
+            ],
+            "median": 222.02,
+            "min": 219.24,
+            "max": 224.8,
+            "sample_standard_deviation": 3.9315137033972056
+          }
+        },
+        "encoded_file_sha256": "3fce55e86fb342064d42c5cbefead890ad3366f5b6a494ebb4195d3525623ba4",
+        "output_bytes": 59371115,
+        "pss_complete_samples": 457,
+        "resource_sample_count": 460
+      },
+      "optimized": {
+        "metrics": {
+          "render_wall_seconds": {
+            "trials": [
+              64.37718606999988,
+              63.43202339400159
+            ],
+            "median": 63.904604732000735,
+            "min": 63.43202339400159,
+            "max": 64.37718606999988,
+            "sample_standard_deviation": 0.6683309375228146
+          },
+          "resize_process_cpu_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "fitted_frame_wall_seconds": {
+            "trials": [
+              9.490155092029454,
+              9.298196012961853
+            ],
+            "median": 9.394175552495653,
+            "min": 9.298196012961853,
+            "max": 9.490155092029454,
+            "sample_standard_deviation": 0.1357355665190254
+          },
+          "fitted_frame_process_cpu_seconds": {
+            "trials": [
+              7.7474725789999015,
+              7.6225878429999545
+            ],
+            "median": 7.685030210999928,
+            "min": 7.6225878429999545,
+            "max": 7.7474725789999015,
+            "sample_standard_deviation": 0.08830684369225426
+          },
+          "peak_tree_rss_bytes": {
+            "trials": [
+              2220015616,
+              2217652224
+            ],
+            "median": 2218833920.0,
+            "min": 2217652224,
+            "max": 2220015616,
+            "sample_standard_deviation": 1671170.509802037
+          },
+          "peak_tree_pss_bytes": {
+            "trials": [
+              2158197760,
+              2155138048
+            ],
+            "median": 2156667904.0,
+            "min": 2155138048,
+            "max": 2158197760,
+            "sample_standard_deviation": 2163543.1036778535
+          },
+          "peak_intermediate_bytes": {
+            "trials": [
+              986866,
+              986866
+            ],
+            "median": 986866.0,
+            "min": 986866,
+            "max": 986866,
+            "sample_standard_deviation": 0.0
+          },
+          "preprocessing_seconds": {
+            "trials": [
+              0.0,
+              0.0
+            ],
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "sample_standard_deviation": 0.0
+          },
+          "python_cpu_seconds": {
+            "trials": [
+              58.3,
+              57.300000000000004
+            ],
+            "median": 57.8,
+            "min": 57.300000000000004,
+            "max": 58.3,
+            "sample_standard_deviation": 0.7071067811865425
+          },
+          "ffmpeg_cpu_seconds": {
+            "trials": [
+              217.39,
+              215.39
+            ],
+            "median": 216.39,
+            "min": 215.39,
+            "max": 217.39,
+            "sample_standard_deviation": 1.4142135623730951
+          }
+        },
+        "encoded_file_sha256": "3fce55e86fb342064d42c5cbefead890ad3366f5b6a494ebb4195d3525623ba4",
+        "output_bytes": 59371115,
+        "pss_complete_samples": 450,
+        "resource_sample_count": 450
+      }
+    }
+  },
+  "resize_heavy_aggregate": {
+    "render_wall_seconds": {
+      "baseline": 768.1264663950005,
+      "optimized": 488.0504850685011,
+      "optimized_minus_baseline": -280.07598132649946,
+      "percent_change": -36.4622225088744,
+      "aggregation": "sum_of_case_medians"
+    },
+    "resize_process_cpu_seconds": {
+      "baseline": 529.4052104654997,
+      "optimized": 312.0290954475,
+      "optimized_minus_baseline": -217.37611501799972,
+      "percent_change": -41.06044117451422,
+      "aggregation": "sum_of_case_medians"
+    },
+    "fitted_frame_wall_seconds": {
+      "baseline": 642.0712298519757,
+      "optimized": 373.7919007485398,
+      "optimized_minus_baseline": -268.2793291034359,
+      "percent_change": -41.78342162524328,
+      "aggregation": "sum_of_case_medians"
+    },
+    "fitted_frame_process_cpu_seconds": {
+      "baseline": 623.1590509819999,
+      "optimized": 360.81631755999996,
+      "optimized_minus_baseline": -262.342733422,
+      "percent_change": -42.09884025732907,
+      "aggregation": "sum_of_case_medians"
+    },
+    "peak_tree_rss_bytes": {
+      "baseline": 2235441152,
+      "optimized": 2187763712,
+      "optimized_minus_baseline": -47677440,
+      "percent_change": -2.132797812966092,
+      "aggregation": "max"
+    },
+    "peak_tree_pss_bytes": {
+      "baseline": 2175478784,
+      "optimized": 2124750848,
+      "optimized_minus_baseline": -50727936,
+      "percent_change": -2.331805594846015,
+      "aggregation": "max"
+    },
+    "peak_intermediate_bytes": {
+      "baseline": 986866,
+      "optimized": 986866,
+      "optimized_minus_baseline": 0,
+      "percent_change": 0.0,
+      "aggregation": "max"
+    },
+    "preprocessing_seconds": {
+      "baseline": 0.0,
+      "optimized": 0.0,
+      "optimized_minus_baseline": 0.0,
+      "percent_change": null,
+      "aggregation": "sum_of_case_medians"
+    },
+    "python_cpu_seconds": {
+      "baseline": 747.0600000000001,
+      "optimized": 473.25500000000005,
+      "optimized_minus_baseline": -273.805,
+      "percent_change": -36.651005274007446,
+      "aggregation": "sum_of_case_medians"
+    },
+    "ffmpeg_cpu_seconds": {
+      "baseline": 490.08500000000004,
+      "optimized": 490.745,
+      "optimized_minus_baseline": 0.6599999999999682,
+      "percent_change": 0.13467051633899718,
+      "aggregation": "sum_of_case_medians"
+    }
+  }
+}

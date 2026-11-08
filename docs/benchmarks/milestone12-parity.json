@@ -1,0 +1,444 @@
+{
+  "settings": {
+    "seconds": 4,
+    "caption_count": 16,
+    "width": 540,
+    "height": 960,
+    "fps": 24,
+    "threads": 2,
+    "runs_per_source": 1
+  },
+  "compiler_sources": {
+    "baseline_sha256": "0d84f1ade42ad470de5cacc27aab24222edfb9db88465ae03a376b855bd27457",
+    "optimized_sha256": "d2d47f05b75f6ba6d18e59ebf69d2499c224dc29be98720ce477b08d98b60e38"
+  },
+  "inputs": {
+    "baseline": {
+      "source_video_sha256": "413e667993dd99dea5bd10095aebfa0f93173262b03d68c4687e788f60ad06ff",
+      "voice_sha256": "454b75d5ce03dd531962d66c9b88030f6770d69ebbc01abdd29fea1bf9d4c4a4"
+    },
+    "optimized": {
+      "source_video_sha256": "413e667993dd99dea5bd10095aebfa0f93173262b03d68c4687e788f60ad06ff",
+      "voice_sha256": "454b75d5ce03dd531962d66c9b88030f6770d69ebbc01abdd29fea1bf9d4c4a4"
+    }
+  },
+  "inputs_identical": true,
+  "benchmark_samples": {
+    "baseline": [
+      {
+        "wall_seconds_including_import": 6.775,
+        "render_seconds": 3.83,
+        "sampled_cpu_seconds": 8.87,
+        "peak_tree_rss_bytes": 1002663936,
+        "peak_subprocess_rss_bytes": 269258752,
+        "peak_extra_temp_bytes": 65840,
+        "output_bytes": 2316685,
+        "probe": {
+          "programs": [],
+          "stream_groups": [],
+          "streams": [
+            {
+              "codec_name": "h264",
+              "width": 540,
+              "height": 960,
+              "r_frame_rate": "24/1",
+              "duration": "4.041667"
+            },
+            {
+              "codec_name": "aac",
+              "r_frame_rate": "0/0",
+              "duration": "4.050000"
+            }
+          ],
+          "format": {
+            "duration": "4.050000",
+            "size": "2316685"
+          }
+        }
+      }
+    ],
+    "optimized": [
+      {
+        "wall_seconds_including_import": 6.64,
+        "render_seconds": 3.868,
+        "sampled_cpu_seconds": 8.78,
+        "peak_tree_rss_bytes": 1001218048,
+        "peak_subprocess_rss_bytes": 266838016,
+        "peak_extra_temp_bytes": 65840,
+        "output_bytes": 2316685,
+        "probe": {
+          "programs": [],
+          "stream_groups": [],
+          "streams": [
+            {
+              "codec_name": "h264",
+              "width": 540,
+              "height": 960,
+              "r_frame_rate": "24/1",
+              "duration": "4.041667"
+            },
+            {
+              "codec_name": "aac",
+              "r_frame_rate": "0/0",
+              "duration": "4.050000"
+            }
+          ],
+          "format": {
+            "duration": "4.050000",
+            "size": "2316685"
+          }
+        }
+      }
+    ]
+  },
+  "decoded_video": {
+    "method": "ffmpeg framemd5, decoded frame rows compared in order",
+    "baseline_frame_count": 97,
+    "optimized_frame_count": 97,
+    "baseline_frame_md5_sha256": "bab493c086343ec35293a9b95815f73c5f887a90a99ae6e72ce86be2edd537aa",
+    "optimized_frame_md5_sha256": "bab493c086343ec35293a9b95815f73c5f887a90a99ae6e72ce86be2edd537aa",
+    "baseline_frame_md5": [
+      "ee51e69cd0cd90cb061ed2657e5be4c9",
+      "84d0add6aa9c43a97ae8913120139c97",
+      "54e8be92cca26394d27251b064984e29",
+      "e12a1e8478aac4d35dfcdb24e4be39fb",
+      "6d978783b46d2ccb865ef92df1c911c2",
+      "15429367bc1c6dd0809e3c4ded87de4e",
+      "5dad36ad84ee7972d9da1de7818834c5",
+      "187ce185d286712dee692911a06bbd86",
+      "b4c2215d47c4f6f0af90a8de8c4bc155",
+      "86d10d673715a3b821ae78b915e68f98",
+      "1e96759109fbd80474f47ca4c3c192ad",
+      "dda85b502ef3a76cc82503fccd1c3ddd",
+      "1254f5283fd46b80c86f81d72bf0bf48",
+      "3ae173c24a2508b5763daa69358ce665",
+      "de5a0a60f6165456bba62ae14f2b2440",
+      "5fa992745369ba9f16aff63fd2bca93a",
+      "03f27a8c5034ad388e100e4d1c7e8d6d",
+      "336c9b534c51063ea433379a918b850d",
+      "719fc396464fd6f14c8868a7aa190098",
+      "906e7bc297a8e1148121abd10d7c2521",
+      "99ec75d7412192f8ecef9dc1411f6479",
+      "b15445e065386aadcc295b71fd1b8640",
+      "a9f3085acb57b1662ecdfb95bc19df4a",
+      "29094d200e84c9f03a2ecd9bb6cda9e2",
+      "560e9fe021909058310db9a29e7f387d",
+      "b03d8134d89deb458abda98b4be0276e",
+      "ef3e5a6c84aee4d5f8cbb5f14b42a1d5",
+      "5f16a4f17dff80aac415604b6d52f07c",
+      "0daf22ace0c972172e81048bc693b429",
+      "70e533648f4c1e3ad14c29ca15dd1829",
+      "652df39422972c4b5476f4a3d30f4401",
+      "5d5f99fd1c94c2dca2f5ede00f0d0ac2",
+      "d3e6b2fc7b144bd177e0a6e1fb59e8ef",
+      "014f58eafc7972f8d7841cc4067c925b",
+      "6e4f867caf9a1b06bed750fe5a169cc9",
+      "b8525e25d5c7524d372439a92bb7cb8e",
+      "68a6e5dabaf9dd50c3803c5fdacbbbec",
+      "c3a5b850341d7a624cf74e0fd96b89f1",
+      "5695d92a85737ed983fb5126c9843316",
+      "54761d5c296804f8e84fe4c8014679e3",
+      "6d6b4b4d3a28712d4958600a8daa1c49",
+      "2f598c6a34da2a976a43558d864130f0",
+      "72df8fc1f7140338f7b1c22a092d5fa8",
+      "734b2c972196ef99d8e2a4d52bec21d4",
+      "7439f9a2ce6c5a0ec8f07655d97f494c",
+      "bdf6b11e7938e99b66bb726a4adebd4d",
+      "405266d90bdef72c65566a72256afc90",
+      "c9823c0fdf918c00a0233e3d3a0de206",
+      "99f2b0dd447b7fc21ddff328dac7068a",
+      "84f1adc11edff45ccff5517689ad86de",
+      "08f51349a9b158f1231587766f58362b",
+      "f4bed947b17165ca798424d1f271c701",
+      "4909251bb374e5d4baab20db36f1321b",
+      "ebd4b2864fdf9527bdc4650e196eef60",
+      "a6dad60be5621680c77b540a19a59ad1",
+      "e25b9bfde83a51686c5ec167e77eeace",
+      "23512cb12fdbfdf76f1ee9168f1d0165",
+      "a491e6c34d2792e2e1f49ad88ab1f4fb",
+      "e54e9abe6218c6cee33f34dcf5d93be3",
+      "2f308013f2c97d168fd9bc276481dbb3",
+      "845779b36d32ac4c11f1f698bc3dac45",
+      "3fab1824f67e1c13431f6ec82864a069",
+      "1d2195d4b6aee110ca6db92244e5c71f",
+      "862931d20d5a5c98486d331acc142893",
+      "2e53e81b2a9bcceea3b8d7465d4775ae",
+      "12cb32d6311bbd9a2c9a6f015c660568",
+      "8622bbebf9e5ad50b3d2878ecb302733",
+      "521b6bf20d09d7f1f100e21bfcb6737f",
+      "99b076fbc35f7468aaf39596124f6d11",
+      "37f5e5aa764376a94e5a6384eb19c242",
+      "2ef667d6de29d6b7af44e5a1bf28af9d",
+      "1c23db6d8d3b9ee93e76b06ac95b9d58",
+      "04f02d5dcd24946ab2a51d878e29b066",
+      "182ba8ec2d84dfb059423fe1eddd957d",
+      "67d114385ce81b89c67ed2e393861142",
+      "edfec611603570765c69a93ed91dd918",
+      "22dd74812ef66d1f353dc60ea3e03429",
+      "6bca3ba2b2b0ae0eb18693af5cb8c369",
+      "81730dbb0a4a81563770b5ec1570f072",
+      "49bab3212f2a24e0bc4f102ef4ac0477",
+      "3f8c9466d111c375fa79b3d166b6a4b0",
+      "ee1e4e8dc1d9b8dcf4e77dffcf02732e",
+      "9eb300bdf7064ce7b7f8e792147f6615",
+      "28b8850439bde3d752ef5ef6c99f7c1f",
+      "501cbdd910fc34baa0614aac836584b6",
+      "46ebb7856b243ee801bf356f5a1fa153",
+      "26dbfbc85e4ad37f5dde2777ac5ded80",
+      "f12d7c83bc09deb82d13c671dee23be7",
+      "9f4bb94f8cd4d7bda3efdb4c1aba37a0",
+      "796497c8e4c55817184e13a0bca2f19c",
+      "6ecff25a454eb8008d38d071604a9c5a",
+      "17eb51d3748d63ce98db765f89429ea4",
+      "28707d9520f5a584e3e1ab6f4d0ed790",
+      "ff66a3028c6d71024ce7c5f6320df5c0",
+      "59ad68bd4f6703cc533845b19fc2b675",
+      "e39bd0fa87a6734eedb2d0575560cd67",
+      "12666c3bbd510c04f1f594eaabd9f007"
+    ],
+    "optimized_frame_md5": [
+      "ee51e69cd0cd90cb061ed2657e5be4c9",
+      "84d0add6aa9c43a97ae8913120139c97",
+      "54e8be92cca26394d27251b064984e29",
+      "e12a1e8478aac4d35dfcdb24e4be39fb",
+      "6d978783b46d2ccb865ef92df1c911c2",
+      "15429367bc1c6dd0809e3c4ded87de4e",
+      "5dad36ad84ee7972d9da1de7818834c5",
+      "187ce185d286712dee692911a06bbd86",
+      "b4c2215d47c4f6f0af90a8de8c4bc155",
+      "86d10d673715a3b821ae78b915e68f98",
+      "1e96759109fbd80474f47ca4c3c192ad",
+      "dda85b502ef3a76cc82503fccd1c3ddd",
+      "1254f5283fd46b80c86f81d72bf0bf48",
+      "3ae173c24a2508b5763daa69358ce665",
+      "de5a0a60f6165456bba62ae14f2b2440",
+      "5fa992745369ba9f16aff63fd2bca93a",
+      "03f27a8c5034ad388e100e4d1c7e8d6d",
+      "336c9b534c51063ea433379a918b850d",
+      "719fc396464fd6f14c8868a7aa190098",
+      "906e7bc297a8e1148121abd10d7c2521",
+      "99ec75d7412192f8ecef9dc1411f6479",
+      "b15445e065386aadcc295b71fd1b8640",
+      "a9f3085acb57b1662ecdfb95bc19df4a",
+      "29094d200e84c9f03a2ecd9bb6cda9e2",
+      "560e9fe021909058310db9a29e7f387d",
+      "b03d8134d89deb458abda98b4be0276e",
+      "ef3e5a6c84aee4d5f8cbb5f14b42a1d5",
+      "5f16a4f17dff80aac415604b6d52f07c",
+      "0daf22ace0c972172e81048bc693b429",
+      "70e533648f4c1e3ad14c29ca15dd1829",
+      "652df39422972c4b5476f4a3d30f4401",
+      "5d5f99fd1c94c2dca2f5ede00f0d0ac2",
+      "d3e6b2fc7b144bd177e0a6e1fb59e8ef",
+      "014f58eafc7972f8d7841cc4067c925b",
+      "6e4f867caf9a1b06bed750fe5a169cc9",
+      "b8525e25d5c7524d372439a92bb7cb8e",
+      "68a6e5dabaf9dd50c3803c5fdacbbbec",
+      "c3a5b850341d7a624cf74e0fd96b89f1",
+      "5695d92a85737ed983fb5126c9843316",
+      "54761d5c296804f8e84fe4c8014679e3",
+      "6d6b4b4d3a28712d4958600a8daa1c49",
+      "2f598c6a34da2a976a43558d864130f0",
+      "72df8fc1f7140338f7b1c22a092d5fa8",
+      "734b2c972196ef99d8e2a4d52bec21d4",
+      "7439f9a2ce6c5a0ec8f07655d97f494c",
+      "bdf6b11e7938e99b66bb726a4adebd4d",
+      "405266d90bdef72c65566a72256afc90",
+      "c9823c0fdf918c00a0233e3d3a0de206",
+      "99f2b0dd447b7fc21ddff328dac7068a",
+      "84f1adc11edff45ccff5517689ad86de",
+      "08f51349a9b158f1231587766f58362b",
+      "f4bed947b17165ca798424d1f271c701",
+      "4909251bb374e5d4baab20db36f1321b",
+      "ebd4b2864fdf9527bdc4650e196eef60",
+      "a6dad60be5621680c77b540a19a59ad1",
+      "e25b9bfde83a51686c5ec167e77eeace",
+      "23512cb12fdbfdf76f1ee9168f1d0165",
+      "a491e6c34d2792e2e1f49ad88ab1f4fb",
+      "e54e9abe6218c6cee33f34dcf5d93be3",
+      "2f308013f2c97d168fd9bc276481dbb3",
+      "845779b36d32ac4c11f1f698bc3dac45",
+      "3fab1824f67e1c13431f6ec82864a069",
+      "1d2195d4b6aee110ca6db92244e5c71f",
+      "862931d20d5a5c98486d331acc142893",
+      "2e53e81b2a9bcceea3b8d7465d4775ae",
+      "12cb32d6311bbd9a2c9a6f015c660568",
+      "8622bbebf9e5ad50b3d2878ecb302733",
+      "521b6bf20d09d7f1f100e21bfcb6737f",
+      "99b076fbc35f7468aaf39596124f6d11",
+      "37f5e5aa764376a94e5a6384eb19c242",
+      "2ef667d6de29d6b7af44e5a1bf28af9d",
+      "1c23db6d8d3b9ee93e76b06ac95b9d58",
+      "04f02d5dcd24946ab2a51d878e29b066",
+      "182ba8ec2d84dfb059423fe1eddd957d",
+      "67d114385ce81b89c67ed2e393861142",
+      "edfec611603570765c69a93ed91dd918",
+      "22dd74812ef66d1f353dc60ea3e03429",
+      "6bca3ba2b2b0ae0eb18693af5cb8c369",
+      "81730dbb0a4a81563770b5ec1570f072",
+      "49bab3212f2a24e0bc4f102ef4ac0477",
+      "3f8c9466d111c375fa79b3d166b6a4b0",
+      "ee1e4e8dc1d9b8dcf4e77dffcf02732e",
+      "9eb300bdf7064ce7b7f8e792147f6615",
+      "28b8850439bde3d752ef5ef6c99f7c1f",
+      "501cbdd910fc34baa0614aac836584b6",
+      "46ebb7856b243ee801bf356f5a1fa153",
+      "26dbfbc85e4ad37f5dde2777ac5ded80",
+      "f12d7c83bc09deb82d13c671dee23be7",
+      "9f4bb94f8cd4d7bda3efdb4c1aba37a0",
+      "796497c8e4c55817184e13a0bca2f19c",
+      "6ecff25a454eb8008d38d071604a9c5a",
+      "17eb51d3748d63ce98db765f89429ea4",
+      "28707d9520f5a584e3e1ab6f4d0ed790",
+      "ff66a3028c6d71024ce7c5f6320df5c0",
+      "59ad68bd4f6703cc533845b19fc2b675",
+      "e39bd0fa87a6734eedb2d0575560cd67",
+      "12666c3bbd510c04f1f594eaabd9f007"
+    ],
+    "frame_rows_identical": true,
+    "frame_hashes_identical": true
+  },
+  "decoded_audio_pcm": {
+    "method": "ffmpeg decoded s16le with no -ac or -ar conversion; native stream channels and sample rate retained",
+    "baseline_stream": {
+      "codec_name": "aac",
+      "profile": "LC",
+      "sample_fmt": "fltp",
+      "sample_rate": "44100",
+      "channels": 2,
+      "channel_layout": "stereo",
+      "time_base": "1/44100",
+      "duration": "4.050000",
+      "bit_rate": "126347"
+    },
+    "optimized_stream": {
+      "codec_name": "aac",
+      "profile": "LC",
+      "sample_fmt": "fltp",
+      "sample_rate": "44100",
+      "channels": 2,
+      "channel_layout": "stereo",
+      "time_base": "1/44100",
+      "duration": "4.050000",
+      "bit_rate": "126347"
+    },
+    "baseline_bytes": 714420,
+    "optimized_bytes": 714420,
+    "baseline_sha256": "89caf1c92120076637c67d203992cc7f993d950364dde2b0d99e26bb3dd60eed",
+    "optimized_sha256": "89caf1c92120076637c67d203992cc7f993d950364dde2b0d99e26bb3dd60eed",
+    "stream_metadata_identical": true,
+    "identical": true
+  },
+  "preview": {
+    "path": "/tmp/slopengine12-preview.png",
+    "timestamp_seconds": 1.1
+  },
+  "baseline_patch_output": "patching file shorts_core.py",
+  "temporary_media_cleaned": true,
+  "previous_decoded_audio_pcm_mono": {
+    "method": "ffmpeg s16le, mono, 44100 Hz",
+    "baseline_bytes": 357210,
+    "optimized_bytes": 357210,
+    "baseline_sha256": "b149eb700be2a02a57db7c8f52bbe56fa364c04a9eb4d557b886de5adc165196",
+    "optimized_sha256": "b149eb700be2a02a57db7c8f52bbe56fa364c04a9eb4d557b886de5adc165196",
+    "identical": true
+  },
+  "native_audio_repeat": {
+    "settings": {
+      "seconds": 4,
+      "width": 540,
+      "height": 960,
+      "fps": 24,
+      "threads": 2,
+      "runs_per_source": 1,
+      "same_fixture_directory_for_both_sources": true
+    },
+    "inputs": {
+      "baseline": {
+        "source_video_sha256": "413e667993dd99dea5bd10095aebfa0f93173262b03d68c4687e788f60ad06ff",
+        "voice_sha256": "454b75d5ce03dd531962d66c9b88030f6770d69ebbc01abdd29fea1bf9d4c4a4"
+      },
+      "optimized": {
+        "source_video_sha256": "413e667993dd99dea5bd10095aebfa0f93173262b03d68c4687e788f60ad06ff",
+        "voice_sha256": "454b75d5ce03dd531962d66c9b88030f6770d69ebbc01abdd29fea1bf9d4c4a4"
+      }
+    },
+    "inputs_match_prior_evidence": true,
+    "baseline_render": {
+      "wall_seconds_including_import": 6.579,
+      "render_seconds": 3.762,
+      "sampled_cpu_seconds": 8.64,
+      "peak_tree_rss_bytes": 999202816,
+      "peak_subprocess_rss_bytes": 264847360,
+      "peak_extra_temp_bytes": 65840,
+      "output_bytes": 2316685,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 540,
+            "height": 960,
+            "r_frame_rate": "24/1",
+            "duration": "4.041667"
+          },
+          {
+            "codec_name": "aac",
+            "r_frame_rate": "0/0",
+            "duration": "4.050000"
+          }
+        ],
+        "format": {
+          "duration": "4.050000",
+          "size": "2316685"
+        }
+      }
+    },
+    "optimized_render": {
+      "wall_seconds_including_import": 6.732,
+      "render_seconds": 3.891,
+      "sampled_cpu_seconds": 8.84,
+      "peak_tree_rss_bytes": 999124992,
+      "peak_subprocess_rss_bytes": 266088448,
+      "peak_extra_temp_bytes": 65840,
+      "output_bytes": 2316685,
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 540,
+            "height": 960,
+            "r_frame_rate": "24/1",
+            "duration": "4.041667"
+          },
+          {
+            "codec_name": "aac",
+            "r_frame_rate": "0/0",
+            "duration": "4.050000"
+          }
+        ],
+        "format": {
+          "duration": "4.050000",
+          "size": "2316685"
+        }
+      }
+    },
+    "frame_rows_identical": true,
+    "frame_hashes_identical": true,
+    "baseline_frame_count": 97,
+    "optimized_frame_count": 97,
+    "baseline_frame_md5_sha256": "bab493c086343ec35293a9b95815f73c5f887a90a99ae6e72ce86be2edd537aa",
+    "optimized_frame_md5_sha256": "bab493c086343ec35293a9b95815f73c5f887a90a99ae6e72ce86be2edd537aa",
+    "frame_hashes_match_prior_evidence": true,
+    "pcm_identical": true,
+    "baseline_patch_output": "patching file shorts_core.py",
+    "preview": {
+      "path": "/tmp/slopengine12-preview.png",
+      "timestamp_seconds": 1.1
+    },
+    "temporary_media_cleaned": true
+  }
+}

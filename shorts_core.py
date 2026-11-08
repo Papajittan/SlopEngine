@@ -17,6 +17,7 @@ import asyncio
 import gc
 import json
 import math
+from numbers import Real
 import os
 import re
 import shutil
@@ -574,6 +575,101 @@ def clip_cropped(clip: Any, *, x1: float, y1: float, x2: float, y2: float) -> An
     if hasattr(clip, "cropped"):
         return clip.cropped(x1=x1, y1=y1, x2=x2, y2=y2)
     return clip.crop(x1=x1, y1=y1, x2=x2, y2=y2)
+
+
+def _fit_horizontal_landscape_frame(
+    frame: Any,
+    *,
+    target_w: int,
+    target_h: int,
+    resized_w: int,
+    crop_x1: int,
+    crop_x2: int,
+) -> Any:
+    """Crop between Pillow's horizontal and vertical Lanczos passes.
+
+    Pillow processes RGB resizes horizontally before vertically, quantizing the
+    intermediate to uint8. Cropping between those same passes preserves the
+    visible RGB pixels while avoiding vertical work on discarded columns.
+    """
+    image = Image.fromarray(frame.astype("uint8", copy=False))
+    resampling = Image.Resampling.LANCZOS
+    if frame.dtype == np.uint8 and frame.ndim == 3 and frame.shape[2] == 3:
+        image = image.resize((resized_w, frame.shape[0]), resampling)
+        image = image.crop((crop_x1, 0, crop_x2, frame.shape[0]))
+        image = image.resize((target_w, target_h), resampling)
+    else:
+        # Keep MoviePy's existing two-stage behavior for alpha, masks, and
+        # unusual frame types whose resampling can depend on operation order.
+        image = image.resize((resized_w, target_h), resampling)
+        image = image.crop((crop_x1, 0, crop_x2, target_h))
+    return np.array(image)
+
+
+def _immutable_rgb_backing(frame: Any) -> bytes | None:
+    """Return the owning bytes only for an immutable uint8 RGB ndarray."""
+    if (type(frame) is not np.ndarray or frame.dtype != np.uint8
+            or frame.ndim != 3 or frame.shape[2] != 3):
+        return None
+    current: Any = frame
+    visited: set[int] = set()
+    while isinstance(current, np.ndarray):
+        if id(current) in visited:
+            return None
+        visited.add(id(current))
+        current = current.base
+    return current if isinstance(current, bytes) else None
+
+
+def _has_repeat_frame_opportunity(source_fps: Any, output_fps: Any) -> bool:
+    """Cache only when known source cadence is slower than output cadence."""
+    if (not isinstance(source_fps, Real) or isinstance(source_fps, bool)
+            or not isinstance(output_fps, Real) or isinstance(output_fps, bool)):
+        return False
+    return (math.isfinite(float(source_fps)) and math.isfinite(float(output_fps))
+            and source_fps > 0 and output_fps > 0 and source_fps < output_fps)
+
+
+class _FittedLandscapeFrameCache:
+    """Reuse one exact fitted frame while its immutable source array is current."""
+
+    def __init__(self, transform: Any) -> None:
+        self._transform = transform
+        self._entry: tuple[Any, bytes, tuple[Any, ...], np.ndarray] | None = None
+        self.closed = False
+        self.requests = 0
+        self.hits = 0
+        self.misses = 0
+        self.transforms = 0
+
+    @staticmethod
+    def _metadata(frame: np.ndarray) -> tuple[Any, ...]:
+        return (frame.shape, frame.strides, frame.dtype.str,
+                frame.__array_interface__["data"][0])
+
+    def __call__(self, frame: Any) -> Any:
+        self.requests += 1
+        backing = None if self.closed else _immutable_rgb_backing(frame)
+        metadata = self._metadata(frame) if backing is not None else None
+        entry = self._entry
+        if (entry is not None and backing is not None
+                and frame is entry[0] and backing is entry[1]
+                and metadata == entry[2]):
+            self.hits += 1
+            return entry[3].copy()
+
+        self._entry = None
+        self.misses += 1
+        self.transforms += 1
+        fitted = self._transform(frame)
+        if backing is None:
+            return fitted
+        self._entry = (frame, backing, metadata, fitted)
+        return fitted.copy()
+
+    def close(self) -> None:
+        self._entry = None
+        self.closed = True
 
 
 def loop_clip_to_duration(clip: Any, duration: float) -> Any:
@@ -1178,6 +1274,101 @@ class PexelsVisualClient:
             raise PipelineError("downloaded empty Pexels video")
 
 
+class _ClipIntervalNode:
+    def __init__(self, intervals: list[tuple[int, float, float]]) -> None:
+        midpoints = sorted(self._midpoint(start, end) for _, start, end in intervals)
+        self.center = midpoints[len(midpoints) // 2]
+        crossing: list[tuple[int, float, float]] = []
+        left: list[tuple[int, float, float]] = []
+        right: list[tuple[int, float, float]] = []
+        for interval in intervals:
+            _, start, end = interval
+            if end <= self.center:
+                left.append(interval)
+            elif start > self.center:
+                right.append(interval)
+            else:
+                crossing.append(interval)
+
+        self.by_start = sorted(crossing, key=lambda interval: interval[1])
+        self.by_end = sorted(crossing, key=lambda interval: interval[2], reverse=True)
+        self.left = _ClipIntervalNode(left) if left else None
+        self.right = _ClipIntervalNode(right) if right else None
+
+    @staticmethod
+    def _midpoint(start: float, end: float) -> float:
+        if start < 0 < end:
+            midpoint = start / 2 + end / 2
+        else:
+            midpoint = start + (end - start) / 2
+        return midpoint if start <= midpoint < end else start
+
+    def collect(self, time: float, active: list[int]) -> None:
+        if time < self.center:
+            for index, start, _ in self.by_start:
+                if start > time:
+                    break
+                active.append(index)
+            if self.left is not None:
+                self.left.collect(time, active)
+            return
+
+        for index, _, end in self.by_end:
+            if end <= time:
+                break
+            active.append(index)
+        if self.right is not None:
+            self.right.collect(time, active)
+
+
+class _ClipIntervalIndex:
+    def __init__(self, clips: tuple[Any, ...], intervals: list[tuple[int, float, float]]) -> None:
+        self.clips = clips
+        self.root = _ClipIntervalNode(intervals) if intervals else None
+
+    def playing_clips(self, time: float) -> list[Any]:
+        if self.root is None:
+            return []
+        active: list[int] = []
+        self.root.collect(time, active)
+        active.sort()
+        return [self.clips[index] for index in active]
+
+
+def _index_caption_clip_selection(composite: Any) -> None:
+    """Replace linear caption selection with interval lookup, preserving layer order."""
+    clips = getattr(composite, "clips", None)
+    if not clips:
+        return
+
+    intervals: list[tuple[int, float, float]] = []
+    for index, clip in enumerate(clips):
+        start = getattr(clip, "start", None)
+        end = getattr(clip, "end", None)
+        if start is None or end is None:
+            return
+        try:
+            start = float(start)
+            end = float(end)
+        except (TypeError, ValueError):
+            return
+        if not math.isfinite(start) or not math.isfinite(end) or start >= end:
+            return
+        intervals.append((index, start, end))
+
+    index = _ClipIntervalIndex(tuple(clips), intervals)
+    original_playing_clips = composite.playing_clips
+
+    def playing_clips(time: Any = 0) -> list[Any]:
+        if isinstance(time, Real):
+            numeric_time = float(time)
+            if math.isfinite(numeric_time):
+                return index.playing_clips(numeric_time)
+        return original_playing_clips(time)
+
+    composite.playing_clips = playing_clips
+
+
 class MoviePyShortCompiler:
     def __init__(self, config: PipelineConfig) -> None:
         self.config = config
@@ -1215,6 +1406,10 @@ class MoviePyShortCompiler:
                 # MoviePy 2.1 cannot use_bgclip with an empty overlay list.
                 use_bgclip=bool(caption_clips), bg_color=(0, 0, 0),
             )
+            if caption_clips:
+                # Install before duration/audio/fps helpers copy clips. MoviePy 1.x
+                # frame functions can close over this original composite instance.
+                _index_caption_clip_selection(final_clip)
             final_clip = clip_with_duration(final_clip, final_duration)
             final_clip = clip_with_audio(final_clip, audio_clip)
             final_clip = clip_with_fps(final_clip, self.config.fps)
@@ -1270,7 +1465,7 @@ class MoviePyShortCompiler:
                 continue
 
             opened_clips.append(clip)
-            fitted = self._fit_vertical(clip_without_audio(clip))
+            fitted = self._fit_vertical(clip_without_audio(clip), opened_clips)
             prepared.append(fitted)
 
         if not prepared:
@@ -1287,7 +1482,7 @@ class MoviePyShortCompiler:
         opened_clips.append(joined)
         return loop_clip_to_duration(joined, duration)
 
-    def _fit_vertical(self, clip: Any) -> Any:
+    def _fit_vertical(self, clip: Any, opened_clips: list[Any] | None = None) -> Any:
         target_w = self.config.width
         target_h = self.config.height
         clip_w = float(getattr(clip, "w", target_w) or target_w)
@@ -1298,6 +1493,28 @@ class MoviePyShortCompiler:
         source_aspect = clip_w / clip_h
 
         if source_aspect > target_aspect:
+            if (not getattr(clip, "is_mask", False)
+                    and getattr(clip, "mask", None) is None
+                    and hasattr(clip, "image_transform")):
+                resized_w = int(clip_w * target_h / clip_h)
+                x1 = max(0.0, (resized_w - target_w) / 2.0)
+                crop_x1 = int(x1)
+                crop_x2 = int(x1 + target_w)
+                transform = lambda frame: _fit_horizontal_landscape_frame(
+                    frame,
+                    target_w=target_w,
+                    target_h=target_h,
+                    resized_w=resized_w,
+                    crop_x1=crop_x1,
+                    crop_x2=crop_x2,
+                )
+                if (opened_clips is not None and _has_repeat_frame_opportunity(
+                        getattr(clip, "fps", None), self.config.fps)):
+                    cache = _FittedLandscapeFrameCache(transform)
+                    opened_clips.append(cache)
+                    transform = cache
+                return clip.image_transform(transform)
+
             resized = clip_resized(clip, height=target_h)
             new_w = float(getattr(resized, "w", target_w))
             x1 = max(0.0, (new_w - target_w) / 2.0)
@@ -1310,6 +1527,22 @@ class MoviePyShortCompiler:
 
     def _word_layer(self, event: WordEvent) -> Any:
         image = self._caption_image(event.text)
+        alpha_bbox = image.getchannel("A").getbbox()
+        position: tuple[int | str, int]
+        if alpha_bbox is not None and alpha_bbox != (0, 0, image.width, image.height):
+            original_width = image.width
+            original_height = image.height
+            caption_center_y = int(self.config.height * self.config.caption_y_ratio)
+            original_y = max(0, caption_center_y - original_height // 2)
+            image = image.crop(alpha_bbox)
+            # Keep the full canvas's original top-left, including MoviePy's
+            # integer truncation for centered positions and the caption clamp.
+            original_x = int((self.config.width - original_width) / 2)
+            position = (original_x + alpha_bbox[0], original_y + alpha_bbox[1])
+        else:
+            caption_center_y = int(self.config.height * self.config.caption_y_ratio)
+            original_y = max(0, caption_center_y - image.height // 2)
+            position = ("center", original_y)
         try:
             layer = ImageClip(np.array(image), transparent=True)
         except TypeError:
@@ -1317,11 +1550,9 @@ class MoviePyShortCompiler:
 
         start = event.start_ms / 1000.0
         duration = max(0.05, (event.end_ms - event.start_ms) / 1000.0)
-        caption_center_y = int(self.config.height * self.config.caption_y_ratio)
-        y = max(0, caption_center_y - image.height // 2)
         layer = clip_with_duration(layer, duration)
         layer = clip_with_start(layer, start)
-        return clip_with_position(layer, ("center", y))
+        return clip_with_position(layer, position)
 
     def _caption_image(self, raw_word: str) -> Image.Image:
         word = normalize_spaces(raw_word).upper()

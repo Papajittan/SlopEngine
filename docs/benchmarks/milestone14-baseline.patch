@@ -1,0 +1,123 @@
+--- shorts_core.py
++++ milestone14-baseline.py
+@@ -606,72 +606,6 @@
+     return np.array(image)
+ 
+ 
+-def _immutable_rgb_backing(frame: Any) -> bytes | None:
+-    """Return the owning bytes only for an immutable uint8 RGB ndarray."""
+-    if (type(frame) is not np.ndarray or frame.dtype != np.uint8
+-            or frame.ndim != 3 or frame.shape[2] != 3):
+-        return None
+-    current: Any = frame
+-    visited: set[int] = set()
+-    while isinstance(current, np.ndarray):
+-        if id(current) in visited:
+-            return None
+-        visited.add(id(current))
+-        current = current.base
+-    return current if isinstance(current, bytes) else None
+-
+-
+-def _has_repeat_frame_opportunity(source_fps: Any, output_fps: Any) -> bool:
+-    """Cache only when known source cadence is slower than output cadence."""
+-    if (not isinstance(source_fps, Real) or isinstance(source_fps, bool)
+-            or not isinstance(output_fps, Real) or isinstance(output_fps, bool)):
+-        return False
+-    return (math.isfinite(float(source_fps)) and math.isfinite(float(output_fps))
+-            and source_fps > 0 and output_fps > 0 and source_fps < output_fps)
+-
+-
+-class _FittedLandscapeFrameCache:
+-    """Reuse one exact fitted frame while its immutable source array is current."""
+-
+-    def __init__(self, transform: Any) -> None:
+-        self._transform = transform
+-        self._entry: tuple[Any, bytes, tuple[Any, ...], np.ndarray] | None = None
+-        self.closed = False
+-        self.requests = 0
+-        self.hits = 0
+-        self.misses = 0
+-        self.transforms = 0
+-
+-    @staticmethod
+-    def _metadata(frame: np.ndarray) -> tuple[Any, ...]:
+-        return (frame.shape, frame.strides, frame.dtype.str,
+-                frame.__array_interface__["data"][0])
+-
+-    def __call__(self, frame: Any) -> Any:
+-        self.requests += 1
+-        backing = None if self.closed else _immutable_rgb_backing(frame)
+-        metadata = self._metadata(frame) if backing is not None else None
+-        entry = self._entry
+-        if (entry is not None and backing is not None
+-                and frame is entry[0] and backing is entry[1]
+-                and metadata == entry[2]):
+-            self.hits += 1
+-            return entry[3].copy()
+-
+-        self._entry = None
+-        self.misses += 1
+-        self.transforms += 1
+-        fitted = self._transform(frame)
+-        if backing is None:
+-            return fitted
+-        self._entry = (frame, backing, metadata, fitted)
+-        return fitted.copy()
+-
+-    def close(self) -> None:
+-        self._entry = None
+-        self.closed = True
+-
+-
+ def loop_clip_to_duration(clip: Any, duration: float) -> Any:
+     if clip.duration and clip.duration >= duration:
+         return clip_subclipped(clip, 0, duration)
+@@ -1465,7 +1399,7 @@
+                 continue
+ 
+             opened_clips.append(clip)
+-            fitted = self._fit_vertical(clip_without_audio(clip), opened_clips)
++            fitted = self._fit_vertical(clip_without_audio(clip))
+             prepared.append(fitted)
+ 
+         if not prepared:
+@@ -1482,7 +1416,7 @@
+         opened_clips.append(joined)
+         return loop_clip_to_duration(joined, duration)
+ 
+-    def _fit_vertical(self, clip: Any, opened_clips: list[Any] | None = None) -> Any:
++    def _fit_vertical(self, clip: Any) -> Any:
+         target_w = self.config.width
+         target_h = self.config.height
+         clip_w = float(getattr(clip, "w", target_w) or target_w)
+@@ -1500,20 +1434,16 @@
+                 x1 = max(0.0, (resized_w - target_w) / 2.0)
+                 crop_x1 = int(x1)
+                 crop_x2 = int(x1 + target_w)
+-                transform = lambda frame: _fit_horizontal_landscape_frame(
+-                    frame,
+-                    target_w=target_w,
+-                    target_h=target_h,
+-                    resized_w=resized_w,
+-                    crop_x1=crop_x1,
+-                    crop_x2=crop_x2,
++                return clip.image_transform(
++                    lambda frame: _fit_horizontal_landscape_frame(
++                        frame,
++                        target_w=target_w,
++                        target_h=target_h,
++                        resized_w=resized_w,
++                        crop_x1=crop_x1,
++                        crop_x2=crop_x2,
++                    )
+                 )
+-                if (opened_clips is not None and _has_repeat_frame_opportunity(
+-                        getattr(clip, "fps", None), self.config.fps)):
+-                    cache = _FittedLandscapeFrameCache(transform)
+-                    opened_clips.append(cache)
+-                    transform = cache
+-                return clip.image_transform(transform)
+ 
+             resized = clip_resized(clip, height=target_h)
+             new_w = float(getattr(resized, "w", target_w))

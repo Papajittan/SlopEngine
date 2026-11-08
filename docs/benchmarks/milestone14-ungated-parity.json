@@ -1,0 +1,235 @@
+{
+  "reference_sha256": "7ae497294b88a252a5302bcce397c87f13f4413d549afb2361e932f6a11b3c3a",
+  "current_sha256": "a195cb854234f6fa8d1e5c0031afa697bb0330287a03e279f192b9d3343663f9",
+  "cases": {
+    "wide": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true
+    },
+    "tall": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true
+    },
+    "mixed_loop": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true
+    },
+    "fallback": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true
+    },
+    "native": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true
+    },
+    "long_trim": {
+      "frame_count": 34,
+      "frames_equal": true,
+      "audio_chunks_equal": true,
+      "geometry_equal": true,
+      "duration_equal": true
+    }
+  },
+  "long_timeline": {
+    "frames_equal": true,
+    "duration_seconds": 180,
+    "seeks": 14
+  },
+  "cleanup": {
+    "cancellation": {
+      "exception_propagated": true,
+      "baseline_groups": [
+        {
+          "item_count": 1,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        }
+      ],
+      "optimized_groups": [
+        {
+          "item_count": 1,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 1,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        }
+      ],
+      "non_cache_cleanup_counts_equal": true,
+      "cache_resources_closed": true,
+      "reader_objects_closed": true,
+      "reader_processes_exited": true,
+      "readers_observed": 4
+    },
+    "render_error": {
+      "exception_propagated": true,
+      "baseline_groups": [
+        {
+          "item_count": 1,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        }
+      ],
+      "optimized_groups": [
+        {
+          "item_count": 1,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 3,
+          "cache_count": 0,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 0,
+          "reader_count": 0,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        },
+        {
+          "item_count": 4,
+          "cache_count": 1,
+          "reader_count": 2,
+          "cache_closed_after": true,
+          "reader_objects_closed_after": true,
+          "reader_processes_exited_after": true
+        }
+      ],
+      "non_cache_cleanup_counts_equal": true,
+      "cache_resources_closed": true,
+      "reader_objects_closed": true,
+      "reader_processes_exited": true,
+      "readers_observed": 4
+    }
+  },
+  "encoded": {
+    "decoded_frames_equal": true,
+    "decoded_pcm_equal": true,
+    "video_hash_format": "raw RGB24",
+    "audio_hash_format": "signed 16-bit little-endian PCM",
+    "streams": {
+      "before": {
+        "width": 540,
+        "height": 960,
+        "fps": "8/1",
+        "duration_seconds": 3.0,
+        "frame_count": 24,
+        "decoded_frames_sha256": "0087ea603641fbe16594ac9e426462ba02aa88c1ec1aaa176346fbbcae070bbb",
+        "decoded_pcm_sha256": "786e11c5fb751f756ba875d5a86f2466576ed3b9385a6a4ec9487bc09a56b844",
+        "preview_png": "temporary fixture preview; removed after validation"
+      },
+      "after": {
+        "width": 540,
+        "height": 960,
+        "fps": "8/1",
+        "duration_seconds": 3.0,
+        "frame_count": 24,
+        "decoded_frames_sha256": "0087ea603641fbe16594ac9e426462ba02aa88c1ec1aaa176346fbbcae070bbb",
+        "decoded_pcm_sha256": "786e11c5fb751f756ba875d5a86f2466576ed3b9385a6a4ec9487bc09a56b844",
+        "preview_png": "temporary fixture preview; removed after validation"
+      }
+    }
+  }
+}

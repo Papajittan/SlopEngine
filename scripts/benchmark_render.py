@@ -70,13 +70,14 @@ def snapshot(roots):
 
 
 def worker(args):
-    import shorts_core as core
     if args.compiler_source:
         import importlib.util
         spec = importlib.util.spec_from_file_location('benchmark_reference_core', args.compiler_source)
         core = importlib.util.module_from_spec(spec)
         sys.modules[spec.name] = core
         spec.loader.exec_module(core)
+    else:
+        import shorts_core as core
     from moviepy.video.VideoClip import VideoClip
 
     directory = Path(args.work)
@@ -116,14 +117,16 @@ def worker(args):
     start = time.perf_counter()
     if args.profile:
         profile.enable()
-    compiler.compile(directory / 'narration.wav', events,
+    narration = directory / ('warmup-narration.wav' if args.index == 'warmup' else 'narration.wav')
+    compiler.compile(narration, events,
                      [directory / 'landscape.mp4', directory / 'portrait.mp4'], output)
     if args.profile:
         profile.disable()
     elapsed = time.perf_counter() - start
     probe = json.loads(command(['ffprobe', '-v', 'error', '-count_frames', '-show_streams',
                                '-show_format', '-of', 'json', str(output)]))
-    result = dict(wall_seconds=elapsed, effective_fps=args.duration * 30 / elapsed,
+    video_stream = next(stream for stream in probe['streams'] if stream['codec_type'] == 'video')
+    result = dict(wall_seconds=elapsed, effective_fps=int(video_stream['nb_read_frames']) / elapsed,
                   stages_seconds=timings, output_bytes=output.stat().st_size, probe=probe)
     if args.profile:
         stats = pstats.Stats(profile)
@@ -176,6 +179,9 @@ def main():
             command([FFMPEG_BINARY, '-v', 'error', '-f', 'lavfi', '-i',
                      f'sine=frequency={frequency}:sample_rate=44100:duration={args.duration}',
                      str(directory / f'{name}.wav')])
+        command([FFMPEG_BINARY, '-v', 'error', '-f', 'lavfi', '-i',
+                 'sine=frequency=440:sample_rate=44100:duration=1',
+                 str(directory / 'warmup-narration.wav')])
         # One complete render warms filesystem caches and encoders. Workers still
         # import dependencies separately, as independently launched generation jobs do.
         base = [sys.executable, str(Path(__file__).resolve()), '--work', temporary,

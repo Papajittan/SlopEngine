@@ -616,6 +616,8 @@ class EnvLoadingTests(unittest.TestCase):
         self.assertEqual(config.caption_font_size, 220)
 
     def test_word_caption_layer_defaults_to_vertical_center(self):
+        from PIL import Image as RealImage
+
         shorts_core = import_shorts_core_with_fakes()
         config = shorts_core.PipelineConfig(
             gemini_api_key="gemini-key",
@@ -637,11 +639,232 @@ class EnvLoadingTests(unittest.TestCase):
 
         shorts_core.ImageClip = lambda *_, **__: FakeLayer()
         compiler = shorts_core.MoviePyShortCompiler(config)
-        compiler._caption_image = lambda _: types.SimpleNamespace(height=400)
+        image = RealImage.new("RGBA", (40, 400), (0, 0, 0, 0))
+        for y in range(100, 300):
+            for x in range(8, 32):
+                image.putpixel((x, y), (255, 255, 255, 255))
+        compiler._caption_image = lambda _: image
 
         layer = compiler._word_layer(shorts_core.WordEvent(text="center", start_ms=1000, end_ms=1500))
 
-        self.assertEqual(layer.position, ("center", (config.height - 400) // 2))
+        self.assertEqual(
+            layer.position,
+            (int((config.width - image.width) / 2) + 8, (config.height - image.height) // 2 + 100),
+        )
+
+    def test_cropped_caption_frames_match_full_canvas_layers(self):
+        from PIL import Image as RealImage
+        import numpy as real_numpy
+        from moviepy import ColorClip as RealColorClip
+        from moviepy import CompositeVideoClip as RealCompositeVideoClip
+        from moviepy import ImageClip as RealImageClip
+
+        shorts_core = import_shorts_core_with_fakes()
+        shorts_core.np = real_numpy
+        shorts_core.ImageClip = RealImageClip
+        config = shorts_core.PipelineConfig(
+            gemini_api_key="gemini-key",
+            pexels_api_key="pexels-key",
+            width=13,
+            height=11,
+            caption_y_ratio=0.5,
+        )
+        images = {
+            "first": RealImage.new("RGBA", (8, 7), (0, 0, 0, 0)),
+            "edge": RealImage.new("RGBA", (17, 15), (0, 0, 0, 0)),
+            "short": RealImage.new("RGBA", (5, 5), (0, 0, 0, 0)),
+            "empty": RealImage.new("RGBA", (7, 3), (0, 0, 0, 0)),
+        }
+
+        def fill(image, bounds, color):
+            x1, y1, x2, y2 = bounds
+            for y in range(y1, y2):
+                for x in range(x1, x2):
+                    image.putpixel((x, y), color)
+
+        fill(images["first"], (2, 1, 6, 6), (230, 40, 10, 170))
+        images["first"].putpixel((0, 0), (255, 0, 0, 0))  # Invisible RGB must not enlarge the crop.
+        fill(images["edge"], (0, 9, 8, 15), (20, 170, 240, 255))
+        fill(images["short"], (1, 1, 4, 4), (40, 220, 80, 128))
+        images["empty"].putpixel((3, 1), (255, 255, 255, 0))
+
+        events = [
+            shorts_core.WordEvent(text="first", start_ms=0, end_ms=130),
+            shorts_core.WordEvent(text="short", start_ms=50, end_ms=210),
+            shorts_core.WordEvent(text="empty", start_ms=250, end_ms=300),
+            shorts_core.WordEvent(text="edge", start_ms=350, end_ms=360),
+        ]
+        compiler = shorts_core.MoviePyShortCompiler(config)
+        compiler._caption_image = images.__getitem__
+        cropped_layers = [compiler._word_layer(event) for event in events]
+        self.assertEqual(tuple(cropped_layers[0].size), (4, 5))
+        self.assertEqual(tuple(cropped_layers[1].size), (3, 3))
+        self.assertEqual(tuple(cropped_layers[2].size), (7, 3))
+        self.assertEqual(tuple(cropped_layers[3].size), (8, 6))
+
+        full_canvas_layers = []
+        for event in events:
+            image = images[event.text]
+            layer = RealImageClip(real_numpy.array(image), transparent=True)
+            y = max(0, int(config.height * config.caption_y_ratio) - image.height // 2)
+            layer = layer.with_duration(max(0.05, (event.end_ms - event.start_ms) / 1000.0))
+            layer = layer.with_start(event.start_ms / 1000.0)
+            full_canvas_layers.append(layer.with_position(("center", y)))
+
+        sample_times = (0.0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.34, 0.35, 0.39, 0.40, 0.50, 0.80, 0.99)
+
+        def render(layers):
+            background = RealColorClip((13, 11), color=(7, 11, 19), duration=1.0)
+            composite = RealCompositeVideoClip(
+                [background, *layers],
+                size=(13, 11),
+                use_bgclip=bool(layers),
+                bg_color=(0, 0, 0),
+            )
+            try:
+                return [composite.get_frame(t).copy() for t in sample_times]
+            finally:
+                composite.close()
+                background.close()
+                for layer in layers:
+                    layer.close()
+
+        actual_frames = render(cropped_layers)
+        expected_frames = render(full_canvas_layers)
+        for time, actual, expected in zip(sample_times, actual_frames, expected_frames):
+            with self.subTest(time=time):
+                self.assertTrue(real_numpy.array_equal(actual, expected))
+
+        empty_caption_frames = render([])
+        expected_background = real_numpy.full((11, 13, 3), (7, 11, 19), dtype=real_numpy.uint8)
+        for time, frame in zip(sample_times, empty_caption_frames):
+            with self.subTest(no_captions_at=time):
+                self.assertTrue(real_numpy.array_equal(frame, expected_background))
+
+    def test_indexed_caption_selection_matches_moviepy_for_arbitrary_seeks(self):
+        from PIL import Image as RealImage
+        import numpy as real_numpy
+        from moviepy import CompositeVideoClip as RealCompositeVideoClip
+        from moviepy import ImageClip as RealImageClip
+
+        shorts_core = import_shorts_core_with_fakes()
+        shorts_core.np = real_numpy
+        shorts_core.ImageClip = RealImageClip
+        config = shorts_core.PipelineConfig(
+            gemini_api_key="gemini-key",
+            pexels_api_key="pexels-key",
+            width=13,
+            height=11,
+            caption_y_ratio=0.5,
+        )
+        events = [
+            shorts_core.WordEvent(text=f"overlap-{i}", start_ms=0, end_ms=1000)
+            for i in range(24)
+        ] + [
+            shorts_core.WordEvent(text="minimum", start_ms=1000, end_ms=1020),
+            shorts_core.WordEvent(text="adjacent", start_ms=1050, end_ms=1100),
+            shorts_core.WordEvent(text="gap", start_ms=1200, end_ms=1220),
+            shorts_core.WordEvent(text="overlap-gap", start_ms=1240, end_ms=1300),
+            shorts_core.WordEvent(text="later", start_ms=1400, end_ms=1410),
+            shorts_core.WordEvent(text="off-frame", start_ms=10000, end_ms=11000),
+        ] + [
+            shorts_core.WordEvent(
+                text=f"dense-{i}", start_ms=20000 + i * 25, end_ms=20000 + i * 25 + 350
+            )
+            for i in range(80)
+        ] + [
+            shorts_core.WordEvent(
+                text=f"sparse-{i}", start_ms=40000 + i * 5000, end_ms=40000 + i * 5000 + 1200
+            )
+            for i in range(24)
+        ]
+        images = {
+            event.text: RealImage.new(
+                "RGBA",
+                (31, 17) if event.text == "off-frame" else (3, 3),
+                (
+                    index * 7 % 256,
+                    index * 13 % 256,
+                    index * 19 % 256,
+                    64 + index * 17 % 192,
+                ),
+            )
+            for index, event in enumerate(events)
+        }
+        compiler = shorts_core.MoviePyShortCompiler(config)
+        compiler._caption_image = images.__getitem__
+        layers = [compiler._word_layer(event) for event in events]
+        background = RealImageClip(real_numpy.full((11, 13, 3), (7, 11, 19), dtype=real_numpy.uint8))
+        background = background.with_duration(160.0)
+        composite = RealCompositeVideoClip(
+            [background, *layers], size=(13, 11), use_bgclip=True, bg_color=(0, 0, 0)
+        )
+
+        sample_times = {
+            -0.01, 0.0, 0.5, 0.999, 1.0, 1.025, 1.05, 1.075, 1.1,
+            1.199, 1.2, 1.23, 1.24, 1.25, 1.29, 1.3, 1.399, 1.4, 1.45, 1.5,
+            10.0, 10.5, 11.0, 20.0, 21.0, 22.0, 40.0, 80.0, 120.0, 155.0, 156.2,
+        }
+        for layer in layers:
+            sample_times.add(layer.start)
+            sample_times.add(layer.end)
+            sample_times.add(layer.end - 1e-8)
+        sample_times = sorted(sample_times)
+        copied_composite = None
+
+        try:
+            baseline_playing_clips = composite.playing_clips
+            expected_clips = {time: baseline_playing_clips(time) for time in sample_times}
+            expected_frames = {time: composite.get_frame(time).copy() for time in sample_times}
+            shorts_core._index_caption_clip_selection(composite)
+            copied_composite = shorts_core.clip_with_duration(composite, 160.0)
+            copied_composite = shorts_core.clip_with_audio(copied_composite, None)
+            copied_composite = shorts_core.clip_with_fps(copied_composite, 30)
+
+            seek_order = sample_times[::2] + list(reversed(sample_times[1::2])) + sample_times[::3]
+            for time in seek_order:
+                with self.subTest(time=time):
+                    self.assertEqual(copied_composite.playing_clips(time), expected_clips[time])
+                    self.assertTrue(
+                        real_numpy.array_equal(
+                            copied_composite.get_frame(time), expected_frames[time]
+                        )
+                    )
+            self.assertEqual(copied_composite.playing_clips(float("nan")), [])
+        finally:
+            if copied_composite is not None:
+                copied_composite.close()
+            composite.close()
+            background.close()
+            for layer in layers:
+                layer.close()
+
+    def test_caption_interval_index_handles_extreme_finite_boundaries(self):
+        shorts_core = import_shorts_core_with_fakes()
+
+        class FakeClip:
+            def __init__(self, start, end):
+                self.start = start
+                self.end = end
+
+            def is_playing(self, time):
+                return time >= self.start and time < self.end
+
+        class FakeComposite:
+            def __init__(self, clips):
+                self.clips = clips
+
+            def playing_clips(self, time=0):
+                return [clip for clip in self.clips if clip.is_playing(time)]
+
+        spanning = FakeClip(-1.7e308, 1.7e308)
+        adjacent_floats = FakeClip(1.0, 1.0000000000000002)
+        composite = FakeComposite([spanning, adjacent_floats])
+        shorts_core._index_caption_clip_selection(composite)
+
+        self.assertEqual(composite.playing_clips(0.0), [spanning])
+        self.assertEqual(composite.playing_clips(1.0), [spanning, adjacent_floats])
+        self.assertEqual(composite.playing_clips(1.0000000000000002), [spanning])
 
     def test_default_tts_settings_avoid_overused_flat_voice(self):
         shorts_core = import_shorts_core_with_fakes()
@@ -748,7 +971,19 @@ class EnvLoadingTests(unittest.TestCase):
                 background_music_volume=0.18,
             )
 
-            shorts_core.MoviePyShortCompiler(config).compile(narration_path, [], [], output_path)
+            compiler = shorts_core.MoviePyShortCompiler(config)
+            compiler._word_layer = lambda event: self.fail(
+                f"invalid caption event should be skipped: {event}"
+            )
+            compiler.compile(
+                narration_path,
+                [
+                    shorts_core.WordEvent(text="zero", start_ms=1000, end_ms=1000),
+                    shorts_core.WordEvent(text="reversed", start_ms=1500, end_ms=1000),
+                ],
+                [],
+                output_path,
+            )
 
         mixed_audio = FakeCompositeAudioClip.instances[-1]
         self.assertEqual([clip.path for clip in mixed_audio.clips], [str(narration_path), str(music_path)])
@@ -756,6 +991,7 @@ class EnvLoadingTests(unittest.TestCase):
         self.assertEqual(mixed_audio.duration, 3.0)
         self.assertIs(FakeCompositeVideoClip.instances[-1].audio, mixed_audio)
         self.assertFalse(FakeCompositeVideoClip.instances[-1].use_bgclip)
+        self.assertEqual(len(FakeCompositeVideoClip.instances[-1].layers), 1)
         self.assertEqual(FakeCompositeVideoClip.instances[-1].bg_color, (0, 0, 0))
 
     def test_cli_help_allows_tts_percent_examples(self):
